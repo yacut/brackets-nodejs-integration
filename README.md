@@ -47,3 +47,12 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 
 ![settings](screenshots/settings.png)  
 *Settings dialog*
+
+## TODO:
+
+- Refactoring :)
+- Integrate debugger
+- Support for npm scrits
+- Support for gulp scrits
+- Support for jasmine
+- Localization
