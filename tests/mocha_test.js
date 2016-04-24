@@ -1,6 +1,6 @@
 'use strict';
 
-var expect = require('chai').expect;
+var assert = require('assert');
 
 describe('Brackets mocha runner', function () {
     this.timeout(0);
@@ -24,11 +24,7 @@ describe('Brackets mocha runner', function () {
 
         it('should return console log text', function () {
             console.info("test2");
-            expect('everthing').to.be.ok;
-            expect(1).to.be.ok;
-            expect(false).to.not.be.ok;
-            expect(undefined).to.not.be.ok;
-            expect(null).to.not.be.ok;
+            assert.equal('1', 1);
         });
 
         it('should return console log text', function () {
@@ -53,8 +49,7 @@ describe('Brackets mocha runner', function () {
                         "mapudungun"
                       ]
             };
-
-            expect(foo).to.deep.equal({
+            var bar = {
                 "largestCities": [
                                   "São Paulo",
                                   "Buenos Aires",
@@ -73,24 +68,18 @@ describe('Brackets mocha runner', function () {
                             "aimara",
                             "mapudungun"
                             ]
-            });
+            };
+            assert.deepEqual(foo, bar);
         });
 
         it('should return console log text 3', function () {
-            expect(true).to.deep.equal(false);
+            assert.equal(true, false);
         });
 
         describe('Handle console output deeper', function () {
             it('should log something', function (done) {
                 console.info("test3");
-                expect({
-                        foo: {
-                            bar: {
-                                baz: 'quux'
-                            }
-                        }
-                    })
-                    .to.have.deep.property('foo.bar.baz', 'quux');
+                assert.ok(true);
                 setTimeout(done, 1000);
             });
         });
