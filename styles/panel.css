@@ -1,0 +1,385 @@
+#toolbar {
+    float: left;
+    width: 28px;
+    height: 100%;
+}
+
+.split-panel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.table-container {
+    flex: 1 1 0;
+    height: 100% !important;
+}
+
+.brackets-nodejs-integration-console {
+    float: right;
+    width: 100%;
+    overflow: scroll;
+}
+
+.console-element {
+    padding-left: 5px;
+}
+
+.nodejs-integration-tab-content {
+    height: -webkit-calc(100% - 68px) !important;
+}
+
+.node {
+    background-image: url(img/nodejs.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+#brackets-nodejs-integration-runner-indicator {
+    background-position: center;
+    background-image: url(img/nodejs.svg);
+    background-size: 20px;
+    opacity: 1;
+}
+
+#brackets-nodejs-integration-runner-indicator.inactive {
+    background-position: center;
+    background-image: url(img/nodejs.svg);
+    background-size: 20px;
+    opacity: 0.5;
+}
+
+.mocha {
+    background-image: url(img/mocha.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.nodejs-integration-tab-indicator {
+    width: 16px;
+    height: 16px;
+    padding: 0px 0px;
+    margin: 3px 5px 0px 0px;
+}
+
+nodejs-integration-tab-view,
+nodejs-integration-tab-view:after,
+nodejs-integration-tab-view:before {
+    box-sizing: border-box;
+}
+
+.nodejs-integration-tabs {
+    list-style: none;
+    position: relative;
+    margin: 0;
+}
+
+.nodejs-integration-tab-new {
+    font-weight: bold;
+    color: #333333;
+}
+
+.nodejs-integration-tabs:after {
+    content: '';
+    width: 100%;
+    height: 5px;
+    background: #FFF;
+    z-index: 5;
+    bottom: -5px;
+    left: 0;
+    border-top: 1px solid #a5a5a5;
+}
+
+.nodejs-integration-tab {
+    display: inline-flex;
+    max-width: 200px;
+    height: 26px;
+    background: #A8A8A8;
+    padding: 0px 10px;
+    position: relative;
+    border-top: 1px solid #b2b5b5;
+    border-bottom: 4px solid #A8A8A8;
+    margin-right: 6px;
+    font-size: 0;
+    margin-left: 6px;
+}
+
+.nodejs-integration-tab > p {
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 12px;
+    padding-top: 3px;
+}
+
+.nodejs-integration-tab:before,
+.nodejs-integration-tab:after {
+    content: '';
+    width: 8px;
+    height: 34px;
+    background: #A8A8A8;
+    position: absolute;
+    top: 0;
+    border-radius: 2px 2px 0 0;
+}
+
+.nodejs-integration-tab:before {
+    left: -5px;
+    border-left: 1px solid #b2b5b5;
+    z-index: 3;
+    -webkit-transform: rotate(15deg);
+    -moz-transform: rotate(15deg);
+    -ms-transform: rotate(15deg);
+    -o-transform: rotate(15deg);
+    transform: rotate(15deg);
+}
+
+.nodejs-integration-tab:after {
+    right: -5px;
+    border-right: 1px solid #b2b5b5;
+    z-index: 4;
+    -webkit-transform: rotate(-15deg);
+    -moz-transform: rotate(-15deg);
+    -ms-transform: rotate(-15deg);
+    -o-transform: rotate(-15deg);
+    transform: rotate(-15deg);
+}
+
+.nodejs-integration-tab.active {
+    background: #e5e9e9;
+    border-bottom: 4px solid #e5e9e9;
+    display: inline-flex;
+    height: 34px;
+    margin-bottom: -1px;
+    z-index: 10;
+}
+
+.nodejs-integration-tab.active:before,
+.nodejs-integration-tab.active:after {
+    background: #e5e9e9;
+}
+
+button.nodejs-integration-tab-close {
+    padding: 0;
+    cursor: pointer;
+    background: 0 0;
+    border: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.nodejs-integration-tab-close {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 0;
+    width: 16px;
+    height: 16px;
+    color: #000;
+    text-shadow: 0 1px 0 #FFF;
+    opacity: .2;
+    filter: alpha(opacity=20);
+    border-radius: 16px;
+}
+
+.nodejs-integration-tab-close:hover,
+.nodejs-integration-tab-close:focus {
+    color: #288edf;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: .5;
+    filter: alpha(opacity=50);
+    background: red;
+    font-weight: normal;
+    text-shadow: none;
+}
+
+.nodejs-integration-tab-content {}
+
+.nodejs-integration-tab-pane {
+    display: none;
+    height: 100%;
+}
+
+.nodejs-integration-tab-pane.active {
+    display: block;
+}
+
+.mocha-treeview ul,
+.mocha-treeview li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: list-item;
+}
+
+.mocha-treeview ul {
+    white-space: nowrap;
+}
+
+.mocha-treeview input {
+    position: absolute;
+    opacity: 0;
+}
+
+.mocha-treeview {
+    font: normal 11px "Segoe UI", Arial, Sans-serif;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.mocha-treeview a {
+    text-decoration: none;
+}
+
+.mocha-treeview a:hover {
+    text-decoration: underline;
+}
+
+.mocha-treeview input + label + ul {
+    margin: 0 0 0 22px;
+}
+
+.test-list input ~ ul {
+    display: none;
+}
+
+.test-list input:checked:not(:disabled) ~ ul {
+    display: block;
+}
+
+.mocha-treeview label,
+.mocha-treeview label::before {
+    cursor: pointer;
+}
+
+.mocha-treeview input:disabled + label {
+    cursor: default;
+    opacity: .6;
+}
+
+.mocha-treeview label,
+.mocha-treeview a,
+.mocha-treeview label::before {
+    display: inline-block;
+    height: 16px;
+    line-height: 16px;
+    vertical-align: middle;
+}
+
+.mocha-treeview label {
+    background-position: 18px 0;
+}
+
+.mocha-treeview label::before {
+    content: "";
+    width: 16px;
+    vertical-align: middle;
+    background-position: 0 -32px;
+}
+
+.mocha-treeview label.mocha::before {
+    background: url("img/mocha.svg") no-repeat;
+}
+
+.mocha-treeview label.pass_test::before {
+    background: url("img/okay.svg") no-repeat;
+}
+
+.mocha-treeview label.inactive::before {
+    background: url("img/inactive.svg") no-repeat;
+}
+
+.mocha-treeview label.fail_test::before {
+    background: url("img/error.svg") no-repeat;
+}
+
+.mocha-treeview label.start_test::before {
+    background: url("img/wait.gif") no-repeat;
+}
+
+.mocha-treeview label.start_suite::before {
+    background: url("img/wait.gif") no-repeat;
+}
+
+.mocha-treeview label.start_suite.pass_test::before {
+    background: url("img/okay.svg") no-repeat;
+}
+
+.mocha-treeview label.start_suite.fail_test::before {
+    background: url("img/error.svg") no-repeat;
+}
+
+.mocha-treeview input:checked + label::before {
+    background-position: 0 -16px;
+}
+
+.mocha-treeview input:checked + label.start_suite::before {
+    background-position: 0 -16px;
+    background: url("img/wait.gif") no-repeat;
+}
+
+.mocha-treeview input:checked + label.inactive::before {
+    background-position: 0 -16px;
+    background: url("img/inactive.svg") no-repeat;
+}
+
+.mocha-treeview input:checked + label.pass_test::before {
+    background-position: 0 -16px;
+    background: url("img/okay.svg") no-repeat;
+}
+
+.mocha-treeview label.mocha {
+    background-position: 2px 0;
+}
+
+.mocha-treeview input:checked + label.mocha::before {
+    background-position: 0 -16px;
+    background: url("img/mocha.svg") no-repeat;
+}
+
+.mocha-treeview input:checked + label.fail_test::before {
+    background-position: 0 -16px;
+    background: url("img/error.svg") no-repeat;
+}
+
+.mocha-treeview {
+    float: left;
+    width: 288px;
+    min-width: 150px;
+    overflow: scroll;
+    height: 100%;
+    position: relative;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.mocha-treeview[style] {
+    height: 100% !important;
+    resize: both;
+}
+
+.mocha-summary {
+    padding-left: 8px;
+    width: auto;
+    height: 20px;
+}
+
+
+/* webkit adjacent element selector bugfix */
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    .mocha-treeview {
+        -webkit-animation: webkit-adjacent-element-selector-bugfix infinite 1s;
+    }
+    @-webkit-keyframes webkit-adjacent-element-selector-bugfix {
+        from {
+            padding: 0;
+        }
+        to {
+            padding: 0;
+        }
+    }
+}

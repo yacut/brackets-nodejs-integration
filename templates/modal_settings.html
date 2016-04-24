@@ -1,0 +1,120 @@
+<style>
+    .brackets-nodejs-integration-settings-dialog {
+        width: -webkit-calc(100% - 100px) !important;
+    }
+
+    #brackets-nodejs-integration-runner-settings {
+        display: -webkit-inline-box;
+        width: 100%;
+    }
+
+    #brackets-nodejs-integration-runner-settings label {
+        display: inline;
+    }
+
+    #brackets-nodejs-integration-runner-settings input {
+        float: right;
+        width: 100%;
+    }
+
+    #brackets-nodejs-integration-runner-settings select {
+        float: right;
+    }
+</style>
+<table>
+    <tr>
+        <td>
+            <label>Path to Node binary:</label>
+        </td>
+        <td>
+            <input type="text" placeholder="(leave empty for global node command)" class="brackets-nodejs-integration-runner-node-bin" style="width: 300px; float: right;">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>Path to Mocha binary:</label>
+        </td>
+        <td>
+            <input type="text" placeholder="(leave empty for global mocha command)" class="brackets-nodejs-integration-runner-mocha-bin" style="width: 300px; float: right;">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>Flags for v8:</label>
+        </td>
+        <td>
+            <input type="text" placeholder="(example: --use_strict --harmony)" class="brackets-nodejs-integration-runner-flags" style="width: 300px; float: right;">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>Autoscroll in terminal:
+                <input type="checkbox" class="brackets-nodejs-integration-runner-autoscroll">
+            </label>
+        </td>
+    </tr>
+</table>
+
+<div id="brackets-nodejs-integration-runner-settings">
+    <table style="width: 100%;">
+        <tr>
+            <td>
+                <div class="btn-group" style="width: 100%;">
+                    <button class="btn btn-mini" id="brackets-nodejs-integration-runner-add-btn"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                    <button class="btn btn-mini" id="brackets-nodejs-integration-runner-remove-btn"><i class="fa fa-minus" aria-hidden="true"></i></button>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 35%;">
+                <select id="brackets-nodejs-integration-runner-list" size="10" style="width: 100%;">
+                </select>
+            </td>
+            <td style="padding-left: 8px;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            <label for="brackets-nodejs-integration-runner-type">Type:</label>
+                        </td>
+                        <td>
+                            <select id="brackets-nodejs-integration-runner-type">
+                                <option value="node">node</option>
+                                <option value="mocha">mocha</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="brackets-nodejs-integration-runner-name">Name:</label>
+                        </td>
+                        <td>
+                            <input id="brackets-nodejs-integration-runner-name" value="" type="text">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="brackets-nodejs-integration-runner-target">Target:</label>
+                        </td>
+                        <td>
+                            <input id="brackets-nodejs-integration-runner-target" value="" type="text">
+                        </td>
+                        <td>
+                            <button class="btn btn-mini" id="brackets-nodejs-integration-runner-target-open-btn"><i class="fa fa-folder-open" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="brackets-nodejs-integration-runner-cwd">CWD:</label>
+                        </td>
+                        <td>
+                            <input id="brackets-nodejs-integration-runner-cwd" value="" type="text">
+                        </td>
+                        <td>
+                            <button class="btn btn-mini" id="brackets-nodejs-integration-runner-cwd-open-btn"><i class="fa fa-folder-open" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,30 @@
+<div class="toolbar simple-toolbar-layout" style="position: relative; height: 24px;">
+    <select class="run-configuration-selector" title="Click to change run configuration" style=" width: 210px; height: 20px; padding: 0px 0px; margin-bottom: 0px;">
+    </select>
+    <div class="btn-group">
+        <button class="run_btn btn btn-mini" title="Run"><i class="fa fa-play" aria-hidden="true"></i>
+        </button>
+        <button class="stop_btn btn btn-mini" disabled="true" title="Stop"><i class="fa fa-stop" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="mocha-summary"></div>
+</div>
+<section class="split-panel">
+    <div class="mocha-treeview resizable-content horz-resizable right-resizer" style="display: none;height: -webkit-calc(100% - 34px);">
+        <div class="btn-group" style="padding: 4px 8px;">
+            <button class="collapse_btn btn btn-mini" title="Collapse All"><i class="fa fa-compress"></i></button>
+            <button class="expand_btn btn btn-mini" title="Expand All"><i class="fa fa-expand"></i></button>
+        </div>
+        <ul>
+            <li>
+                <input type="checkbox" id="all_tests_results" class="all-tests-results" checked/>
+                <label id="all_tests_results_label" for="all_tests_results">Tests</label>
+                <ul class="test-list">
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="table-container resizable">
+        <div class="brackets-nodejs-integration-console resizable" style="font-size: 14px; border: 0px solid black; -webkit-user-select: text; word-break: normal; white-space: pre; word-wrap: break-word;"></div>
+    </div>
+</section>

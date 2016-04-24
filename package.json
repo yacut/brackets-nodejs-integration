@@ -1,0 +1,27 @@
+{
+  "name": "brackets-nodejs-integration",
+  "title": "NodeJS integration",
+  "description": "Brackets extension to integration Node.js and Mocha runner.",
+  "homepage": "???",
+  "version": "1.0.0",
+  "license": "MIT",
+  "engines": {
+    "brackets": ">=0.44.0"
+  },
+  "keywords": [
+    "node",
+    "node.js",
+    "execute",
+    "command",
+    "runner"
+  ],
+  "dependencies": {
+    "ansi-to-html": "0.4.1",
+    "bunyan": "1.8.0",
+    "chai": "3.5.0",
+    "mocha": "2.4.5",
+    "prettydiff": "99.0.1",
+    "split": "1.0.0",
+    "treekill": "1.0.0"
+  }
+}
