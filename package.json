@@ -3,7 +3,7 @@
   "title": "NodeJS integration",
   "description": "Brackets extension to integration Node.js and Mocha runner.",
   "homepage": "https://github.com/yacut/brackets-nodejs-integration",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "MIT",
   "engines": {
     "brackets": ">=0.44.0"

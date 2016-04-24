@@ -259,6 +259,7 @@ define(function (require, exports, module) {
 
     extension_utils.loadStyleSheet(module, 'styles/panel.css');
     extension_utils.loadStyleSheet(module, 'thirdparty/objectDiff/objectDiff.css');
+    extension_utils.loadStyleSheet(module, 'styles/font-awesome.min.css');
 
     panel.html_object = $('#' + panel.id);
     panel.mocha_summary = $runner_panel.find('.mocha-summary');
