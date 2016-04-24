@@ -17,18 +17,18 @@ describe('Brackets mocha runner', function () {
     });
 
     describe('Handle console output', function () {
-        it('should not throw', function () {
-            console.error(new Error("test1"));
+        it('should throw', function () {
+            console.error(new Error("test#1"));
             console.log('sgsdglknsldgnslkdgnlasgndl;asdgnlasdgnasldg0');
         });
 
         it('should return console log text', function () {
-            console.info("test2");
+            console.info("test#2");
             assert.equal('1', 1);
         });
 
-        it('should return console log text', function () {
-            console.info("test2");
+        it('should compare two objects', function () {
+            console.info("test#3");
             var foo = {
                 "largestCities": [
                           "São Paulo",
@@ -72,13 +72,13 @@ describe('Brackets mocha runner', function () {
             assert.deepEqual(foo, bar);
         });
 
-        it('should return console log text 3', function () {
+        it('should compare true and false', function () {
             assert.equal(true, false);
         });
 
         describe('Handle console output deeper', function () {
-            it('should log something', function (done) {
-                console.info("test3");
+            it('should delay test and pass', function (done) {
+                console.info("test with delay");
                 assert.ok(true);
                 setTimeout(done, 1000);
             });
@@ -91,7 +91,7 @@ describe('Brackets mocha runner', function () {
 
     describe('Handle console output1', function () {
         it('should return console log text', function () {
-            console.info("pass");
+            console.info("test pass");
         });
     });
 });
