@@ -56,3 +56,4 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 - Support for gulp scrits
 - Support for jasmine
 - Localization
+- Better support for require.js and goto definition
