@@ -476,7 +476,6 @@ define(function (require, exports, module) {
         directory.getContents(function (error, files) {
             _.each(files, function (file) {
                 if (!_.endsWith(file._path, '.js')) {
-                    console.error(file);
                     var runner = get_runner(file._name);
                     if (runner) {
                         runner.stop();
