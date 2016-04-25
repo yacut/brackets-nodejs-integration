@@ -137,10 +137,10 @@ define(function (require, exports, module) {
         get_runner($(this).parent().parent().parent().attr('id')).run();
     });
     $runner_panel.on("click", ".collapse_btn", function () {
-        $(this).parent().parent().find('.test-list').find('ul').hide();
+        $(this).parent().parent().find('.test-list').find('input').prop('checked', false);
     });
     $runner_panel.on("click", ".expand_btn", function () {
-        $(this).parent().parent().find('.test-list').find('ul').show();
+        $(this).parent().parent().find('.test-list').find('input').prop('checked', true);
     });
     $runner_panel.on("click", ".nodejs-integration-tab-close", function () {
         get_runner($(this).parent().data("target").replace('#', '')).exit();
