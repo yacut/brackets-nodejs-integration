@@ -516,6 +516,25 @@ define(function (require, exports, module) {
                     });
             });
         }
+
+        function try_open_npm_package_source(directory, package_name) {
+            if (open_file(directory + 'node_modules/' + package_name + '.js')) {
+                return true;
+            }
+            if (open_file(directory + 'node_modules/' + package_name + '/index.js')) {
+                return true;
+            }
+            if (open_file(directory + 'node_modules/' + package_name + '/' + package_name + '.js')) {
+                return true;
+            }
+            if (open_file(directory + 'node_modules/' + package_name + '/dist/' + package_name + '.js')) {
+                return true;
+            }
+            if (open_file(directory + 'node_modules/' + package_name + '/lib/' + package_name + '.js')) {
+                return true;
+            }
+            return false;
+        }
         var current_editor = editor_manager.getCurrentFullEditor();
         var current_line_position = current_editor.getCursorPos().line;
         var current_line = current_editor._codeMirror.doc.getLine(current_line_position);
@@ -537,27 +556,19 @@ define(function (require, exports, module) {
                 open_file(current_folder + relative_path);
             }
             else {
-                //npm package require
-                if (open_file(project_root + 'node_modules/' + relative_path + '.js')) {
+                if (try_open_npm_package_source(project_root, relative_path)) {
                     return;
                 }
-                if (open_file(project_root + 'node_modules/' + relative_path + '/index.js')) {
+                if (try_open_npm_package_source(current_folder, relative_path)) {
                     return;
                 }
-                if (open_file(project_root + 'node_modules/' + relative_path + '/' + relative_path + '.js')) {
-                    return;
-                }
-                if (open_file(project_root + 'node_modules/' + relative_path + '/dist/' + relative_path + '.js')) {
-                    return;
-                }
-                if (open_file(project_root + 'node_modules/' + relative_path + '/lib/' + relative_path + '.js')) {
-                    return;
-                }
-                if (open_file(project_root + '../node_modules/' + relative_path + '.js')) {
-                    return;
-                }
-                if (open_file(project_root + '../../node_modules/' + relative_path + '.js')) {
-                    return;
+                var parent_directory = current_folder;
+                var is_source_file_opened = false;
+                while (!is_source_file_opened && parent_directory !== '') {
+                    parent_directory = file_utils.getParentPath(parent_directory);
+                    if (parent_directory) {
+                        is_source_file_opened = try_open_npm_package_source(parent_directory, relative_path);
+                    }
                 }
             }
         }
