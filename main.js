@@ -1,36 +1,38 @@
 define(function (require, exports, module) {
-    "use strict";
+    'use strict';
 
-    var _ = brackets.getModule("thirdparty/lodash");
-    var command_manager = brackets.getModule("command/CommandManager");
-    var commands = brackets.getModule("command/Commands");
-    var dialogs = brackets.getModule("widgets/Dialogs");
-    var editor_manager = brackets.getModule("editor/EditorManager");
-    var extension_utils = brackets.getModule("utils/ExtensionUtils");
-    var file_system = brackets.getModule("filesystem/FileSystem");
-    var menus = brackets.getModule("command/Menus");
-    var project_manager = brackets.getModule("project/ProjectManager");
-    var workspace_manager = brackets.getModule("view/WorkspaceManager");
+    var _ = brackets.getModule('thirdparty/lodash');
+    var command_manager = brackets.getModule('command/CommandManager');
+    var commands = brackets.getModule('command/Commands');
+    var dialogs = brackets.getModule('widgets/Dialogs');
+    var editor_manager = brackets.getModule('editor/EditorManager');
+    var extension_utils = brackets.getModule('utils/ExtensionUtils');
+    var file_system = brackets.getModule('filesystem/FileSystem');
+    var file_utils = brackets.getModule('file/FileUtils');
+    var menus = brackets.getModule('command/Menus');
+    var project_manager = brackets.getModule('project/ProjectManager');
+    var workspace_manager = brackets.getModule('view/WorkspaceManager');
 
-    var ADD_MOCHA_TO_RUNNER_MENU_ID = "brackets-nodejs-integration.add-mocha-to-runner";
-    var ADD_NODE_TO_RUNNER_MENU_ID = "brackets-nodejs-integration.add-node-to-runner";
-    var DIFF_DIALOG_ID = "brackets-nodejs-integration-diff-dialog";
-    var SETTINGS_DIALOG_ID = "brackets-nodejs-integration-settings-dialog";
+    var ADD_MOCHA_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-mocha-to-runner';
+    var ADD_NODE_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-node-to-runner';
+    var GO_TO_REQUIRE_COMMAND_ID = 'brackets-nodejs-integration.go-to-require';
+    var DIFF_DIALOG_ID = 'brackets-nodejs-integration-diff-dialog';
+    var SETTINGS_DIALOG_ID = 'brackets-nodejs-integration-settings-dialog';
 
     var object_diff = require('thirdparty/objectDiff/objectDiff');
     var panel_template = require('text!templates/panel.html');
     var runner_panel_template = require('text!templates/runner_panel.html');
-    var prefs = require("./preferences");
-    var run_configurations = prefs.get("configurations");
+    var prefs = require('./preferences');
+    var run_configurations = prefs.get('configurations');
 
-    var runner = require("src/runner");
+    var runner = require('src/runner');
     var runners = [];
 
     var runner_panel = null;
     var $runner_panel = $(null);
 
     var panel = {
-        id: "brackets-nodejs-integration-panel",
+        id: 'brackets-nodejs-integration-panel',
         html_object: null,
         height: 201,
         mocha_summary: null,
@@ -61,23 +63,23 @@ define(function (require, exports, module) {
         },
         mousemove: function (e) {
             var h = panel.height + (panel.y - e.pageY);
-            panel.html_object.style.height = h + "px";
+            panel.html_object.style.height = h + 'px';
             workspace_manager.recomputeLayout();
         },
         mouseup: function (e) {
-            document.removeEventListener("mousemove", panel.mousemove);
-            document.removeEventListener("mouseup", panel.mouseup);
+            document.removeEventListener('mousemove', panel.mousemove);
+            document.removeEventListener('mouseup', panel.mouseup);
             panel.height = panel.height + (panel.y - e.pageY);
         },
         y: 0
     };
 
-    var runner_panel = workspace_manager.createBottomPanel(panel.id, $(panel_template));
-    var $runner_panel = runner_panel.$panel;
+    runner_panel = workspace_manager.createBottomPanel(panel.id, $(panel_template));
+    $runner_panel = runner_panel.$panel;
 
-    $runner_panel.on("click", ".link_to_source", function (e) {
+    $runner_panel.on('click', '.link_to_source', function (e) {
         var link = e.target.innerHTML;
-        var link_properties = link.split(":");
+        var link_properties = link.split(':');
         var path_to_file = link_properties[0];
         if (!file_system.isAbsolutePath(path_to_file)) {
             var runner = get_runner($(this).parent().parent().parent().parent().parent().attr('id'));
@@ -103,48 +105,48 @@ define(function (require, exports, module) {
                 });
             });
     });
-    $runner_panel.on("mousedown", ".resize", function (e) {
+    $runner_panel.on('mousedown', '.resize', function (e) {
         panel.y = e.pageY;
-        document.addEventListener("mousemove", panel.mousemove);
-        document.addEventListener("mouseup", panel.mouseup);
+        document.addEventListener('mousemove', panel.mousemove);
+        document.addEventListener('mouseup', panel.mouseup);
     });
-    $runner_panel.on("click", ".link_to_diff", function () {
+    $runner_panel.on('click', '.link_to_diff', function () {
         var actual = JSON.parse($(this).attr('actual'));
         var expected = JSON.parse($(this).attr('expected'));
         var diff = object_diff.diffOwnProperties(actual, expected);
         var diff_html = object_diff.convertToXMLString(diff);
         dialogs.showModalDialog(
             DIFF_DIALOG_ID,
-            "Actual/Expected difference",
+            'Actual/Expected difference',
             diff_html, [
                 {
                     className: dialogs.DIALOG_BTN_CLASS_PRIMARY,
                     id: dialogs.DIALOG_BTN_OK,
-                    text: "OK"
+                    text: 'OK'
                         }
                     ]
         ).done(function () {
             return;
         });
     });
-    $runner_panel.on("click", ".action-close", function () {
+    $runner_panel.on('click', '.action-close', function () {
         panel.hide();
     });
-    $runner_panel.on("click", ".stop_btn", function () {
+    $runner_panel.on('click', '.stop_btn', function () {
         get_runner($(this).parent().parent().parent().attr('id')).stop();
     });
-    $runner_panel.on("click", ".run_btn", function () {
+    $runner_panel.on('click', '.run_btn', function () {
         get_runner($(this).parent().parent().parent().attr('id')).run();
     });
-    $runner_panel.on("click", ".collapse_btn", function () {
+    $runner_panel.on('click', '.collapse_btn', function () {
         $(this).parent().parent().find('.test-list').find('input').prop('checked', false);
     });
-    $runner_panel.on("click", ".expand_btn", function () {
+    $runner_panel.on('click', '.expand_btn', function () {
         $(this).parent().parent().find('.test-list').find('input').prop('checked', true);
     });
-    $runner_panel.on("click", ".nodejs-integration-tab-close", function () {
-        get_runner($(this).parent().data("target").replace('#', '')).exit();
-        $($(this).parent().data("target")).remove();
+    $runner_panel.on('click', '.nodejs-integration-tab-close', function () {
+        get_runner($(this).parent().data('target').replace('#', '')).exit();
+        $($(this).parent().data('target')).remove();
         $(this).parent().remove();
 
         //move to another tab
@@ -153,10 +155,10 @@ define(function (require, exports, module) {
         var $new_tab_pane = $new_tab.data('target');
         $new_tab.add($new_tab_pane).addClass('active');
     });
-    $runner_panel.on("click", ".nodejs-integration-tab-new", function () {
+    $runner_panel.on('click', '.nodejs-integration-tab-new', function () {
         create_new_tab();
     });
-    $runner_panel.on("click", ".nodejs-integration-tab-settings", function () {
+    $runner_panel.on('click', '.nodejs-integration-tab-settings', function () {
         dialog.settings.show();
     });
 
@@ -264,8 +266,8 @@ define(function (require, exports, module) {
     panel.html_object = $('#' + panel.id);
     panel.mocha_summary = $runner_panel.find('.mocha-summary');
     panel.test_list = $runner_panel.find('.test-list');
-    panel.mocha_treeview = $runner_panel.find(".mocha-treeview");
-    panel.all_tests_results = $runner_panel.find(".all-tests-results")
+    panel.mocha_treeview = $runner_panel.find('.mocha-treeview');
+    panel.all_tests_results = $runner_panel.find('.all-tests-results')
         .on('click', function () {
             var console_elements = $runner_panel.find('.console-element');
             _.map(console_elements, function (console_element) {
@@ -273,7 +275,7 @@ define(function (require, exports, module) {
             });
         });
     panel.console_output = $('.brackets-nodejs-integration-console');
-    $runner_panel.on("change", ".run-configuration-selector", function () {
+    $runner_panel.on('change', '.run-configuration-selector', function () {
         var runner = get_runner($(this).parent().parent().attr('id'));
         runner.clear();
         var run_configuration = runner.get_selected_configuration();
@@ -289,24 +291,24 @@ define(function (require, exports, module) {
 
     var dialog = {
         settings: {
-            html: require("text!templates/modal_settings.html"),
+            html: require('text!templates/modal_settings.html'),
             show: function () {
                 dialogs.showModalDialog(
                     SETTINGS_DIALOG_ID,
-                    "Runner settings",
+                    'Runner settings',
                     this.html, [
                         {
                             className: dialogs.DIALOG_BTN_CLASS_PRIMARY,
                             id: dialogs.DIALOG_BTN_OK,
-                            text: "Save"
+                            text: 'Save'
                         }, {
                             className: dialogs.DIALOG_BTN_CLASS_NORMAL,
                             id: dialogs.DIALOG_BTN_CANCEL,
-                            text: "Cancel"
+                            text: 'Cancel'
                         }
                     ]
                 ).done(function (id) {
-                    if (id !== "ok") {
+                    if (id !== 'ok') {
                         return;
                     }
 
@@ -314,19 +316,19 @@ define(function (require, exports, module) {
                     _.each(runner_list.find('option'), function (runner) {
                         if (runner.text) {
                             changed_configurations.push({
-                                "name": runner.text,
-                                "cwd": runner.getAttribute('runner_cwd'),
-                                "type": runner.getAttribute('runner_type'),
-                                "target": runner.getAttribute('runner_target'),
-                                "debug": false
+                                'name': runner.text,
+                                'cwd': runner.getAttribute('runner_cwd'),
+                                'type': runner.getAttribute('runner_type'),
+                                'target': runner.getAttribute('runner_target'),
+                                'debug': false
                             });
                         }
                     });
-                    prefs.set("node-bin", node_bin_input.val().trim());
-                    prefs.set("mocha-bin", mocha_bin_input.val().trim());
-                    prefs.set("v8-flags", v8_flags_input.val().trim());
-                    prefs.set("autoscroll", scroll_input.prop('checked'));
-                    prefs.set("configurations", changed_configurations);
+                    prefs.set('node-bin', node_bin_input.val().trim());
+                    prefs.set('mocha-bin', mocha_bin_input.val().trim());
+                    prefs.set('v8-flags', v8_flags_input.val().trim());
+                    prefs.set('autoscroll', scroll_input.prop('checked'));
+                    prefs.set('configurations', changed_configurations);
                     prefs.save();
 
                     var configuration_to_remove = run_configurations.filter(function (run_configuration) {
@@ -350,7 +352,7 @@ define(function (require, exports, module) {
                     run_configurations = changed_configurations;
                     _.each(runners, function (runner) {
                         runner.process.run_configurations = changed_configurations;
-                        runner.process.scroll_enabled = prefs.get("autoscroll");
+                        runner.process.scroll_enabled = prefs.get('autoscroll');
                     });
 
                     _.each(configuration_to_add, function (configuration) {
@@ -368,35 +370,35 @@ define(function (require, exports, module) {
                         $runner_panel.find('.run-configuration-selector').find('option[value="' + configuration.name + '"]').remove();
                     });
                 });
-                var node_bin_input = $(".brackets-nodejs-integration-runner-node-bin").val(prefs.get("node-bin"));
-                var mocha_bin_input = $(".brackets-nodejs-integration-runner-mocha-bin").val(prefs.get("mocha-bin"));
-                var scroll_input = $(".brackets-nodejs-integration-runner-autoscroll").attr('checked', prefs.get("autoscroll"));
-                var v8_flags_input = $(".brackets-nodejs-integration-runner-flags").val(prefs.get("v8-flags"));
+                var node_bin_input = $('.brackets-nodejs-integration-runner-node-bin').val(prefs.get('node-bin'));
+                var mocha_bin_input = $('.brackets-nodejs-integration-runner-mocha-bin').val(prefs.get('mocha-bin'));
+                var scroll_input = $('.brackets-nodejs-integration-runner-autoscroll').attr('checked', prefs.get('autoscroll'));
+                var v8_flags_input = $('.brackets-nodejs-integration-runner-flags').val(prefs.get('v8-flags'));
 
-                var runner_name = $("#brackets-nodejs-integration-runner-name").on("input", function () {
-                    runner_list.children(":selected").html($(this).val());
+                var runner_name = $('#brackets-nodejs-integration-runner-name').on('input', function () {
+                    runner_list.children(':selected').html($(this).val());
                 });
-                var runner_type = $("#brackets-nodejs-integration-runner-type").on("change", function () {
-                    runner_list.children(":selected").attr('runner_type', $(this).val());
+                var runner_type = $('#brackets-nodejs-integration-runner-type').on('change', function () {
+                    runner_list.children(':selected').attr('runner_type', $(this).val());
                 });
-                var runner_target = $("#brackets-nodejs-integration-runner-target").on("change", function () {
-                    runner_list.children(":selected").attr('runner_target', $(this).val());
+                var runner_target = $('#brackets-nodejs-integration-runner-target').on('change', function () {
+                    runner_list.children(':selected').attr('runner_target', $(this).val());
                 });
-                var runner_cwd = $("#brackets-nodejs-integration-runner-cwd").on("change", function () {
-                    runner_list.children(":selected").attr('runner_cwd', $(this).val());
+                var runner_cwd = $('#brackets-nodejs-integration-runner-cwd').on('change', function () {
+                    runner_list.children(':selected').attr('runner_cwd', $(this).val());
                 });
-                var runner_list = $("#brackets-nodejs-integration-runner-list")
+                var runner_list = $('#brackets-nodejs-integration-runner-list')
                     .change(function () {
-                        var runner = $(this).children(":selected");
+                        var runner = $(this).children(':selected');
                         runner_name.val(runner.html());
                         runner_type.val(runner.attr('runner_type'));
                         runner_target.val(runner.attr('runner_target'));
                         runner_cwd.val(runner.attr('runner_cwd'));
                     });
 
-                var configurations = prefs.get("configurations");
+                var configurations = prefs.get('configurations');
                 _.each(configurations, function (configuration) {
-                    var option = $(document.createElement("option"))
+                    var option = $(document.createElement('option'))
                         .html(configuration.name)
                         .attr('runner_type', configuration.type)
                         .attr('runner_target', configuration.target)
@@ -410,12 +412,12 @@ define(function (require, exports, module) {
                 runner_target.val(first_runner.attr('runner_target'));
                 runner_cwd.val(first_runner.attr('runner_cwd'));
 
-                $("#brackets-nodejs-integration-runner-add-btn").on("click", function () {
+                $('#brackets-nodejs-integration-runner-add-btn').on('click', function () {
                     runner_name.val('');
                     runner_type.val('node');
                     runner_target.val('');
                     runner_cwd.val('');
-                    var option = $(document.createElement("option"))
+                    var option = $(document.createElement('option'))
                         .html('')
                         .attr('runner_type', 'node')
                         .attr('runner_target', '')
@@ -424,7 +426,7 @@ define(function (require, exports, module) {
                     runner_list.find('option:last').attr('selected', true);
                 });
 
-                $("#brackets-nodejs-integration-runner-remove-btn").on("click", function () {
+                $('#brackets-nodejs-integration-runner-remove-btn').on('click', function () {
                     var selected_runner = runner_list.find('option:selected');
                     var next_runner = selected_runner.next('option');
                     selected_runner.remove();
@@ -437,7 +439,7 @@ define(function (require, exports, module) {
                     runner_target.val(next_runner.attr('runner_target'));
                     runner_cwd.val(next_runner.attr('runner_cwd'));
                 });
-                $("#brackets-nodejs-integration-runner-target-open-btn").on("click", function () {
+                $('#brackets-nodejs-integration-runner-target-open-btn').on('click', function () {
                     var selected_runner = runner_list.find('option:selected');
                     var init_folder = selected_runner.attr('runner_target').replace(/([ ])/g, '\\$1');
                     if (!file_system.isAbsolutePath(init_folder)) {
@@ -446,17 +448,17 @@ define(function (require, exports, module) {
                     if (_.endsWith(init_folder, '.js')) {
                         init_folder = init_folder.substring(0, init_folder.lastIndexOf('/')).substring(0, init_folder.lastIndexOf('\\'));
                     }
-                    file_system.showOpenDialog(false, selected_runner.attr('runner_type') === 'mocha', "Choose target...", init_folder, [], function (error, target_list) {
+                    file_system.showOpenDialog(false, selected_runner.attr('runner_type') === 'mocha', 'Choose target...', init_folder, [], function (error, target_list) {
                         if (target_list && target_list.length > 0) {
                             runner_target.val(target_list[0]);
                             selected_runner.attr('runner_target', target_list[0]);
                         }
                     });
                 });
-                $("#brackets-nodejs-integration-runner-cwd-open-btn").on("click", function () {
+                $('#brackets-nodejs-integration-runner-cwd-open-btn').on('click', function () {
                     var selected_runner = runner_list.find('option:selected');
                     var init_folder = selected_runner.attr('runner_cwd').replace(/([ ])/g, '\\$1');
-                    file_system.showOpenDialog(false, true, "Choose working directory...", init_folder, null, function (error, target_list) {
+                    file_system.showOpenDialog(false, true, 'Choose working directory...', init_folder, null, function (error, target_list) {
                         if (target_list && target_list.length > 0) {
                             runner_cwd.val(target_list[0]);
                             selected_runner.attr('runner_cwd', target_list[0]);
@@ -471,7 +473,7 @@ define(function (require, exports, module) {
     project_manager.on('beforeProjectClose', stop_all_runners);
 
     function stop_all_runners() {
-        var directory_path = extension_utils.getModulePath(module, "src/domains/");
+        var directory_path = extension_utils.getModulePath(module, 'src/domains/');
         var directory = file_system.getDirectoryForPath(directory_path);
         directory.getContents(function (error, files) {
             _.each(files, function (file) {
@@ -486,33 +488,105 @@ define(function (require, exports, module) {
         });
     }
 
-    var $node_runner_indicator = $("<a id='brackets-nodejs-integration-runner-indicator' class='inactive'></a>")
+    var $node_runner_indicator = $('<a id="brackets-nodejs-integration-runner-indicator" class="inactive"></a>')
         .on('click', function () {
             panel.show_or_hide();
         });
     $('#main-toolbar .buttons').append($node_runner_indicator);
 
+    /****************************************************************************/
+    /* Go to require ... ********************************************************/
+    /****************************************************************************/
+    var editor_context_menu = menus.getContextMenu(menus.ContextMenuIds.EDITOR_MENU);
+    command_manager.register('Go to require...', GO_TO_REQUIRE_COMMAND_ID, function () {
+        function open_file(path, file_line, file_column) {
+            file_system.resolve(path, function (error, full_path_to_file) {
+                if (error) {
+                    return false;
+                }
+                command_manager.execute(commands.FILE_OPEN, {
+                        fullPath: full_path_to_file._path
+                    })
+                    .done(function () {
+                        editor_manager.getCurrentFullEditor().setCursorPos({
+                            line: file_line ? file_line - 1 : 0,
+                            ch: file_column ? file_column - 1 : 0
+                        });
+                        return true;
+                    });
+            });
+        }
+        var current_editor = editor_manager.getCurrentFullEditor();
+        var current_line_position = current_editor.getCursorPos().line;
+        var current_line = current_editor._codeMirror.doc.getLine(current_line_position);
+        var matched_require_strings = current_line.match(/require[\s+]?\(['"].*['"]\)/g);
+        if (matched_require_strings && matched_require_strings.length > 0) {
+            var splited_match = matched_require_strings[0].split(/['"]/);
+            var relative_path = splited_match[1];
+            if (!relative_path) {
+                return;
+            }
+            var current_file = current_editor.getFile().fullPath;
+            var current_folder = file_utils.getDirectoryPath(current_file);
+            var project_root = project_manager.getProjectRoot().fullPath;
+            var project_file_match = relative_path.match(/[\/\\]/);
+            if (project_file_match && project_file_match.length > 0) {
+                if (!_.endsWith(relative_path, '.js')) {
+                    relative_path = relative_path + '.js';
+                }
+                open_file(current_folder + relative_path);
+            }
+            else {
+                //npm package require
+                if (open_file(project_root + 'node_modules/' + relative_path + '.js')) {
+                    return;
+                }
+                if (open_file(project_root + 'node_modules/' + relative_path + '/index.js')) {
+                    return;
+                }
+                if (open_file(project_root + 'node_modules/' + relative_path + '/' + relative_path + '.js')) {
+                    return;
+                }
+                if (open_file(project_root + 'node_modules/' + relative_path + '/dist/' + relative_path + '.js')) {
+                    return;
+                }
+                if (open_file(project_root + 'node_modules/' + relative_path + '/lib/' + relative_path + '.js')) {
+                    return;
+                }
+                if (open_file(project_root + '../node_modules/' + relative_path + '.js')) {
+                    return;
+                }
+                if (open_file(project_root + '../../node_modules/' + relative_path + '.js')) {
+                    return;
+                }
+            }
+        }
+        /*var prefs = require('src/ansi.js')*/
+    });
+    editor_context_menu.addMenuItem(GO_TO_REQUIRE_COMMAND_ID, 'Ctrl-Alt-B', menus.LAST);
+    /****************************************************************************/
+
     var context_menu = menus.getContextMenu(menus.ContextMenuIds.PROJECT_MENU);
     context_menu.addMenuDivider();
-    command_manager.register("Add to Node.js runner", ADD_NODE_TO_RUNNER_MENU_ID, function () {
+    command_manager.register('Add to Node.js runner', ADD_NODE_TO_RUNNER_MENU_ID, function () {
         var path = project_manager.getSelectedItem().fullPath;
-        add_run_configuration("node", path);
+        add_run_configuration('node', path);
         panel.show();
     });
-    context_menu.addMenuItem(ADD_NODE_TO_RUNNER_MENU_ID, "", menus.LAST);
-    command_manager.register("Add to Mocha runner", ADD_MOCHA_TO_RUNNER_MENU_ID, function () {
+    context_menu.addMenuItem(ADD_NODE_TO_RUNNER_MENU_ID, '', menus.LAST);
+    command_manager.register('Add to Mocha runner', ADD_MOCHA_TO_RUNNER_MENU_ID, function () {
         var path = project_manager.getSelectedItem().fullPath;
-        add_run_configuration("mocha", path);
+        add_run_configuration('mocha', path);
         //TODO select config before show panel
         panel.show();
     });
-    context_menu.addMenuItem(ADD_MOCHA_TO_RUNNER_MENU_ID, "", menus.LAST);
+    context_menu.addMenuItem(ADD_MOCHA_TO_RUNNER_MENU_ID, '', menus.LAST);
     context_menu.addMenuDivider();
 
     fill_run_selector($runner_panel.find('.run-configuration-selector'));
 
     function fill_run_selector($run_selector) {
-        run_configurations.forEach(function (run_configuration, index) {
+        run_configurations.forEach(function (run_configuration) {
             $run_selector.append($(document.createElement('option'))
                 .val(run_configuration.name)
                 .html(run_configuration.name)
@@ -526,11 +600,11 @@ define(function (require, exports, module) {
         var project_root = project_manager.getProjectRoot();
         var working_directory = project_root ? project_root.fullPath : '';
         run_configurations.push({
-            "name": filename,
-            "type": type,
-            "cwd": working_directory,
-            "target": path,
-            "debug": false
+            'name': filename,
+            'type': type,
+            'cwd': working_directory,
+            'target': path,
+            'debug': false
         });
         $runner_panel.find('.run-configuration-selector')
             .append($(document.createElement('option'))
@@ -542,7 +616,7 @@ define(function (require, exports, module) {
         _.forEach(run_configurations_without_ids, function (item) {
             delete item.id;
         });
-        prefs.set("configurations", run_configurations_without_ids);
+        prefs.set('configurations', run_configurations_without_ids);
         run_configurations_without_ids = null;
     }
 
