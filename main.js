@@ -512,8 +512,11 @@ define(function (require, exports, module) {
                 var project_root = project_manager.getProjectRoot().fullPath;
                 var project_file_match = relative_path.match(/[\/\\]/);
                 if (project_file_match && project_file_match.length > 0) {
-                    if (!_.endsWith(relative_path, '.js')) {
+                    if (!_.endsWith(relative_path, '.js') && !_.endsWith(relative_path, '.json')) {
                         relative_path = relative_path + '.js';
+                    }
+                    if (_.startsWith(relative_path, './')) {
+                        relative_path = relative_path.slice(2);
                     }
                     open_file(current_folder + relative_path, search_name);
                 }
