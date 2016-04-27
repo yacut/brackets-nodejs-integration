@@ -640,6 +640,8 @@ define(function (require, exports, module) {
             current_line_position = cursor_position.line;
             current_line = current_editor._codeMirror.doc.getLine(current_line_position);
             go_to_require(current_editor, current_line, search_name);
+        }).fail(function () {
+            go_to_require(current_editor, current_line, search_name);
         });
     });
     editor_context_menu.addMenuItem(GO_TO_DECLARATION_COMMAND_ID, 'Ctrl-Alt-B', menus.LAST);
