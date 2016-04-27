@@ -626,7 +626,7 @@ define(function (require, exports, module) {
         if (char_before_search_name === '.' && variable_name) {
             current_editor.setCursorPos({
                 line: current_line_position,
-                ch: current_line.lastIndexOf(variable_name)
+                ch: current_line.lastIndexOf(variable_name + '.' + search_name)
             });
             command_manager.execute(commands.NAVIGATE_JUMPTO_DEFINITION, current_editor).done(function () {
                 cursor_position = current_editor.getCursorPos();
