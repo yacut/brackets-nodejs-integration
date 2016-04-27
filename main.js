@@ -619,26 +619,28 @@ define(function (require, exports, module) {
             return;
         }
         var current_string_from_start_to_cursor = current_line.substr(0, cursor_position.ch);
+        var variable_name;
+        var char_before_search_name;
         var words_before_cursor = current_string_from_start_to_cursor.match(/[\w\d_]+/g);
-        words_before_cursor.pop();
-        var variable_name = _.last(words_before_cursor);
-        var char_before_search_name = current_string_from_start_to_cursor.substr((current_string_from_start_to_cursor.lastIndexOf(variable_name) + variable_name.length), 1);
+        if (words_before_cursor.length > 0) {
+            words_before_cursor.pop();
+            variable_name = _.last(words_before_cursor);
+            if (variable_name) {
+                char_before_search_name = current_string_from_start_to_cursor.substr((current_string_from_start_to_cursor.lastIndexOf(variable_name) + variable_name.length), 1);
+            }
+        }
         if (char_before_search_name === '.' && variable_name) {
             current_editor.setCursorPos({
                 line: current_line_position,
                 ch: current_line.lastIndexOf(variable_name + '.' + search_name)
             });
-            command_manager.execute(commands.NAVIGATE_JUMPTO_DEFINITION, current_editor).done(function () {
-                cursor_position = current_editor.getCursorPos();
-                current_line_position = cursor_position.line;
-                current_line = current_editor._codeMirror.doc.getLine(current_line_position);
-                go_to_require(current_editor, current_line, search_name);
-            });
-
         }
-        else {
+        command_manager.execute(commands.NAVIGATE_JUMPTO_DEFINITION, current_editor).done(function () {
+            cursor_position = current_editor.getCursorPos();
+            current_line_position = cursor_position.line;
+            current_line = current_editor._codeMirror.doc.getLine(current_line_position);
             go_to_require(current_editor, current_line, search_name);
-        }
+        });
     });
     editor_context_menu.addMenuItem(GO_TO_DECLARATION_COMMAND_ID, 'Ctrl-Alt-B', menus.LAST);
     /****************************************************************************/
