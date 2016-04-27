@@ -1,0 +1,23 @@
+{
+    "eol": "\n",
+    "brace_style": "end-expand",
+    "break_chained_methods": false,
+    "end_with_newline": true,
+    "eval_code": false,
+    "indent_char": " ",
+    "indent_handlebars": true,
+    "indent_level": 0,
+    "indent_size": 4,
+    "indent_with_tabs": false,
+    "jslint_happy": true,
+    "keep_array_indentation": true,
+    "keep_function_indentation": false,
+    "max_preserve_newlines": 10,
+    "other": " ",
+    "preserve_newlines": true,
+    "space_after_anon_function": true,
+    "space_before_conditional": true,
+    "unescape_strings": false,
+    "wrap_attributes": false,
+    "wrap_line_length": 0
+}
