@@ -518,7 +518,7 @@ define(function (require, exports, module) {
                     if (_.endsWith(relative_path, '/')) {
                         open_file(current_folder + relative_path + 'index.js', search_name);
                     }
-                    else if (!.endsWith(relative_path, '.js') && !.endsWith(relative_path, '.json')) {
+                    else if (!_.endsWith(relative_path, '.js') && !_.endsWith(relative_path, '.json')) {
                         if (!open_file(current_folder + relative_path + '.js', search_name)) {
                             open_file(current_folder + relative_path + '/index.js', search_name);
                         }
