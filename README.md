@@ -30,7 +30,7 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 - Run mocha test inside editor with tree view results
 - Open file via mouse click from error stack
 - Show Actual/Expected difference for mocha test
-- Quick open required file or npm package with **"Go to declaration"** (Ctrl-Alt-B or Cmd-Alt-B)
+- *Jump to require* command uses "Jump to declaration" and opens required file (Ctrl-Shift-J or Cmd-Shift-J)
 
 ## Some screenshots:
 

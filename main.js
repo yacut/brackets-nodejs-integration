@@ -15,7 +15,7 @@ define(function (require, exports, module) {
 
     var ADD_MOCHA_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-mocha-to-runner';
     var ADD_NODE_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-node-to-runner';
-    var GO_TO_DECLARATION_COMMAND_ID = 'brackets-nodejs-integration.go-to-require';
+    var JUMP_TO_REQUIRE_COMMAND_ID = 'brackets-nodejs-integration.go-to-require';
     var DIFF_DIALOG_ID = 'brackets-nodejs-integration-diff-dialog';
     var SETTINGS_DIALOG_ID = 'brackets-nodejs-integration-settings-dialog';
 
@@ -495,10 +495,10 @@ define(function (require, exports, module) {
     $('#main-toolbar .buttons').append($node_runner_indicator);
 
     /****************************************************************************/
-    /* Go to declaration ... ********************************************************/
+    /* Jump to Require **********************************************************/
     /****************************************************************************/
     var editor_context_menu = menus.getContextMenu(menus.ContextMenuIds.EDITOR_MENU);
-    command_manager.register('Go to declaration...', GO_TO_DECLARATION_COMMAND_ID, function () {
+    command_manager.register('Jump to Require', JUMP_TO_REQUIRE_COMMAND_ID, function () {
         function go_to_require(current_editor, current_line, search_name) {
             var matched_require_strings = current_line.match(/require[\s+]?\(['"].*['"]\)/g);
             if (matched_require_strings && matched_require_strings.length > 0) {
@@ -512,13 +512,20 @@ define(function (require, exports, module) {
                 var project_root = project_manager.getProjectRoot().fullPath;
                 var project_file_match = relative_path.match(/[\/\\]/);
                 if (project_file_match && project_file_match.length > 0) {
-                    if (!_.endsWith(relative_path, '.js') && !_.endsWith(relative_path, '.json')) {
-                        relative_path = relative_path + '.js';
-                    }
                     if (_.startsWith(relative_path, './')) {
                         relative_path = relative_path.slice(2);
                     }
-                    open_file(current_folder + relative_path, search_name);
+                    if (_.endsWith(relative_path, '/')) {
+                        open_file(current_folder + relative_path + 'index.js', search_name);
+                    }
+                    else if (!.endsWith(relative_path, '.js') && !.endsWith(relative_path, '.json')) {
+                        if (!open_file(current_folder + relative_path + '.js', search_name)) {
+                            open_file(current_folder + relative_path + '/index.js', search_name);
+                        }
+                    }
+                    else {
+                        open_file(current_folder + relative_path, search_name);
+                    }
                 }
                 else {
                     if (try_open_npm_package_source(project_root, relative_path, search_name)) {
@@ -550,14 +557,14 @@ define(function (require, exports, module) {
                 if (found_at >= 0) {
                     var string_before = line.substr(0, found_at);
                     var string_after = line.substr(found_at + name.length);
-                    var word_before = string_before.match(/[\w\d_=]+/g).pop();
-                    var word_after = string_after.match(/[\w\d_=\(]+/g).shift();
-                    if (word_before === "exports" && word_after === "=" ||
-                        word_before === "function" && word_after === "(") {
+                    var word_before_match = string_before.match(/[\w\d_=]+/g);
+                    var word_before = word_before_match ? word_before_match.pop() : '';
+                    var word_after_match = string_after.match(/[\w\d_=\(]+/g);
+                    var word_after = word_after_match ? word_after_match.shift() : '';
+                    if ((word_before === "exports" && word_after === "=") ||
+                        (word_before === "prototype" && word_after === "=") ||
+                        (word_before === "function" && word_after === "(")) {
                         line_index = i;
-                    }
-                    else {
-                        line_index = -1;
                     }
                 }
             }
@@ -608,6 +615,9 @@ define(function (require, exports, module) {
         }
 
         var current_editor = editor_manager.getCurrentFullEditor();
+        if (current_editor.getModeForSelection() !== "javascript") {
+            return null;
+        }
         var cursor_position = current_editor.getCursorPos();
         var current_line_position = cursor_position.line;
         var current_line = current_editor._codeMirror.doc.getLine(current_line_position);
@@ -642,12 +652,14 @@ define(function (require, exports, module) {
             cursor_position = current_editor.getCursorPos();
             current_line_position = cursor_position.line;
             current_line = current_editor._codeMirror.doc.getLine(current_line_position);
-            go_to_require(current_editor, current_line, search_name);
+            setTimeout(function () {
+                go_to_require(current_editor, current_line, search_name);
+            }, 300);
         }).fail(function () {
             go_to_require(current_editor, current_line, search_name);
         });
     });
-    editor_context_menu.addMenuItem(GO_TO_DECLARATION_COMMAND_ID, 'Ctrl-Alt-B', menus.LAST);
+    editor_context_menu.addMenuItem(JUMP_TO_REQUIRE_COMMAND_ID, 'Ctrl-Shift-J', menus.LAST);
     /****************************************************************************/
 
     var context_menu = menus.getContextMenu(menus.ContextMenuIds.PROJECT_MENU);
