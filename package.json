@@ -1,14 +1,14 @@
 {
-  "name": "brackets-nodejs-integration",
-  "title": "NodeJS integration",
-  "description": "Nodejs and Mocha integration for Brackets",
-  "homepage": "https://github.com/yacut/brackets-nodejs-integration",
-  "version": "1.1.1",
-  "license": "MIT",
-  "engines": {
-    "brackets": ">=0.44.0"
-  },
-  "keywords": [
+    "name": "brackets-nodejs-integration",
+    "title": "NodeJS integration",
+    "description": "Nodejs and Mocha integration for Brackets",
+    "homepage": "https://github.com/yacut/brackets-nodejs-integration",
+    "version": "1.1.2",
+    "license": "MIT",
+    "engines": {
+        "brackets": ">=0.44.0"
+    },
+    "keywords": [
     "node",
     "node.js",
     "execute",
@@ -16,8 +16,8 @@
     "runner",
     "mocha"
   ],
-  "dependencies": {
-    "mocha": "2.4.5",
-    "treekill": "1.0.0"
-  }
+    "dependencies": {
+        "mocha": "2.4.5",
+        "treekill": "1.0.0"
+    }
 }
