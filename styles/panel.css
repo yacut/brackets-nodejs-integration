@@ -104,6 +104,11 @@ nodejs-integration-tab-view:before {
     margin-left: 6px;
 }
 
+.dark .nodejs-integration-tab{
+    background: #3f3f3f;
+    border-color:#202020;
+}
+
 .nodejs-integration-tab > p {
     font-size: 12px;
     white-space: nowrap;
@@ -122,11 +127,21 @@ nodejs-integration-tab-view:before {
     position: absolute;
     top: 0;
     border-radius: 2px 2px 0 0;
+    border-width: 0px;
+    border-style: solid;
+    border-color: #b2b5b5;
+}
+
+.dark .nodejs-integration-tab:before,
+.nodejs-integration-tab:after{
+    background:#3f3f3f;
+    border-color:#202020;
 }
 
 .nodejs-integration-tab:before {
     left: -5px;
-    border-left: 1px solid #b2b5b5;
+    border-left-width: 1px;
+    border-style: solid;
     z-index: 3;
     -webkit-transform: rotate(15deg);
     -moz-transform: rotate(15deg);
@@ -137,7 +152,7 @@ nodejs-integration-tab-view:before {
 
 .nodejs-integration-tab:after {
     right: -5px;
-    border-right: 1px solid #b2b5b5;
+    border-right-width: 1px;
     z-index: 4;
     -webkit-transform: rotate(-15deg);
     -moz-transform: rotate(-15deg);
@@ -155,9 +170,18 @@ nodejs-integration-tab-view:before {
     z-index: 10;
 }
 
+.dark .nodejs-integration-tab.active {
+    background: #284160;
+}
+
 .nodejs-integration-tab.active:before,
 .nodejs-integration-tab.active:after {
     background: #e5e9e9;
+}
+
+.dark .nodejs-integration-tab.active:before,
+.nodejs-integration-tab.active:after {
+    background: #284160;
 }
 
 button.nodejs-integration-tab-close {
