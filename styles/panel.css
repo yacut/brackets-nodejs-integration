@@ -133,7 +133,7 @@ nodejs-integration-tab-view:before {
 }
 
 .dark .nodejs-integration-tab:before,
-.nodejs-integration-tab:after{
+.dark .nodejs-integration-tab:after{
     background:#3f3f3f;
     border-color:#202020;
 }
@@ -180,7 +180,7 @@ nodejs-integration-tab-view:before {
 }
 
 .dark .nodejs-integration-tab.active:before,
-.nodejs-integration-tab.active:after {
+.dark .nodejs-integration-tab.active:after {
     background: #284160;
 }
 
