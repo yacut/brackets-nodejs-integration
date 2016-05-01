@@ -32,6 +32,11 @@ define(function main(require, exports, module) {
             "debug": false
         }
     ]);
+    //debugger
+    prefs.definePreference("debugger-port", "number", 5858);
+    prefs.definePreference("debugger-host", "string", "localhost");
+    prefs.definePreference("removeBreakpointsOnDisconnect", "boolean", false);
+    prefs.definePreference("lookupDepth", "number", 4);
 
     prefs.save();
     module.exports = prefs;
