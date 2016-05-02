@@ -242,6 +242,7 @@ define(function main(require, exports, module) {
     function execute_command(that, command_type, command_target, command_cwd, debugging) {
         var command;
         var v8flags = prefs.get('v8-flags');
+        var additional_flags = prefs.get('additional-flags');
         var node_bin = prefs.get('node-bin') ? prefs.get('node-bin') : 'node';
         var mocha_bin = prefs.get('mocha-bin') ? prefs.get('mocha-bin') : 'mocha';
         var mocha_reporter_path = extension_utils.getModulePath(module) + 'reporter/mocha_json_stream.js';
@@ -251,12 +252,12 @@ define(function main(require, exports, module) {
         }
         switch (command_type) {
         case 'node':
-            command = node_bin + ' ' + v8flags;
+            command = node_bin + ' ' + v8flags + ' ' + additional_flags;
             break;
         case 'mocha':
             command = mocha_bin === 'mocha' ?
-                mocha_bin + mocha_default_flags + v8flags :
-                node_bin + ' ' + v8flags + ' ' + mocha_bin + mocha_default_flags;
+                mocha_bin + mocha_default_flags + ' ' + additional_flags + ' ' + v8flags :
+                node_bin + ' ' + v8flags + ' ' + mocha_bin + mocha_default_flags + ' ' + additional_flags;
             break;
         default:
             return;

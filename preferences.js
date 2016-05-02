@@ -8,6 +8,7 @@ define(function main(require, exports, module) {
     prefs.definePreference("mocha-bin", "string", "");
     prefs.definePreference("autoscroll", "boolean", true);
     prefs.definePreference("v8-flags", "string", "");
+    prefs.definePreference("additional-flags", "string","");
     prefs.definePreference("configurations", "array", [
         {
             "name": "nodejs process sample",

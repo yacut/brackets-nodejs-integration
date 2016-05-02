@@ -327,6 +327,7 @@ define(function (require, exports, module) {
                     prefs.set('node-bin', node_bin_input.val().trim());
                     prefs.set('mocha-bin', mocha_bin_input.val().trim());
                     prefs.set('v8-flags', v8_flags_input.val().trim());
+                    prefs.set('additional-flags', additional_flags.val().trim());
                     prefs.set('autoscroll', scroll_input.prop('checked'));
                     prefs.set('configurations', changed_configurations);
                     prefs.save();
@@ -374,6 +375,7 @@ define(function (require, exports, module) {
                 var mocha_bin_input = $('.brackets-nodejs-integration-runner-mocha-bin').val(prefs.get('mocha-bin'));
                 var scroll_input = $('.brackets-nodejs-integration-runner-autoscroll').attr('checked', prefs.get('autoscroll'));
                 var v8_flags_input = $('.brackets-nodejs-integration-runner-flags').val(prefs.get('v8-flags'));
+                var additional_flags = $("#brackets-nodejs-integration-additional-flags").val(prefs.get('additional-flags'));
 
                 var runner_name = $('#brackets-nodejs-integration-runner-name').on('input', function () {
                     runner_list.children(':selected').html($(this).val());
