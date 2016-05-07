@@ -13,49 +13,82 @@ define(function (require, exports, module) {
         PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
         prefs = PreferencesManager.getExtensionPrefs("brackets-nodejs-integration"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils");
+    var file_system = brackets.getModule('filesystem/FileSystem');
+    var file_utils = brackets.getModule('file/FileUtils');
 
-    var nodeDebuggerPanel = require('./debuggerPanel').debuggerPanel;
 
-    var nodeDebuggerDomain = new NodeDomain("brackets-nodejs-integration-debugger", ExtensionUtils.getModulePath(module, "./node/main"));
+    var domain_template_path = ExtensionUtils.getModulePath(module, 'node/main.js');
+    var utils = require('../utils');
+    exports.create_new_debugger = function (id, debug_port) {
+        return new NodeDebugger(id, debug_port);
+    };
 
-    var NodeDebugger = {};
+    var NodeDebugger = function NodeDebugger(id, debug_port) {
+        var that = this;
+        this.id = id;
+        prefs = prefs;
+        this.$panel = $('#' + id);
+        this.debug_port = debug_port;
+        this.nodeDebuggerPanel = null;
+        this.debug = null;
+        this.breakpoints = null;
+        this.locals = null;
+        var file_path = ExtensionUtils.getModulePath(module, 'node/debugger_' + id); //+ '.js'
+        this.file_path = file_path;
+        var file = file_system.getFileForPath(domain_template_path);
+        file.read(function (err, content) {
+            if (err) {
+                return console.error('Error NodeDebugger create file', err);
+            }
+            create_new_domain(that, id, file_path, content);
+        });
+    };
+
+    function create_new_domain(that, id, file_path, content) {
+        var file = file_system.getFileForPath(file_path);
+        var dir = file_utils.getDirectoryPath(file.fullPath);
+        utils.mkdirp(dir)
+            .then(function () {
+                return utils.create_file(file, content);
+            }).then(function () {
+                that.nodeDebuggerDomain = new NodeDomain('debugger_' + that.id, that.file_path);
+            });
+    }
 
     /**
      *Initalize the Debugger
      **/
-    NodeDebugger.init = function () {
-        //Show the CHANGELOG on update
-        //changelogDialog.show();
-        //Initalize the debugger panel
-        nodeDebuggerPanel.init(nodeDebuggerDomain);
+    NodeDebugger.prototype.init = function () {
+        if (!this.nodeDebuggerPanel) {
+            var nodeDebuggerPanel = require('./debuggerPanel').create_new();
+            nodeDebuggerPanel.init(this.nodeDebuggerDomain, this.id);
+            //Load Modules
+            var debug = require('./debugger/debugger').create_new(),
+                breakpoints = require('./breakpoints/breakpoints').create_new(),
+                locals = require('./locals/locals').create_new();
 
-        //Load Modules
-        var debug = require('./debugger/debugger').debug,
-            breakpoints = require('./breakpoints/breakpoints').breakpoints,
-            locals = require('./locals/locals').locals;
+            this.nodeDebuggerPanel = nodeDebuggerPanel;
+            this.debug = debug;
+            this.breakpoints = breakpoints;
+            this.locals = locals;
 
-        debug.init(nodeDebuggerDomain);
-        breakpoints.init(nodeDebuggerDomain);
-        //Not ready yet
-        locals.init(nodeDebuggerDomain);
-        //Auto Connector active
-        //if (prefs.get("autoConnect")) {
-        nodeDebuggerDomain.exec("debugger_start", prefs.get("debugger-port"), prefs.get("debugger-host"), true, prefs.get("lookupDepth"));
-        /*var $sb = $("<div>").addClass("ion-android-developer").on('click', function () {
-            nodeDebuggerPanel.toggle();
-        });*/
-        //StatusBar.addIndicator("node-debugger-indicator", $sb, true, null, "Node.js Debugger");
-        //}
+            this.debug.init(this.nodeDebuggerDomain, this.nodeDebuggerPanel);
+            this.breakpoints.init(this.nodeDebuggerDomain, this.nodeDebuggerPanel);
+            //Not ready yet
+            this.locals.init(this.nodeDebuggerDomain, this.nodeDebuggerPanel, this.id);
+        }
+        this.nodeDebuggerDomain.exec("debugger_start", this.debug_port, prefs.get("debugger-host"), prefs.get("lookupDepth"));
     };
 
-    //Add to menu/keyBinding
-    /*var MY_COMMAND_ID = "brackets-nodejs-integration-debugger.log";
-    CommandManager.register("Node.js Debugger", MY_COMMAND_ID, nodeDebuggerPanel.toggle);
+    //exports.nodeDebugger = NodeDebugger;
+    NodeDebugger.prototype.stop = function () {
+        this.nodeDebuggerDomain.exec("disconnect");
+    };
 
-
-    var menu = Menus.getMenu('debug-menu');
-    menu.addMenuItem(MY_COMMAND_ID);
-    KeyBindingManager.addBinding(MY_COMMAND_ID, "Ctrl-Shift-I");*/
-
-    exports.nodeDebugger = NodeDebugger;
+    //exports.nodeDebugger = NodeDebugger;
+    NodeDebugger.prototype.exit = function () {
+        this.nodeDebuggerDomain.exec("disconnect");
+        var file = file_system.getFileForPath(this.file_path);
+        file.unlink(function () {});
+    };
 });

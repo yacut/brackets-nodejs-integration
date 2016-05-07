@@ -12,12 +12,13 @@ define(function main(require, exports, module) {
     //var DOMAIN_NAME = 'brackets-nodejs-integration';
     var ansi = require('./ansi');
     var prefs = require('../preferences');
+    var utils = require('../utils');
 
-    exports.create_new_process = function (id, run_configurations) {
-        return new Process(id, run_configurations);
+    exports.create_new_process = function (id, run_configurations, debug_port) {
+        return new Process(id, run_configurations, debug_port);
     };
 
-    var Process = function Process(id, run_configurations) {
+    var Process = function Process(id, run_configurations, debug_port) {
         var that = this;
         this.id = id;
         prefs = prefs;
@@ -33,6 +34,7 @@ define(function main(require, exports, module) {
         this.test_list = this.$panel.find('.test-list');
         this.test_tree = [];
         this.scroll_enabled = prefs.get('autoscroll');
+        this.debug_port = debug_port;
         var file_path = extension_utils.getModulePath(module, 'domains/' + id); //+ '.js'
         this.file_path = file_path;
         var file = file_system.getFileForPath(domain_template_path);
@@ -45,51 +47,14 @@ define(function main(require, exports, module) {
             });
     };
 
-    function mkdirp(path) {
-        var dir = file_system.getDirectoryForPath(path);
-        var promise = $.Deferred();
 
-        dir.exists(function (err, exists) {
-            if (!exists) {
-                var parentFolder = path.replace(/\/+\s*$/, '').split('/').slice(0, -1).join('/');
-                mkdirp(parentFolder).then(function () {
-                        dir.create(function (err) {
-                            if (err) {
-                                promise.reject(err);
-                            } else {
-                                promise.resolve();
-                            }
-                        });
-                    })
-                    .fail(function (err) {
-                        promise.reject(err);
-                    });
-            } else {
-                promise.resolve();
-            }
-        });
-
-        return promise;
-    }
-
-    function createFile(file, content) {
-        var promise = $.Deferred();
-        file.write(content, {}, function (err) {
-            if (err) {
-                promise.reject(err);
-            } else {
-                promise.resolve();
-            }
-        });
-        return promise;
-    }
 
     function create_new_domain(that, id, file_path, content) {
         var file = file_system.getFileForPath(file_path);
         var dir = file_utils.getDirectoryPath(file.fullPath);
-        mkdirp(dir)
+        utils.mkdirp(dir)
             .then(function () {
-                return createFile(file, content);
+                return utils.create_file(file, content);
             })
             .then(function () {
                 return new_domain(that, id, file_path);
@@ -99,7 +64,9 @@ define(function main(require, exports, module) {
     function new_domain(that, id, path) {
         that.process_domain = new node_domain(id, path);
         that.process_domain.on('console_output', function (info, data) {
-            if (that.id !== info.target._domainPath.replace(/^.*[\\\/]/, '')) return;
+            if (that.id !== info.target._domainPath.replace(/^.*[\\\/]/, '')) {
+                return;
+            }
             _.each(data.split(/\r?\n/), function (output_string) {
                 if (output_string) {
                     that.write(that, output_string + '\n');
@@ -108,7 +75,9 @@ define(function main(require, exports, module) {
         });
 
         that.process_domain.on('reporter_output', function (info, data) {
-            if (that.id !== info.target._domainPath.replace(/^.*[\\\/]/, '')) return;
+            if (that.id !== info.target._domainPath.replace(/^.*[\\\/]/, '')) {
+                return;
+            }
             var output_json = JSON.parse(data);
             var event_type = output_json[0];
             var event_model = output_json[1];
@@ -170,7 +139,8 @@ define(function main(require, exports, module) {
         var working_directory;
         if (cwd) {
             working_directory = cwd;
-        } else {
+        }
+        else {
             working_directory = project_manager.getProjectRoot().fullPath;
         }
         clear(that);
@@ -217,7 +187,18 @@ define(function main(require, exports, module) {
         }
         this.set_indicators(run_configuration);
         this.set_controls_by_status(true);
-        execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, run_configuration.debug);
+        execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, null);
+    };
+
+    Process.prototype.debug = function () {
+        this.process_domain.exec('stop_process');
+        var run_configuration = this.get_selected_configuration();
+        if (!run_configuration) {
+            return;
+        }
+        this.set_indicators(run_configuration);
+        this.set_controls_by_status(true);
+        execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, this.debug_port);
     };
 
     Process.prototype.exit = function () {
@@ -239,7 +220,7 @@ define(function main(require, exports, module) {
         that.process_domain.exec('stop_process');
     }
 
-    function execute_command(that, command_type, command_target, command_cwd, debugging) {
+    function execute_command(that, command_type, command_target, command_cwd, debug_port) {
         var command;
         var v8flags = prefs.get('v8-flags');
         var additional_flags = prefs.get('additional-flags');
@@ -247,8 +228,9 @@ define(function main(require, exports, module) {
         var mocha_bin = prefs.get('mocha-bin') ? prefs.get('mocha-bin') : 'mocha';
         var mocha_reporter_path = extension_utils.getModulePath(module) + 'reporter/mocha_json_stream.js';
         var mocha_default_flags = ' --recursive --reporter "' + mocha_reporter_path + '" ';
-        if (debugging) {
-            v8flags += ' --dnodeebug ';
+        v8flags = v8flags.replace(/--debug(-brk)?=?(\d+)?/g, '');
+        if (debug_port) {
+            v8flags += ' --debug-brk=' + debug_port + ' ';
         }
         switch (command_type) {
         case 'node':
@@ -302,7 +284,8 @@ define(function main(require, exports, module) {
         if (run_configuration) {
             if (run_configuration.type !== 'mocha') {
                 this.mocha_treeview.hide();
-            } else {
+            }
+            else {
                 this.mocha_treeview.show();
                 if (!this.mocha_treeview.css('width')) {
                     this.mocha_treeview.css('width', '250px');
@@ -319,10 +302,13 @@ define(function main(require, exports, module) {
         if (process_running) {
             this.$panel.find('.run-configuration-selector').prop('disabled', true);
             this.$panel.find('.run_btn').prop('disabled', true);
+            this.$panel.find('.debug_btn').prop('disabled', true);
             this.$panel.find('.stop_btn').prop('disabled', false);
-        } else {
+        }
+        else {
             this.$panel.find('.run-configuration-selector').prop('disabled', false);
             this.$panel.find('.run_btn').prop('disabled', false);
+            this.$panel.find('.debug_btn').prop('disabled', false);
             this.$panel.find('.stop_btn').prop('disabled', true);
             this.finished_tests_count = 0;
         }
@@ -398,9 +384,11 @@ define(function main(require, exports, module) {
                     var some_test_pending = _.some(test_describe_labels, 'className', 'pending_test');
                     if (some_test_fail) {
                         class_name = 'fail_test';
-                    } else if (some_test_pending) {
+                    }
+                    else if (some_test_pending) {
                         class_name = 'pending_test';
-                    } else {
+                    }
+                    else {
                         class_name = 'pass_test';
                     }
                 }
@@ -451,7 +439,8 @@ define(function main(require, exports, module) {
                     var test_title = console_element.getAttribute('test_title');
                     if (test_title) {
                         console_element.style.display = test_title.indexOf(selected_title) === -1 ? 'none' : 'block';
-                    } else {
+                    }
+                    else {
                         console_element.style.display = 'none';
                     }
                 });
@@ -472,7 +461,8 @@ define(function main(require, exports, module) {
 
         if (event_model.title === event_model.fullTitle) {
             this.test_list.append(li);
-        } else {
+        }
+        else {
             var parent_title = _.trimRight(event_model.fullTitle.replace(' ' + event_model.title, ''));
             var parent_tree_element = _.find(this.test_tree, function (item) {
                 return item.title === parent_title && item.running;
