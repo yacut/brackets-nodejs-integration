@@ -4,51 +4,55 @@ define(function (require, exports) {
     var PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
         prefs = PreferencesManager.getExtensionPrefs("brackets-nodejs-integration");
 
-    var bpGutter = require('./breakpointGutter'),
-        nodeDebuggerPanel = require('../debuggerPanel').debuggerPanel;
 
-    var breakpoints = {},
-        _nodeDebuggerDomain;
+
+    var breakpoints = function () {
+        this._nodeDebuggerDomain = null;
+        this.bpGutter = require('./breakpointGutter').create_new();
+        this.nodeDebuggerPanel = null;
+    };
 
     /**
      * Initialise the breakpoint module,
      *
      * @param {NodeDomain} nodeDebuggerDomain
      **/
-    breakpoints.init = function (nodeDebuggerDomain) {
-        _nodeDebuggerDomain = nodeDebuggerDomain;
-        debuggerDomainEventListener();
-
-        bpGutter.init(_nodeDebuggerDomain);
-
-        //Add removeAllBreakpoints button
-        var $bp = $('<a>').attr('href', '#').attr('title', 'Remove all Breakpoints').html('<i class="fa fa-minus-circle" aria-hidden="true"></i>');
-        nodeDebuggerPanel.addControlElement($bp, false, function () {
-            bpGutter.removeAllBreakpoints();
-        });
-    };
-
-    /**
-     * All event listener for the breakpoints
-     **/
-    function debuggerDomainEventListener() {
+    breakpoints.prototype.init = function (nodeDebuggerDomain, nodeDebuggerPanel) {
+        this._nodeDebuggerDomain = nodeDebuggerDomain;
+        this.nodeDebuggerPanel = nodeDebuggerPanel;
+        var that = this;
         //If we loose the connection remove all breakpoints if the user wants that
-        $(_nodeDebuggerDomain).on('close', function () {
+        $(this._nodeDebuggerDomain).on('close', function () {
             if (prefs.get("removeBreakpointsOnDisconnect")) {
-                bpGutter.removeAllBreakpoints();
+                that.bpGutter.removeAllBreakpoints();
             }
         });
 
         //Set all breakpoints again on connect
-        $(_nodeDebuggerDomain).on("connect", function () {
-            bpGutter.setAllBreakpoints();
+        $(this._nodeDebuggerDomain).on("connect", function () {
+            that.bpGutter.setAllBreakpoints();
+            if (prefs.get('breakpoints').length > 0) {
+                setTimeout(function () {
+                    that._nodeDebuggerDomain.exec('continue');
+                }, 500);
+            }
         });
 
         //Set a new breakpoint
-        $(_nodeDebuggerDomain).on("setBreakpoint", function (e, bp) {
-            bpGutter.addBreakpoint(bp);
+        $(this._nodeDebuggerDomain).on("setBreakpoint", function (e, bp) {
+            that.bpGutter.addBreakpoint(bp);
         });
-    }
 
-    exports.breakpoints = breakpoints;
+        this.bpGutter.init(this._nodeDebuggerDomain);
+
+        //Add removeAllBreakpoints button
+        var $bp = $('<a>').attr('href', '#').attr('title', 'Remove all Breakpoints').html('<i class="fa fa-minus-circle" aria-hidden="true"></i>');
+        nodeDebuggerPanel.addControlElement($bp, false, function () {
+            that.bpGutter.removeAllBreakpoints();
+        });
+    };
+
+    exports.create_new = function () {
+        return new breakpoints();
+    };
 });

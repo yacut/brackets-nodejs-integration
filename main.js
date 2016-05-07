@@ -115,6 +115,12 @@ define(function (require, exports, module) {
     $runner_panel.on('click', '.link_to_diff', function () {
         var actual = JSON.parse($(this).attr('actual'));
         var expected = JSON.parse($(this).attr('expected'));
+        if(typeof actual !== 'object'){
+            actual = {actual: actual.toString()};
+        }
+        if(typeof expected !== 'object'){
+            expected = {expected: expected.toString()};
+        }
         var diff = object_diff.diffOwnProperties(actual, expected);
         var diff_html = object_diff.convertToXMLString(diff);
         dialogs.showModalDialog(
@@ -135,10 +141,18 @@ define(function (require, exports, module) {
         panel.hide();
     });
     $runner_panel.on('click', '.stop_btn', function () {
-        get_runner($(this).parent().parent().parent().attr('id')).stop();
+        var id = $(this).parent().parent().parent().attr('id');
+        get_runner(id).stop();
+        get_debugger(id).stop();
     });
     $runner_panel.on('click', '.run_btn', function () {
         get_runner($(this).parent().parent().parent().attr('id')).run();
+    });
+    $runner_panel.on('click', '.debug_btn', function () {
+        var id = $(this).parent().parent().parent().attr('id');
+        get_runner(id).debug();
+        get_debugger(id).init();
+        $runner_panel.find('.brackets-nodejs-integration-debugger').show();
     });
     $runner_panel.on('click', '.collapse_btn', function () {
         $(this).parent().parent().find('.test-list').find('input').prop('checked', false);
@@ -148,6 +162,7 @@ define(function (require, exports, module) {
     });
     $runner_panel.on('click', '.nodejs-integration-tab-close', function () {
         get_runner($(this).parent().data('target').replace('#', '')).exit();
+        get_debugger($(this).parent().data('target').replace('#', '')).exit();
         $($(this).parent().data('target')).remove();
         $(this).parent().remove();
 
@@ -158,6 +173,10 @@ define(function (require, exports, module) {
         $new_tab.add($new_tab_pane).addClass('active');
     });
     $runner_panel.on('click', '.nodejs-integration-tab-new', function () {
+        var $tabs = $runner_panel.find('.nodejs-integration-tab');
+        if ($tabs >= 5) {
+            return;
+        }
         create_new_tab();
     });
     $runner_panel.on('click', '.nodejs-integration-tab-settings', function () {
@@ -190,15 +209,21 @@ define(function (require, exports, module) {
             .html(runner_panel_template)
         );
         fill_run_selector($runner_panel.find('#' + new_tab_id).find('.run-configuration-selector'));
-        var new_runner = runner.create_new_process(new_tab_id, run_configurations);
+
+        var max_port = 49152;
+        var min_port = 65535;
+        var debug_port = Math.floor(Math.random() * (max_port - min_port + 1) + min_port);
+        var new_runner = runner.create_new_process(new_tab_id, run_configurations, debug_port);
+        var NodeDebugger = require('./debugger/main');
+        var new_debugger = NodeDebugger.create_new_debugger(new_tab_id, debug_port);
         runners.push({
             id: new_tab_id,
-            process: new_runner
+            process: new_runner,
+            debugger: new_debugger
         });
         var run_configuration = new_runner.get_selected_configuration();
         new_runner.set_indicators(run_configuration);
-        var NodeDebugger = require('./debugger/main').nodeDebugger;
-        NodeDebugger.init();
+
     }
 
     //tab view
@@ -263,13 +288,7 @@ define(function (require, exports, module) {
         });
     }
 
-    /****************************************************************************/
-    /* Debugger *****************************************************************/
-    /****************************************************************************/
     extension_utils.loadStyleSheet(module, "debugger/assets/style.css");
-    extension_utils.loadStyleSheet(module, "debugger/assets/ionicons.css");
-    /****************************************************************************/
-
     extension_utils.loadStyleSheet(module, 'styles/panel.css');
     extension_utils.loadStyleSheet(module, 'thirdparty/objectDiff/objectDiff.css');
     extension_utils.loadStyleSheet(module, 'styles/font-awesome.min.css');
@@ -298,6 +317,13 @@ define(function (require, exports, module) {
             return runner_tab.id === panel_id;
         });
         return runner_tab ? runner_tab.process : null;
+    }
+
+    function get_debugger(panel_id) {
+        var runner_tab = _.findLast(runners, function (runner_tab) {
+            return runner_tab.id === panel_id;
+        });
+        return runner_tab ? runner_tab.debugger : null;
     }
 
     var dialog = {
@@ -375,7 +401,7 @@ define(function (require, exports, module) {
                     });
 
                     if (configuration_to_remove.length > 0) {
-                        stop_all_runners();
+                        cleanup();
                     }
                     _.each(configuration_to_remove, function (configuration) {
                         $runner_panel.find('.run-configuration-selector').find('option[value="' + configuration.name + '"]').remove();
@@ -480,13 +506,26 @@ define(function (require, exports, module) {
         }
     };
 
-    project_manager.on('beforeAppClose', stop_all_runners);
-    project_manager.on('beforeProjectClose', stop_all_runners);
+    project_manager.on('beforeAppClose', cleanup);
+    project_manager.on('beforeProjectClose', cleanup);
 
-    function stop_all_runners() {
-        var directory_path = extension_utils.getModulePath(module, 'src/domains/');
-        var directory = file_system.getDirectoryForPath(directory_path);
-        directory.getContents(function (error, files) {
+    function cleanup() {
+        var runner_directory_path = extension_utils.getModulePath(module, 'src/domains/');
+        var runner_directory = file_system.getDirectoryForPath(runner_directory_path);
+        runner_directory.getContents(function (error, files) {
+            _.each(files, function (file) {
+                if (!_.endsWith(file._path, '.js')) {
+                    var runner = get_runner(file._name);
+                    if (runner) {
+                        runner.stop();
+                    }
+                    file.unlink(function () {});
+                }
+            });
+        });
+        var debugger_directory_path = extension_utils.getModulePath(module, 'debugger/node/');
+        var debugger_directory = file_system.getDirectoryForPath(debugger_directory_path);
+        debugger_directory.getContents(function (error, files) {
             _.each(files, function (file) {
                 if (!_.endsWith(file._path, '.js')) {
                     var runner = get_runner(file._name);
@@ -504,6 +543,12 @@ define(function (require, exports, module) {
             panel.show_or_hide();
         });
     $('#main-toolbar .buttons').append($node_runner_indicator);
+
+    /****************************************************************************/
+    /* Global breakpoint gutter *************************************************/
+    /****************************************************************************/
+    var global_gutter = require('./debugger/breakpoints/breakpointGutter').create_new();
+    global_gutter.init();
 
     /****************************************************************************/
     /* Jump to Require **********************************************************/

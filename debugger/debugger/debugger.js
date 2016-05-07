@@ -9,68 +9,66 @@ define(function (require, exports) {
         Editor = brackets.getModule("editor/EditorManager"),
         prefs = PreferencesManager.getExtensionPrefs("brackets-nodejs-integration");
 
-    var nodeDebuggerPanel = require('./../debuggerPanel').debuggerPanel;
-
-    var debug = {},
-        _nodeDebuggerDomain,
-        _activeLine,
-        _activeDocPath,
-        _highlightCm;
-
-    //All the Click Handler for the Buttons
-    var activateClickHandler = function () {
-        //_nodeDebuggerDomain.exec("debugger_start", prefs.get("debugger-port"), prefs.get("debugger-host"), false, prefs.get("lookupDepth"));
+    var debug = function () {
+        this._nodeDebuggerDomain = null;
+        this._activeLine = 0;
+        this._activeDocPath = '';
+        this._highlightCm = null;
+    };
+    exports.create_new = function () {
+        return new debug();
     };
 
-    var nextClickHandler = function () {
-        _nodeDebuggerDomain.exec('stepNext');
+    var nextClickHandler = function (nodeDebuggerDomain) {
+        nodeDebuggerDomain.exec('stepNext');
     };
 
-    var inClickHandler = function () {
-        _nodeDebuggerDomain.exec('stepIn');
+    var inClickHandler = function (nodeDebuggerDomain) {
+        nodeDebuggerDomain.exec('stepIn');
     };
 
-    var outClickHandler = function () {
-        _nodeDebuggerDomain.exec('stepOut');
+    var outClickHandler = function (nodeDebuggerDomain) {
+        nodeDebuggerDomain.exec('stepOut');
     };
 
-    var continueClickHandler = function () {
-        _nodeDebuggerDomain.exec('continue');
+    var continueClickHandler = function (nodeDebuggerDomain) {
+        nodeDebuggerDomain.exec('continue');
     };
 
-    var openActiveDoc = function () {
-        if (_activeDocPath && _activeLine) {
+    var openActiveDoc = function (that) {
+        if (that._activeDocPath && that._activeLine) {
             //NOTE: For some reason the execute promisie doesn't resolve to fail but this workaround will do for now
             try {
                 CommandManager.execute(Commands.CMD_OPEN, {
-                        fullPath: _activeDocPath
+                        fullPath: that._activeDocPath
                     })
                     .then(function () {
 
                         var ae = Editor.getActiveEditor();
                         //_activeLine = body.sourceLine;
                         //_activeDocPath = docPath;
-                        ae.setCursorPos(_activeLine);
+                        ae.setCursorPos(that._activeLine);
                         //Highlight the line
-                        _highlightCm = ae._codeMirror;
-                        _activeLine = _highlightCm.addLineClass(_activeLine, 'node-debugger-highlight-background', 'node-debugger-highlight');
+                        that._highlightCm = ae._codeMirror;
+                        that._activeLine = that._highlightCm.addLineClass(that._activeLine, 'node-debugger-highlight-background', 'node-debugger-highlight');
                     }, function () {
-                        console.log('[Node Debugger] Failed to open Document: ' + _activeDocPath);
+                        console.log('[Node Debugger] Failed to open Document: ' + that._activeDocPath);
                     });
             }
             catch (e) {
-                console.log('[Node Debugger] Failed to open Document: ' + _activeDocPath);
+                console.log('[Node Debugger] Failed to open Document: ' + that._activeDocPath);
             }
         }
     };
 
-    debug.init = function (nodeDebuggerDomain) {
-        _nodeDebuggerDomain = nodeDebuggerDomain;
+    debug.prototype.init = function (nodeDebuggerDomain, nodeDebuggerPanel) {
+        this._nodeDebuggerDomain = nodeDebuggerDomain;
+        this.nodeDebuggerPanel = nodeDebuggerPanel;
         //and set the event listener
-        debuggerDomainEvents();
-
+        debuggerDomainEvents(this);
+        var that = this;
         //Add all the standard control elements
-        var $activate = $('<a>').addClass('icon activate inactive').attr('href', '#').attr('title', 'Connect status').html('<i class="fa fa-times-circle" aria-hidden="true"></i>');
+        var $activate = $('<a>').addClass('icon activate').attr('title', 'Connect status').html('<i class="fa fa-times-circle" aria-hidden="true"></i>');
         var $next = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Step over to next function (F10)').html('<i class="fa fa-share" aria-hidden="true"></i>');
         var $in = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Step in (F11)').html('<i class="fa fa-level-down" aria-hidden="true"></i>');
         var $out = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Step out (Shift-F11)').html('<i class="fa fa-level-up" aria-hidden="true"></i>');
@@ -78,100 +76,103 @@ define(function (require, exports) {
 
         var $jumpToBreak = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Jump to break').html('<i class="fa fa-eye" aria-hidden="true"></i>');
 
-        nodeDebuggerPanel.addControlElement($continue, true, continueClickHandler);
-        nodeDebuggerPanel.addControlElement($out, true, outClickHandler);
-        nodeDebuggerPanel.addControlElement($in, true, inClickHandler);
-        nodeDebuggerPanel.addControlElement($next, true, nextClickHandler);
-        nodeDebuggerPanel.addControlElement($activate, true, activateClickHandler);
-        nodeDebuggerPanel.addControlElement($jumpToBreak, false, openActiveDoc);
+        nodeDebuggerPanel.addControlElement($continue, true, function () {
+            continueClickHandler(nodeDebuggerDomain);
+        });
+        nodeDebuggerPanel.addControlElement($out, true, function () {
+            outClickHandler(nodeDebuggerDomain);
+        });
+        nodeDebuggerPanel.addControlElement($in, true, function () {
+            inClickHandler(nodeDebuggerDomain);
+        });
+        nodeDebuggerPanel.addControlElement($next, true, function () {
+            nextClickHandler(nodeDebuggerDomain);
+        });
+        nodeDebuggerPanel.addControlElement($activate, true, function () {});
+        nodeDebuggerPanel.addControlElement($jumpToBreak, false, function () {
+            openActiveDoc(that);
+        });
     };
 
     /**
      * Add all the event listener to the Debugger Domain
      **/
-    var debuggerDomainEvents = function () {
+    var debuggerDomainEvents = function (that) {
         //If debugger is running again deactive buttons and remove line highlight
-        $(_nodeDebuggerDomain).on("running", function () {
-            nodeDebuggerPanel.$logPanel.find('a.active').addClass('inactive').removeClass('active');
-            if (_highlightCm) {
-                _highlightCm.removeLineClass(_activeLine, 'node-debugger-highlight-background', 'node-debugger-highlight');
-                _highlightCm = null;
-                _activeLine = null;
-                _activeDocPath = null;
+        $(that._nodeDebuggerDomain).on("running", function () {
+            that.nodeDebuggerPanel.$logPanel.find('a.active').addClass('inactive').removeClass('active');
+            if (that._highlightCm) {
+                that._highlightCm.removeLineClass(that._activeLine, 'node-debugger-highlight-background', 'node-debugger-highlight');
+                that._highlightCm = null;
+                that._activeLine = null;
+                that._activeDocPath = null;
             }
         });
 
         //If the debugger breaks, activate buttons and open the file we break/highlight line
-        $(_nodeDebuggerDomain).on("break", function (e, body) {
+        $(that._nodeDebuggerDomain).on("break", function (e, body) {
             //Fixme: Just to support windows, however this most likely won't work in every case
             var docPath = body.script.name.replace(/\\/g, '/');
 
             //Make sure the panel is open
-            nodeDebuggerPanel.panel.show();
-            nodeDebuggerPanel.$logPanel.find('a.inactive').addClass('active').removeClass('inactive');
+            that.nodeDebuggerPanel.panel.show();
+            that.nodeDebuggerPanel.$logPanel.find('a.inactive').addClass('active').removeClass('inactive');
 
             //Remove old highlight
-            if (_highlightCm) {
-                _highlightCm.removeLineClass(_activeLine, 'node-debugger-highlight-background', 'node-debugger-highlight');
+            if (that._highlightCm) {
+                that._highlightCm.removeLineClass(that._activeLine, 'node-debugger-highlight-background', 'node-debugger-highlight');
             }
 
             //Where is the break?
-            _activeLine = body.sourceLine;
-            _activeDocPath = docPath;
+            that._activeLine = body.sourceLine;
+            that._activeDocPath = docPath;
             //Open the document and jump to line
-            openActiveDoc();
+            openActiveDoc(that);
 
         });
 
         //If the Debugger connects highlight the UI parts that need to be highlighted
-        $(_nodeDebuggerDomain).on("connect", function (e, body) {
-            nodeDebuggerPanel.log($('<span>').text('Debugger connected'));
-            nodeDebuggerPanel.$logPanel.find('.activate').html('<i class="fa fa-check-circle" aria-hidden="true"></i>')
-            $('#node-debugger-indicator').addClass('connected');
-
-            //console.log(body);
+        $(that._nodeDebuggerDomain).on("connect", function (e, body) {
+            that.nodeDebuggerPanel.$logPanel.find('.activate').html('<i class="fa fa-check-circle" aria-hidden="true"></i>');
+            //$('#node-debugger-indicator').addClass('connected');
 
             if (body.running) {
-                nodeDebuggerPanel.$logPanel.find('a.active').addClass('inactive').removeClass('active');
+                that.nodeDebuggerPanel.$logPanel.find('a.active').addClass('inactive').removeClass('active');
             }
             else {
-                nodeDebuggerPanel.$logPanel.find('a.inactive').addClass('active').removeClass('inactive');
+                that.nodeDebuggerPanel.$logPanel.find('a.inactive').addClass('active').removeClass('inactive');
             }
         });
 
         //If the Debugger disconnect remove all the highlights
-        $(_nodeDebuggerDomain).on("close", function (e, err) {
-            var msg = "Debugger disconnected";
-            if (err) {
-                msg += ": " + err;
-            }
-
+        $(that._nodeDebuggerDomain).on("close", function (e, err) {
+            var msg = err;
             if (err === 'ECONNREFUSED') {
                 msg = "Couldn't connect to " + prefs.get("debugger-host") + ":" + prefs.get("debugger-port");
             }
 
-            nodeDebuggerPanel.log($('<span>').text(msg));
+            that.nodeDebuggerPanel.log($('<span>').text(msg));
 
             //GUI update
-            nodeDebuggerPanel.$logPanel.find('.activate').html('<i class="fa fa-times-circle" aria-hidden="true"></i>')
-            nodeDebuggerPanel.$logPanel.find('a.active').addClass('inactive').removeClass('active');
-            $('#node-debugger-indicator').removeClass('connected');
+            that.nodeDebuggerPanel.$logPanel.find('.activate').html('<i class="fa fa-times-circle" aria-hidden="true"></i>');
+            that.nodeDebuggerPanel.$logPanel.find('a.active').addClass('inactive').removeClass('active');
+            //$('#node-debugger-indicator').removeClass('connected');
 
             //remove highlight
-            if (_highlightCm) {
-                _highlightCm.removeLineClass(_activeLine, 'node-debugger-highlight-background', 'node-debugger-highlight');
-                _highlightCm = null;
-                _activeLine = null;
+            if (that._highlightCm) {
+                that._highlightCm.removeLineClass(that._activeLine, 'node-debugger-highlight-background', 'node-debugger-highlight');
+                that._highlightCm = null;
+                that._activeLine = null;
             }
         });
 
         //On evaluate display the result
-        $(_nodeDebuggerDomain).on("eval", function (e, body) {
+        $(that._nodeDebuggerDomain).on("eval", function (e, body) {
             var $wrapper = $('<span>').addClass('wrapper');
-            var $output = nodeDebuggerPanel.createEvalHTML(body, 0, body.lookup);
+            var $output = that.nodeDebuggerPanel.createEvalHTML(body, 0, body.lookup);
 
             $output.appendTo($wrapper);
-            nodeDebuggerPanel.log($wrapper);
+            that.nodeDebuggerPanel.log($wrapper);
         });
 
         //control debugger with keyboard
@@ -195,5 +196,5 @@ define(function (require, exports) {
     };
 
 
-    exports.debug = debug;
+    //exports.debug = debug;
 });

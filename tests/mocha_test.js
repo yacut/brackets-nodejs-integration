@@ -22,13 +22,23 @@ describe('Brackets mocha runner', function () {
             console.log('sgsdglknsldgnslkdgnlasgndl;asdgnlasdgnasldg0');
         });
 
-        it('should return console log text', function () {
-            console.info("test#2");
-            assert.equal('1', 1);
+        it('should return console log text and shows strings diff', function () {
+            console.info("test#string");
+            assert.equal('stringA', 'stringB');
+        });
+
+        it('should return console log text and shows date diff', function () {
+            console.info("test#date");
+            assert.equal(new Date(), new Date('01-01-2016'));
+        });
+
+        it('should return console log text and shows array diff', function () {
+            console.info("test#array");
+            assert.equal(['1','2'], ['3','2']);
         });
 
         it('should compare two objects', function () {
-            console.info("test#3");
+            console.info("test#object");
             var foo = {
                 "largestCities": [
                           "São Paulo",
@@ -80,7 +90,7 @@ describe('Brackets mocha runner', function () {
             it('should delay test and pass', function (done) {
                 console.info("test with delay");
                 assert.ok(true);
-                setTimeout(done, 1000);
+                setTimeout(done,1000);
             });
         });
 

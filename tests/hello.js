@@ -20,6 +20,7 @@ var colors = {
     grey: '\u001b[90m',
     reset: '\u001b[0m'
 };
+var foo = 5;
 
 console.log(colors.red + 'This is red' + colors.reset + ' while ' + colors.blue + 'this is blue' + colors.reset);
 console.log(colors.green + 'hello green color' + colors.reset);
