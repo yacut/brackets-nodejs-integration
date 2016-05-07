@@ -77,6 +77,10 @@
     background-color: rgba(130, 2, 0, 0.1);
 }
 
+.dark .node-debugger-highlight {
+    background-color: rgba(255, 127, 80, 0.1);
+}
+
 .brackets-nodejs-integration-debugger-wrapper .type {
     color: #78B2F2;
     padding-right: 5px;
