@@ -63,8 +63,10 @@ define(function (require, exports, module) {
         },
         mousemove: function (e) {
             var h = panel.height + (panel.y - e.pageY);
-            panel.html_object.style.height = h + 'px';
-            workspace_manager.recomputeLayout();
+            if (panel.html_object && panel.html_object.style) {
+                panel.html_object.style.height = h + 'px';
+                workspace_manager.recomputeLayout();
+            }
         },
         mouseup: function (e) {
             document.removeEventListener('mousemove', panel.mousemove);
@@ -195,6 +197,8 @@ define(function (require, exports, module) {
         });
         var run_configuration = new_runner.get_selected_configuration();
         new_runner.set_indicators(run_configuration);
+        var NodeDebugger = require('./debugger/main').nodeDebugger;
+        NodeDebugger.init();
     }
 
     //tab view
@@ -258,6 +262,13 @@ define(function (require, exports, module) {
             dragged_tab = null;
         });
     }
+
+    /****************************************************************************/
+    /* Debugger *****************************************************************/
+    /****************************************************************************/
+    extension_utils.loadStyleSheet(module, "debugger/assets/style.css");
+    extension_utils.loadStyleSheet(module, "debugger/assets/ionicons.css");
+    /****************************************************************************/
 
     extension_utils.loadStyleSheet(module, 'styles/panel.css');
     extension_utils.loadStyleSheet(module, 'thirdparty/objectDiff/objectDiff.css');

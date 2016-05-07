@@ -1,0 +1,148 @@
+.breakpoint-gutter {
+    color: #822;
+}
+
+.node-debugger-bp-gutter {
+    width: 21px;
+}
+
+#brackets-nodejs-integration-debugger-log .toolbar.bottom {
+    padding: 0;
+    clear: both;
+}
+
+#brackets-nodejs-integration-debugger-log a.icon {
+    margin: 0 10px;
+    color: #bbb;
+    font-size: 18px;
+}
+
+#brackets-nodejs-integration-debugger-log .toolbar.bottom a {
+    margin-left: 15px;
+    color: #bbb;
+}
+
+#brackets-nodejs-integration-debugger-log .toolbar.bottom a:hover {
+    color: #78B2F2;
+}
+
+#brackets-nodejs-integration-debugger-log a.removeBP:hover {
+    color: #F74687;
+}
+
+#brackets-nodejs-integration-debugger-log a.inactive {
+    opacity: 0.4;
+}
+
+#brackets-nodejs-integration-debugger-log a.active {
+    color: #78B2F2;
+}
+
+#brackets-nodejs-integration-debugger-log a.ion-ios7-close {
+    color: #F74687;
+}
+
+#brackets-nodejs-integration-debugger-log a.ion-ios7-checkmark {
+    color: #91CC41;
+}
+
+#brackets-nodejs-integration-debugger-input {
+    display: block;
+    min-width: 50%;
+    height: 20px;
+    max-height: 20px;
+    margin-left: 5px;
+    border: 0;
+    background: transparent;
+    float: left;
+}
+
+#brackets-nodejs-integration-debugger-input .suggestion {
+    color: #822;
+}
+
+.input-indicator {
+    content: ">>";
+    display: block;
+    height: 20px;
+    float: left;
+    color: #822;
+}
+
+.node-debugger-highlight {
+    background-color: rgba(130, 2, 0, 0.1);
+}
+
+#brackets-nodejs-integration-debugger-wrapper .type {
+    color: #78B2F2;
+    padding-right: 5px;
+}
+
+#brackets-nodejs-integration-debugger-wrapper .var-name {
+    color: #822;
+}
+
+#brackets-nodejs-integration-debugger-wrapper .hidden {
+    display: none;
+}
+
+#brackets-nodejs-integration-debugger-wrapper .brackets-nodejs-integration-debugger-content {
+    float: left;
+    width: 100%;
+    /*height: 0px;*/
+    overflow-y: scroll;
+}
+
+#brackets-nodejs-integration-debugger-log {
+    height: 100%;
+}
+
+#brackets-nodejs-integration-debugger-log .border-left {
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    /*height: 100%;*/
+}
+
+#brackets-nodejs-integration-debugger-wrapper {
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    height: -webkit-calc(100% - 44px);
+}
+
+.brackets-nodejs-integration-debugger {
+    max-width: 40%;
+    width: 40%;
+    height: 100%;
+}
+
+#brackets-nodejs-integration-debugger-wrapper #brackets-nodejs-integration-debugger-sidebar {
+    height: 100%;
+}
+
+#brackets-nodejs-integration-debugger-wrapper #brackets-nodejs-integration-debugger-content {
+    display: none;
+}
+
+.brackets-nodejs-integration-debugger-log span.object {
+    display: block;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.brackets-nodejs-integration-debugger-log span.object:before {
+    padding-right: 5px;
+}
+
+.brackets-nodejs-integration-debugger-log span.object ~ .var {
+    display: block;
+    padding-left: 10px;
+}
+
+#status-bar #node-debugger-indicator.ion-android-developer {
+    color: #F74687;
+    cursor: pointer;
+}
+
+#status-bar #node-debugger-indicator.ion-android-developer.connected {
+    color: #91CC41;
+}
