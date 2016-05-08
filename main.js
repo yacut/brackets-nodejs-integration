@@ -18,6 +18,7 @@ define(function (require, exports, module) {
     var JUMP_TO_REQUIRE_COMMAND_ID = 'brackets-nodejs-integration.go-to-require';
     var DIFF_DIALOG_ID = 'brackets-nodejs-integration-diff-dialog';
     var SETTINGS_DIALOG_ID = 'brackets-nodejs-integration-settings-dialog';
+    var INFO_DIALOG_ID = 'brackets-nodejs-integration-info-dialog';
 
     var object_diff = require('thirdparty/objectDiff/objectDiff');
     var panel_template = require('text!templates/panel.html');
@@ -174,7 +175,12 @@ define(function (require, exports, module) {
     });
     $runner_panel.on('click', '.nodejs-integration-tab-new', function () {
         var $tabs = $runner_panel.find('.nodejs-integration-tab');
-        if ($tabs >= 5) {
+        if ($tabs.length >= 5) {
+            dialogs.showModalDialog(
+                INFO_DIALOG_ID,
+                'Brackets nodejs integration - limitations',
+                'You can start only 5 runners.'
+            );
             return;
         }
         create_new_tab();
