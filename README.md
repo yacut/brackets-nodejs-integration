@@ -31,6 +31,7 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 - Open file via mouse click from error stack
 - Show Actual/Expected difference for mocha test
 - *Jump to require* command uses "Jump to declaration" and opens required file (Ctrl-Shift-J or Cmd-Shift-J)
+- NodeJS and Mocha debugger integration (based on [TheBenji](https://github.com/TheBenji/brackets-node-debugger) work)
 
 ## Some screenshots:
 
@@ -49,6 +50,14 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 ![settings](screenshots/settings.png)  
 *Settings dialog*
 
+
+##How to use debugger
+
+- Start your script in debug mode
+- Use the Buttons to _Step over_, _Step in_, _Step out_ or to _continue_ the script execution.
+- Click on a line number to set/remove a Breakpoint and use the console to get an variable for the current scope.
+- Use the arrow keys to browse through the history.
+
 ## TODO:
 
 - Refactoring :)
@@ -58,3 +67,8 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 - Support for jasmine
 - Localization
 - Better support for require.js and goto definition
+
+
+## Known issues
+- Mocha debugger do not shows the local variables
+- Brackets throws error at connection limit
