@@ -1,4 +1,6 @@
 /*global require*/
+'use strict';
+
 var debugConnector = require('./debug.js').debugConnector;
 
 var _domainManager,
@@ -130,7 +132,6 @@ function getFrame() {
         "command": "frame",
         "callback": function (c, body) {
             var handles = [];
-
             if (body.arguments && body.arguments.length > 0) {
                 body.arguments.forEach(function (b) {
                     handles.push(b.value.ref);
@@ -159,7 +160,6 @@ function _recursiveLookup(handles, depth, objects, callback) {
             'handles': handles
         },
         "callback": function (c, body) {
-
             var newHandles = [];
             //Go through every object, get the handles and send it again
             Object.keys(body).forEach(function (b) {
@@ -170,7 +170,6 @@ function _recursiveLookup(handles, depth, objects, callback) {
                     });
                 }
             });
-
 
             Object.keys(body).forEach(function (o) {
                 o = body[o];

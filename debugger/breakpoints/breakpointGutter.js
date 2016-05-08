@@ -139,7 +139,6 @@ define(function (require, exports) {
         }
         else {
             if (that._nodeDebuggerDomain) {
-                //TODO Show warning if not connected
                 that._nodeDebuggerDomain.exec("setBreakpoint", that.cd, line_number);
             }
             else {

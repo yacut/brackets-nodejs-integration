@@ -104,9 +104,9 @@ nodejs-integration-tab-view:before {
     margin-left: 6px;
 }
 
-.dark .nodejs-integration-tab{
+.dark .nodejs-integration-tab {
     background: #3f3f3f;
-    border-color:#202020;
+    border-color: #202020;
 }
 
 .nodejs-integration-tab > p {
@@ -133,9 +133,9 @@ nodejs-integration-tab-view:before {
 }
 
 .dark .nodejs-integration-tab:before,
-.dark .nodejs-integration-tab:after{
-    background:#3f3f3f;
-    border-color:#202020;
+.dark .nodejs-integration-tab:after {
+    background: #3f3f3f;
+    border-color: #202020;
 }
 
 .nodejs-integration-tab:before {
@@ -356,6 +356,11 @@ button.nodejs-integration-tab-close {
     background: url("img/okay.svg") no-repeat;
 }
 
+.mocha-treeview input + label.start_test.pass_test::before {
+    background-position: 0 -16px;
+    background: url("img/okay.svg") no-repeat;
+}
+
 .mocha-treeview label.mocha {
     background-position: 2px 0;
 }
@@ -366,6 +371,11 @@ button.nodejs-integration-tab-close {
 }
 
 .mocha-treeview input:checked + label.fail_test::before {
+    background-position: 0 -16px;
+    background: url("img/error.svg") no-repeat;
+}
+
+.mocha-treeview input + label.start_test.fail_test::before {
     background-position: 0 -16px;
     background: url("img/error.svg") no-repeat;
 }

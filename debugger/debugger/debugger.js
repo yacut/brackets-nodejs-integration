@@ -117,6 +117,8 @@ define(function (require, exports) {
             //Make sure the panel is open
             that.nodeDebuggerPanel.panel.show();
             that.nodeDebuggerPanel.$logPanel.find('a.inactive').addClass('active').removeClass('inactive');
+            // Clear locals
+            that.nodeDebuggerPanel.$debuggerSideBar.find('.brackets-nodejs-integration-debugger-log').remove();
 
             //Remove old highlight
             if (that._highlightCm) {
@@ -177,7 +179,6 @@ define(function (require, exports) {
 
         //control debugger with keyboard
         $(document).on('keydown', function (e) {
-            //console.log('keydown: ' + e.keyCode);
             if (e.keyCode === 119) {
                 continueClickHandler();
             }

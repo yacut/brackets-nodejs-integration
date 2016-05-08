@@ -7,6 +7,10 @@
     width: 1.5em;
 }
 
+.brackets-nodejs-integration-debugger {
+    display: none;
+}
+
 .brackets-nodejs-integration-debugger-log-panel .toolbar.bottom {
     padding: 0;
     clear: both;

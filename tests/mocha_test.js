@@ -1,9 +1,11 @@
 'use strict';
 
 var assert = require('assert');
+var global_variable = 'i am global';
 
 describe('Brackets mocha runner', function () {
     this.timeout(0);
+    var describe_variable = 'i am in describe';
 
     before("Before all hook", function (done) {
         console.info("before all");
@@ -34,7 +36,7 @@ describe('Brackets mocha runner', function () {
 
         it('should return console log text and shows array diff', function () {
             console.info("test#array");
-            assert.equal(['1','2'], ['3','2']);
+            assert.equal(['1', '2'], ['3', '2']);
         });
 
         it('should compare two objects', function () {
@@ -83,6 +85,7 @@ describe('Brackets mocha runner', function () {
         });
 
         it('should compare true and false', function () {
+            var foo = 5;
             assert.equal(true, false);
         });
 
@@ -90,7 +93,7 @@ describe('Brackets mocha runner', function () {
             it('should delay test and pass', function (done) {
                 console.info("test with delay");
                 assert.ok(true);
-                setTimeout(done,1000);
+                setTimeout(done, 1000);
             });
         });
 

@@ -1,10 +1,3 @@
-/*!
- * Brackets Node Debugger
- *
- * @author Benjamin August
- * @license http://opensource.org/licenses/MIT
- */
-
 /*global define, brackets, $ */
 define(function (require, exports, module) {
     "use strict";
@@ -62,10 +55,9 @@ define(function (require, exports, module) {
         if (!this.nodeDebuggerPanel) {
             var nodeDebuggerPanel = require('./debuggerPanel').create_new();
             nodeDebuggerPanel.init(this.nodeDebuggerDomain, this.id);
-            //Load Modules
-            var debug = require('./debugger/debugger').create_new(),
-                breakpoints = require('./breakpoints/breakpoints').create_new(),
-                locals = require('./locals/locals').create_new();
+            var debug = require('./debugger/debugger').create_new();
+            var breakpoints = require('./breakpoints/breakpoints').create_new();
+            var locals = require('./locals/locals').create_new();
 
             this.nodeDebuggerPanel = nodeDebuggerPanel;
             this.debug = debug;
@@ -74,7 +66,6 @@ define(function (require, exports, module) {
 
             this.debug.init(this.nodeDebuggerDomain, this.nodeDebuggerPanel);
             this.breakpoints.init(this.nodeDebuggerDomain, this.nodeDebuggerPanel);
-            //Not ready yet
             this.locals.init(this.nodeDebuggerDomain, this.nodeDebuggerPanel, this.id);
         }
         this.nodeDebuggerDomain.exec("debugger_start", this.debug_port, prefs.get("debugger-host"), prefs.get("lookupDepth"));

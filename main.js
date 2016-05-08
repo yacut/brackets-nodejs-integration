@@ -115,11 +115,11 @@ define(function (require, exports, module) {
     $runner_panel.on('click', '.link_to_diff', function () {
         var actual = JSON.parse($(this).attr('actual'));
         var expected = JSON.parse($(this).attr('expected'));
-        if(typeof actual !== 'object'){
-            actual = {actual: actual.toString()};
+        if (typeof actual !== 'object') {
+            actual = [actual.toString()];
         }
-        if(typeof expected !== 'object'){
-            expected = {expected: expected.toString()};
+        if (typeof expected !== 'object') {
+            expected = [expected.toString()];
         }
         var diff = object_diff.diffOwnProperties(actual, expected);
         var diff_html = object_diff.convertToXMLString(diff);
