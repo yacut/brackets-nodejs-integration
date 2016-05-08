@@ -99,7 +99,7 @@ define(function (require, exports) {
      **/
     var debuggerDomainEvents = function (that) {
         //If debugger is running again deactive buttons and remove line highlight
-        $(that._nodeDebuggerDomain).on("running", function () {
+        that._nodeDebuggerDomain.on("running", function () {
             that.nodeDebuggerPanel.$logPanel.find('a.active').addClass('inactive').removeClass('active');
             if (that._highlightCm) {
                 that._highlightCm.removeLineClass(that._activeLine, 'node-debugger-highlight-background', 'node-debugger-highlight');
@@ -110,7 +110,7 @@ define(function (require, exports) {
         });
 
         //If the debugger breaks, activate buttons and open the file we break/highlight line
-        $(that._nodeDebuggerDomain).on("break", function (e, body) {
+        that._nodeDebuggerDomain.on("break", function (e, body) {
             //Fixme: Just to support windows, however this most likely won't work in every case
             var docPath = body.script.name.replace(/\\/g, '/');
 
@@ -134,7 +134,7 @@ define(function (require, exports) {
         });
 
         //If the Debugger connects highlight the UI parts that need to be highlighted
-        $(that._nodeDebuggerDomain).on("connect", function (e, body) {
+        that._nodeDebuggerDomain.on("connect", function (e, body) {
             that.nodeDebuggerPanel.$logPanel.find('.activate').html('<i class="fa fa-check-circle" aria-hidden="true"></i>');
             //$('#node-debugger-indicator').addClass('connected');
 
@@ -147,7 +147,7 @@ define(function (require, exports) {
         });
 
         //If the Debugger disconnect remove all the highlights
-        $(that._nodeDebuggerDomain).on("close", function (e, err) {
+        that._nodeDebuggerDomain.on("close", function (e, err) {
             var msg = err;
             if (err === 'ECONNREFUSED') {
                 msg = "Couldn't connect to " + prefs.get("debugger-host") + ":" + prefs.get("debugger-port");
@@ -169,7 +169,7 @@ define(function (require, exports) {
         });
 
         //On evaluate display the result
-        $(that._nodeDebuggerDomain).on("eval", function (e, body) {
+        that._nodeDebuggerDomain.on("eval", function (e, body) {
             var $wrapper = $('<span>').addClass('wrapper');
             var $output = that.nodeDebuggerPanel.createEvalHTML(body, 0, body.lookup);
 

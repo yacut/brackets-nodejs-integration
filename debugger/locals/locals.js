@@ -42,7 +42,7 @@ define(function (require, exports) {
         this.nodeDebuggerPanel = nodeDebuggerPanel;
 
         var that = this;
-        $(this._nodeDebuggerDomain).on('frame', function (e, body) {
+        this._nodeDebuggerDomain.on('frame', function (e, body) {
             console.log(e, body);
 
             //reset stuff
@@ -71,7 +71,7 @@ define(function (require, exports) {
         });
 
         //Get the frame on break
-        $(that._nodeDebuggerDomain).on('break', function () {
+        that._nodeDebuggerDomain.on('break', function () {
             that._nodeDebuggerDomain.exec('getFrame');
         });
 

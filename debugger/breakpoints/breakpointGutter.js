@@ -224,7 +224,7 @@ define(function (require, exports) {
         var that = this;
         _updateCm(this);
         _updateGutters(this);
-        $(DocumentManager).on("currentDocumentChange", function () {
+        EditorManager.on("activeEditorChange", function () {
             _clearGutters(that);
             _updateCm(that);
             _updateGutters(that);
