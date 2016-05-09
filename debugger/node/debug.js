@@ -90,7 +90,7 @@ debugConnector.prototype.connect = function () {
                 }
             }
             //console.log('BodyLength: %d | ContentLength: %d', self._body.length, self._contentLength);
-            if (self._body.length === self._contentLength && self._contentLength > -1) {
+            if (self._body.length === self._contentLength && self._contentLength > 0) {
                 var responseIgnored = true;
                 try {
                     var body = JSON.parse(self._body);
