@@ -104,6 +104,11 @@ debugConnector.prototype.connect = function () {
                             self._waitingForResponse[body.request_seq].callback(body.command, body.body, body.running);
                         }
                         delete self._waitingForResponse[body.request_seq];
+                        
+                        if(body.command === 'version'){
+                            var version = body.body.V8Version;
+                            //TODO Print node/debugger version on connect
+                        }
                     }
                     if (body.event === 'afterCompile'){
                         // Muffle for now
@@ -118,7 +123,6 @@ debugConnector.prototype.connect = function () {
                 }
                 catch (e) {
                     //Just ignore it for now
-                    //TODO Print node/debugger version on connect
                     console.error('Invalid response: ' + data.toString(), e);
                 }
                 //reset header && body
