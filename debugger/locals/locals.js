@@ -24,7 +24,7 @@ define(function (require, exports) {
                 var $a = $('<div>').addClass('brackets-nodejs-integration-debugger-log');
                 //Add the varName again
                 that.locals[l].varName = l;
-                that.nodeDebuggerPanel.createEvalHTML(that.locals[l], prefs.get("lookupDepth"), that.lookup).appendTo($a);
+                that.nodeDebuggerPanel.createEvalHTML(that.locals[l], 0, that.lookup, prefs.get("lookupDepth")).appendTo($a);
                 $a.appendTo($wrapper);
             }
         });
@@ -43,7 +43,6 @@ define(function (require, exports) {
 
         var that = this;
         this._nodeDebuggerDomain.on('frame', function (e, body) {
-            console.log(e, body);
 
             //reset stuff
             that.locals = {};
