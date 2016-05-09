@@ -105,16 +105,16 @@ debugConnector.prototype.connect = function () {
                         }
                         delete self._waitingForResponse[body.request_seq];
                     }
+                    
+                    if (responseIgnored) {
+                        console.error('[Node Debugger] V8 Response ignored: ');
+                        console.error(self._body);
+                    }
                 }
                 catch (e) {
                     //Just ignore it for now
                     //TODO Print node/debugger version on connect
                     console.error('Unvalid response: ' + data.toString(), e);
-                }
-
-                if (responseIgnored) {
-                    console.error('[Node Debugger] V8 Response ignored: ');
-                    console.error(self._body);
                 }
                 //reset header && body
                 self._header = true;
