@@ -24,7 +24,7 @@ define(function (require, exports) {
                 var $a = $('<div>').addClass('brackets-nodejs-integration-debugger-log');
                 //Add the varName again
                 that.locals[l].varName = l;
-                that.nodeDebuggerPanel.createEvalHTML(that.locals[l], prefs.get("lookupDepth"), that.lookup).appendTo($a);
+                that.nodeDebuggerPanel.createEvalHTML(that.locals[l], 0, that.lookup, prefs.get("lookupDepth")).appendTo($a);
                 $a.appendTo($wrapper);
             }
         });
@@ -42,8 +42,7 @@ define(function (require, exports) {
         this.nodeDebuggerPanel = nodeDebuggerPanel;
 
         var that = this;
-        $(this._nodeDebuggerDomain).on('frame', function (e, body) {
-            console.log(e, body);
+        this._nodeDebuggerDomain.on('frame', function (e, body) {
 
             //reset stuff
             that.locals = {};
@@ -71,13 +70,12 @@ define(function (require, exports) {
         });
 
         //Get the frame on break
-        $(that._nodeDebuggerDomain).on('break', function () {
+        that._nodeDebuggerDomain.on('break', function () {
             that._nodeDebuggerDomain.exec('getFrame');
         });
 
         //Add suggestions
         that.nodeDebuggerPanel.$debuggerInput.on('keyup', function (e) {
-            console.log(that._allLocals);
             if (e.keyCode === 39) {
                 var $s = that.nodeDebuggerPanel.$debuggerInput.find('.suggestion');
                 var s = $s.text();

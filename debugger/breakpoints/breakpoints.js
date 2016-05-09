@@ -22,14 +22,14 @@ define(function (require, exports) {
         this.nodeDebuggerPanel = nodeDebuggerPanel;
         var that = this;
         //If we loose the connection remove all breakpoints if the user wants that
-        $(this._nodeDebuggerDomain).on('close', function () {
+        this._nodeDebuggerDomain.on('close', function () {
             if (prefs.get("removeBreakpointsOnDisconnect")) {
                 that.bpGutter.removeAllBreakpoints();
             }
         });
 
         //Set all breakpoints again on connect
-        $(this._nodeDebuggerDomain).on("connect", function () {
+        this._nodeDebuggerDomain.on("connect", function () {
             that.bpGutter.setAllBreakpoints();
             /*var breakpoints = prefs.get('breakpoints');
             if (breakpoints.length > 0) {
@@ -40,7 +40,7 @@ define(function (require, exports) {
         });
 
         //Set a new breakpoint
-        $(this._nodeDebuggerDomain).on("setBreakpoint", function (e, bp) {
+        this._nodeDebuggerDomain.on("setBreakpoint", function (e, bp) {
             that.bpGutter.addBreakpoint(bp);
         });
 

@@ -176,7 +176,7 @@ define(function (require, exports) {
      * @param {object} Initally the body.lookup propertie
      * @return {jquery object} A jquery HTML object you can inject into the console
      **/
-    debuggerPanel.prototype.createEvalHTML = function (body, depth, lookup) {
+    debuggerPanel.prototype.createEvalHTML = function (body, depth, lookup, maxDepth) {
         var $html = $('<span>');
         var $inside = $('<span>');
 
@@ -189,7 +189,9 @@ define(function (require, exports) {
                 if (lookup[p.ref]) {
                     o[p.name] = lookup[p.ref].text;
                     lookup[p.ref].varName = p.name;
-                    that.createEvalHTML(lookup[p.ref], depth, lookup).addClass('var hidden').appendTo($html);
+                    if(depth <= maxDepth){ // Don't go too deep
+                        that.createEvalHTML(lookup[p.ref], depth, lookup).addClass('var hidden').appendTo($html);
+                    }
                     $inside.addClass('object ion-arrow-right-b');
                 }
             });
