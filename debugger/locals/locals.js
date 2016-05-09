@@ -77,7 +77,6 @@ define(function (require, exports) {
 
         //Add suggestions
         that.nodeDebuggerPanel.$debuggerInput.on('keyup', function (e) {
-            console.log(that._allLocals);
             if (e.keyCode === 39) {
                 var $s = that.nodeDebuggerPanel.$debuggerInput.find('.suggestion');
                 var s = $s.text();

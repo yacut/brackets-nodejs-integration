@@ -105,16 +105,21 @@ debugConnector.prototype.connect = function () {
                         }
                         delete self._waitingForResponse[body.request_seq];
                     }
+                    if (body.event === 'afterCompile'){
+                        // Muffle for now
+                        // Maybe use this add a feature to list the files the debugger has loaded
+                        responseIgnored = false;
+                    }
                     
                     if (responseIgnored) {
-                        console.error('[Node Debugger] V8 Response ignored: ');
-                        console.error(self._body);
+                        console.warn('[Node Debugger] V8 Response ignored: ');
+                        console.warn(JSON.parse(self._body));
                     }
                 }
                 catch (e) {
                     //Just ignore it for now
                     //TODO Print node/debugger version on connect
-                    console.error('Unvalid response: ' + data.toString(), e);
+                    console.error('Invalid response: ' + data.toString(), e);
                 }
                 //reset header && body
                 self._header = true;
