@@ -195,7 +195,7 @@ define(function (require, exports) {
                     $inside.addClass('object ion-arrow-right-b');
                 }
             });
-            $inside.text('...').on('click', evalHTMLonClick); //JSON.stringify(o) to copy object
+            $inside.text('{ ... }').on('click', evalHTMLonClick); //JSON.stringify(o) to copy object
         }
         else if (body.type === 'function') {
             $inside.text('<native code>');

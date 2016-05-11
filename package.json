@@ -1,9 +1,9 @@
 {
     "name": "brackets-nodejs-integration",
     "title": "NodeJS integration",
-    "description": "Nodejs and Mocha integration for Brackets",
+    "description": "Nodejs and Mocha integration for Brackets with debugger",
     "homepage": "https://github.com/yacut/brackets-nodejs-integration",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "license": "MIT",
     "engines": {
         "brackets": ">=0.44.0"
@@ -14,7 +14,9 @@
     "execute",
     "command",
     "runner",
-    "mocha"
+    "mocha",
+    "debug",
+    "debugger"
   ],
     "dependencies": {
         "mocha": "2.4.5",
