@@ -1,24 +1,22 @@
-/*!
- * Brackets Node Debugger
- *
- * @author Benjamin August
- * @license http://opensource.org/licenses/MIT
- */
-
+'use strict';
 /*global define, brackets, $ */
 define(function (require, exports) {
-    "use strict";
 
-    var _ = brackets.getModule("thirdparty/lodash"),
-        EditorManager = brackets.getModule("editor/EditorManager"),
-        DocumentManager = brackets.getModule("document/DocumentManager");
-    var PreferencesManager = brackets.getModule("preferences/PreferencesManager");
-    var prefs = PreferencesManager.getExtensionPrefs("brackets-nodejs-integration");
+    var _ = brackets.getModule('thirdparty/lodash');
+
+    var command_manager = brackets.getModule('command/CommandManager');
+    var document_manager = brackets.getModule('document/DocumentManager');
+    var editor_manager = brackets.getModule('editor/EditorManager');
+    var menus = brackets.getModule('command/Menus');
+    var preferences_manager = brackets.getModule('preferences/PreferencesManager');
+
+    var prefs = preferences_manager.getExtensionPrefs('brackets-nodejs-integration');
     var gutterName = 'node-debugger-bp-gutter';
 
     exports.create_new = function () {
         return new breakpointGutter();
     };
+
     var breakpointGutter = function () {
         this.cm = null;
         this.cd = null;
@@ -31,7 +29,7 @@ define(function (require, exports) {
      * Sets the CodeMirror instance for the active editor
      */
     function _updateCm(that) {
-        var editor = EditorManager.getActiveEditor();
+        var editor = editor_manager.getActiveEditor();
 
         if (!editor || !editor._codeMirror) {
             return;
@@ -40,7 +38,7 @@ define(function (require, exports) {
         that.cm = editor._codeMirror;
 
         //Get the path to the current file as well
-        var _cd = DocumentManager.getCurrentDocument();
+        var _cd = document_manager.getCurrentDocument();
         if (_cd) {
             that.cd = _cd.file.fullPath;
         }
@@ -56,23 +54,23 @@ define(function (require, exports) {
             return;
         }
 
-        var gutters = that.cm.getOption("gutters").slice(0);
+        var gutters = that.cm.getOption('gutters').slice(0);
         if (gutters.indexOf(gutterName) === -1) {
             gutters.unshift(gutterName);
-            that.cm.setOption("gutters", gutters);
-            that.cm.on("gutterClick", function (cm, n, gutterId) {
+            that.cm.setOption('gutters', gutters);
+            that.cm.on('gutterClick', function (cm, n, gutterId) {
                 gutterClick(cm, n, gutterId, that);
             });
         }
 
         //Set all the gutters now
         _.each(prefs.get('breakpoints'), function (bp) {
-            var editor = EditorManager.getActiveEditor();
+            var editor = editor_manager.getActiveEditor();
             if (!editor || !editor._codeMirror) {
                 return;
             }
             if (bp.fullPath === that.cd) {
-                var $marker = $("<div>")
+                var $marker = $('<div>')
                     .addClass('breakpoint-gutter')
                     .html('<i class="fa fa-circle" aria-hidden="true"></i>');
                 editor._codeMirror.setGutterMarker(bp.line, gutterName, $marker[0]);
@@ -88,13 +86,13 @@ define(function (require, exports) {
         if (!that.cm) {
             return;
         }
-        var gutters = that.cm.getOption("gutters").slice(0),
+        var gutters = that.cm.getOption('gutters').slice(0),
             io = gutters.indexOf(gutterName);
         if (io !== -1) {
             gutters.splice(io, 1);
             that.cm.clearGutter(gutterName);
-            that.cm.setOption("gutters", gutters);
-            that.cm.off("gutterClick", function (cm, n, gutterId) {
+            that.cm.setOption('gutters', gutters);
+            that.cm.off('gutterClick', function (cm, n, gutterId) {
                 gutterClick(cm, n, gutterId, that);
             });
         }
@@ -112,7 +110,7 @@ define(function (require, exports) {
      * @param {String} gutterId
      */
     function gutterClick(code_mirror, line_number, gutter_id, that) {
-        if (gutter_id !== gutterName && gutter_id !== "CodeMirror-linenumbers") {
+        if (gutter_id !== gutterName && gutter_id !== 'CodeMirror-linenumbers') {
             return;
         }
 
@@ -120,7 +118,7 @@ define(function (require, exports) {
 
         if (line_info.gutterMarkers && line_info.gutterMarkers[gutterName]) {
             if (that._nodeDebuggerDomain) {
-                that._nodeDebuggerDomain.exec("removeBreakpoint", {
+                that._nodeDebuggerDomain.exec('removeBreakpoint', {
                     line: line_number,
                     fullPath: that.cd
                 });
@@ -139,8 +137,11 @@ define(function (require, exports) {
         }
         else {
             if (that._nodeDebuggerDomain) {
-                if (_.indexOf(prefs.get('breakpoints'), {fullPath: that.cd, line: line_number}) !== -1) {
-                    that._nodeDebuggerDomain.exec("setBreakpoint", that.cd, line_number);
+                if (_.indexOf(prefs.get('breakpoints'), {
+                        fullPath: that.cd,
+                        line: line_number
+                    }) !== -1) {
+                    that._nodeDebuggerDomain.exec('setBreakpoint', that.cd, line_number);
                 }
             }
             else {
@@ -164,10 +165,10 @@ define(function (require, exports) {
         var that = this ? this : self;
         bp.actual_line = bp.line ? bp.line : bp.actual_locations[0].line;
         if (!that.cm) {
-            var editor = EditorManager.getActiveEditor();
+            var editor = editor_manager.getActiveEditor();
             that.cm = editor._codeMirror;
         }
-        var _cd = DocumentManager.getCurrentDocument();
+        var _cd = document_manager.getCurrentDocument();
         if (bp.fullPath === _cd.file.fullPath) {
             bp.cm = that.cm;
             var breakpoints_to_save = prefs.get('breakpoints');
@@ -181,7 +182,7 @@ define(function (require, exports) {
                 return [elem.fullPath, elem.line].join();
             }));
             prefs.save();
-            var $marker = $("<div>")
+            var $marker = $('<div>')
                 .addClass('breakpoint-gutter')
                 .html('<i class="fa fa-circle" aria-hidden="true"></i>');
             bp.cm.setGutterMarker(bp.actual_line, gutterName, $marker[0]);
@@ -196,7 +197,7 @@ define(function (require, exports) {
         _clearGutters(that);
         //And actually remove the breakpoints when the debugger is running
         _.each(prefs.get('breakpoints'), function (bp) {
-            that._nodeDebuggerDomain.exec("removeBreakpoint", bp);
+            that._nodeDebuggerDomain.exec('removeBreakpoint', bp);
         });
         //Delete all
         prefs.set('breakpoints', []);
@@ -214,22 +215,35 @@ define(function (require, exports) {
     breakpointGutter.prototype.setAllBreakpoints = function setAllBreakpoints() {
         var that = this;
         _.each(prefs.get('breakpoints'), function (bp) {
-            that._nodeDebuggerDomain.exec("setBreakpoint", bp.fullPath, bp.line);
+            that._nodeDebuggerDomain.exec('setBreakpoint', bp.fullPath, bp.line);
         });
         //NOTE: Reload all Breakpoints?
         //Request list of actual set breakpoints
-        //_nodeDebuggerDomain.exec("getBreakpoints");
+        //_nodeDebuggerDomain.exec('getBreakpoints');
     };
 
-    breakpointGutter.prototype.init = function init(nodeDebuggerDomain) {
+    breakpointGutter.prototype.init = function init(nodeDebuggerDomain, main_menu) {
         this._nodeDebuggerDomain = nodeDebuggerDomain;
         var that = this;
         _updateCm(this);
         _updateGutters(this);
-        EditorManager.on("activeEditorChange", function () {
+        editor_manager.on('activeEditorChange', function () {
             _clearGutters(that);
             _updateCm(that);
             _updateGutters(that);
         });
+        if (main_menu) {
+            // Register command and add it to the menu.
+            var TOGGLE_BREAKPOINT_COMMAND_ID = 'brackets-nodejs-integration.toggle-breakpoint';
+            command_manager.register('Toggle Breakpoint', TOGGLE_BREAKPOINT_COMMAND_ID, function () {
+                var editor = editor_manager.getActiveEditor();
+                var cursor_position = editor.getCursorPos();
+                if (editor && cursor_position) {
+                    var current_line_position = cursor_position.line;
+                    gutterClick(editor._codeMirror, current_line_position, gutterName, that);
+                }
+            });
+            main_menu.addMenuItem(TOGGLE_BREAKPOINT_COMMAND_ID, 'F9', menus.LAST);
+        }
     };
 });

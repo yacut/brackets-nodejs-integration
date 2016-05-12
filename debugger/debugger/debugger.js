@@ -1,13 +1,13 @@
+'use strict';
 /*global define, $, brackets */
 define(function (require, exports) {
-    "use strict";
 
-    var PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
-        DocumentManager = brackets.getModule("document/DocumentManager"),
-        CommandManager = brackets.getModule("command/CommandManager"),
-        Commands = brackets.getModule("command/Commands"),
-        Editor = brackets.getModule("editor/EditorManager"),
-        prefs = PreferencesManager.getExtensionPrefs("brackets-nodejs-integration");
+    var PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
+        DocumentManager = brackets.getModule('document/DocumentManager'),
+        CommandManager = brackets.getModule('command/CommandManager'),
+        Commands = brackets.getModule('command/Commands'),
+        Editor = brackets.getModule('editor/EditorManager'),
+        prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
 
     var debug = function () {
         this._nodeDebuggerDomain = null;
@@ -69,10 +69,10 @@ define(function (require, exports) {
         var that = this;
         //Add all the standard control elements
         var $activate = $('<a>').addClass('icon activate').attr('title', 'Connect status').html('<i class="fa fa-times-circle" aria-hidden="true"></i>');
-        var $next = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Step over to next function (F10)').html('<i class="fa fa-share" aria-hidden="true"></i>');
-        var $in = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Step in (F11)').html('<i class="fa fa-level-down" aria-hidden="true"></i>');
-        var $out = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Step out (Shift-F11)').html('<i class="fa fa-level-up" aria-hidden="true"></i>');
-        var $continue = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Continue (F8)').html('<i class="fa fa-forward" aria-hidden="true"></i>');
+        var $next = $('<a>').addClass('icon inactive step_over_btn').attr('href', '#').attr('title', 'Step over to next function').html('<i class="fa fa-share" aria-hidden="true"></i>');
+        var $in = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Step in').html('<i class="fa fa-level-down" aria-hidden="true"></i>');
+        var $out = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Step out').html('<i class="fa fa-level-up" aria-hidden="true"></i>');
+        var $continue = $('<a>').addClass('icon inactive continue_btn').attr('href', '#').attr('title', 'Continue').html('<i class="fa fa-forward" aria-hidden="true"></i>');
 
         var $jumpToBreak = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Jump to break').html('<i class="fa fa-eye" aria-hidden="true"></i>');
 
@@ -99,7 +99,7 @@ define(function (require, exports) {
      **/
     var debuggerDomainEvents = function (that) {
         //If debugger is running again deactive buttons and remove line highlight
-        that._nodeDebuggerDomain.on("running", function () {
+        that._nodeDebuggerDomain.on('running', function () {
             that.nodeDebuggerPanel.$logPanel.find('a.active').addClass('inactive').removeClass('active');
             if (that._highlightCm) {
                 that._highlightCm.removeLineClass(that._activeLine, 'node-debugger-highlight-background', 'node-debugger-highlight');
@@ -110,7 +110,7 @@ define(function (require, exports) {
         });
 
         //If the debugger breaks, activate buttons and open the file we break/highlight line
-        that._nodeDebuggerDomain.on("break", function (e, body) {
+        that._nodeDebuggerDomain.on('break', function (e, body) {
             //Fixme: Just to support windows, however this most likely won't work in every case
             var docPath = body.script.name.replace(/\\/g, '/');
 
@@ -134,7 +134,7 @@ define(function (require, exports) {
         });
 
         //If the Debugger connects highlight the UI parts that need to be highlighted
-        that._nodeDebuggerDomain.on("connect", function (e, body) {
+        that._nodeDebuggerDomain.on('connect', function (e, body) {
             that.nodeDebuggerPanel.$logPanel.find('.activate').html('<i class="fa fa-check-circle" aria-hidden="true"></i>');
             //$('#node-debugger-indicator').addClass('connected');
 
@@ -147,10 +147,10 @@ define(function (require, exports) {
         });
 
         //If the Debugger disconnect remove all the highlights
-        that._nodeDebuggerDomain.on("close", function (e, err) {
+        that._nodeDebuggerDomain.on('close', function (e, err) {
             var msg = err;
             if (err === 'ECONNREFUSED') {
-                msg = "Couldn't connect to " + prefs.get("debugger-host") + ":" + prefs.get("debugger-port");
+                msg = 'Could not connect to ' + prefs.get('debugger-host') + ':' + prefs.get('debugger-port');
             }
 
             that.nodeDebuggerPanel.log($('<span>').text(msg));
@@ -169,7 +169,7 @@ define(function (require, exports) {
         });
 
         //On evaluate display the result
-        that._nodeDebuggerDomain.on("eval", function (e, body) {
+        that._nodeDebuggerDomain.on('eval', function (e, body) {
             var $wrapper = $('<span>').addClass('wrapper');
             var $output = that.nodeDebuggerPanel.createEvalHTML(body, 0, body.lookup);
 
@@ -178,7 +178,7 @@ define(function (require, exports) {
         });
 
         //control debugger with keyboard
-        $(document).on('keydown', function (e) {
+        /*$(document).on('keydown', function (e) {
             if (e.keyCode === 119) {
                 continueClickHandler();
             }
@@ -193,7 +193,7 @@ define(function (require, exports) {
             else if (e.keyCode === 122) {
                 inClickHandler();
             }
-        });
+        });*/
     };
 
 

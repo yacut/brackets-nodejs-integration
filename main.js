@@ -19,9 +19,17 @@ define(function (require, exports, module) {
     var ADD_NODE_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-node-to-runner';
     var JUMP_TO_REQUIRE_COMMAND_ID = 'brackets-nodejs-integration.go-to-require';
     var DIFF_DIALOG_ID = 'brackets-nodejs-integration-diff-dialog';
+    var MAIN_MENU_ID = 'brackets-nodejs-integration-main-menu';
     var SETTINGS_DIALOG_ID = 'brackets-nodejs-integration-settings-dialog';
     var INFO_DIALOG_ID = 'brackets-nodejs-integration-info-dialog';
+    var RUNNER_CMD_ID = 'brackets-nodejs-integration.runner';
+    var START_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.start-runner';
+    var STOP_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.stop-runner';
+    var DEBUG_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.debug-runner';
+    var STEP_OVER_RUNNER_ID = 'brackets-nodejs-integration.debug-step-over';
+    var CONTINUE_RUNNER_ID = 'brackets-nodejs-integration.debug-continue';
 
+    var main_menu = menus.addMenu('NodeJS', MAIN_MENU_ID);
     var object_diff = require('thirdparty/objectDiff/objectDiff');
     var panel_template = require('text!templates/panel.html');
     var runner_panel_template = require('text!templates/runner_panel.html');
@@ -578,12 +586,6 @@ define(function (require, exports, module) {
     $('#main-toolbar .buttons').append($node_runner_indicator);
 
     /****************************************************************************/
-    /* Global breakpoint gutter *************************************************/
-    /****************************************************************************/
-    var global_gutter = require('./debugger/breakpoints/breakpointGutter').create_new();
-    global_gutter.init();
-
-    /****************************************************************************/
     /* Jump to Require **********************************************************/
     /****************************************************************************/
     var editor_context_menu = menus.getContextMenu(menus.ContextMenuIds.EDITOR_MENU);
@@ -748,8 +750,48 @@ define(function (require, exports, module) {
             go_to_require(current_editor, current_line, search_name);
         });
     });
-    editor_context_menu.addMenuItem(JUMP_TO_REQUIRE_COMMAND_ID, 'Ctrl-Shift-J', menus.LAST);
+    editor_context_menu.addMenuItem(JUMP_TO_REQUIRE_COMMAND_ID);
     /****************************************************************************/
+
+    command_manager.register('Show/Hide runner', RUNNER_CMD_ID, function () {
+        panel.show_or_hide();
+    });
+    main_menu.addMenuItem(RUNNER_CMD_ID, 'F4');
+
+    command_manager.register('Start (active runner)', START_ACTIVE_RUNNER_ID, function () {
+        panel.show();
+        panel.html_object.find('.nodejs-integration-tab-pane.active .run_btn').trigger('click');
+    });
+    main_menu.addMenuItem(START_ACTIVE_RUNNER_ID, 'F6', menus.LAST);
+    command_manager.register('Debug (active runner)', DEBUG_ACTIVE_RUNNER_ID, function () {
+        panel.show();
+        panel.html_object.find('.nodejs-integration-tab-pane.active .debug_btn').trigger('click');
+    });
+    main_menu.addMenuItem(DEBUG_ACTIVE_RUNNER_ID, 'F7', menus.LAST);
+
+    command_manager.register('Stop (active runner)', STOP_ACTIVE_RUNNER_ID, function () {
+        panel.show();
+        panel.html_object.find('.nodejs-integration-tab-pane.active .stop_btn').trigger('click');
+    });
+    main_menu.addMenuItem(STOP_ACTIVE_RUNNER_ID, 'Shift-F6', menus.LAST);
+
+    command_manager.register('Debugger - step over (active runner)', STEP_OVER_RUNNER_ID, function () {
+        panel.html_object.find('.nodejs-integration-tab-pane.active .step_over_btn').trigger('click');
+    });
+    main_menu.addMenuItem(STEP_OVER_RUNNER_ID, 'Shift-F11', menus.LAST);
+
+    command_manager.register('Debugger - continue (active runner)', CONTINUE_RUNNER_ID, function () {
+        panel.html_object.find('.nodejs-integration-tab-pane.active .continue_btn').trigger('click');
+    });
+    main_menu.addMenuItem(CONTINUE_RUNNER_ID, 'F11', menus.LAST);
+    main_menu.addMenuDivider();
+    /****************************************************************************/
+    /* Global breakpoint gutter *************************************************/
+    /****************************************************************************/
+    var global_gutter = require('./debugger/breakpoints/breakpointGutter').create_new();
+    global_gutter.init(null, main_menu);
+    /****************************************************************************/
+    main_menu.addMenuItem(JUMP_TO_REQUIRE_COMMAND_ID, 'Ctrl-Shift-J', menus.LAST);
 
     var context_menu = menus.getContextMenu(menus.ContextMenuIds.PROJECT_MENU);
     context_menu.addMenuDivider();
