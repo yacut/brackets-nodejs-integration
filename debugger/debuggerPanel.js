@@ -72,13 +72,13 @@ define(function (require, exports) {
      */
     function evalHTMLonClick(e) {
         var $t = $(e.target);
-        if ($t.hasClass('ion-arrow-right-b')) {
-            $t.removeClass('ion-arrow-right-b').addClass('ion-arrow-down-b');
+        if ($t.hasClass('fa-chevron-right')) {
+            $t.removeClass('fa-chevron-right').addClass('fa-chevron-down');
             $t.siblings().removeClass('hidden');
         }
         else {
-            if ($t.hasClass('ion-arrow-down-b')) {
-                $t.removeClass('ion-arrow-down-b').addClass('ion-arrow-right-b');
+            if ($t.hasClass('fa-chevron-down')) {
+                $t.removeClass('fa-chevron-down').addClass('fa-chevron-right');
                 $t.siblings().addClass('hidden');
             }
         }
@@ -192,7 +192,7 @@ define(function (require, exports) {
                     if(depth <= maxDepth){ // Don't go too deep
                         that.createEvalHTML(lookup[p.ref], depth, lookup).addClass('var hidden').appendTo($html);
                     }
-                    $inside.addClass('object ion-arrow-right-b');
+                    $inside.addClass('object fa fa-chevron-right');
                 }
             });
             $inside.text('{ ... }').on('click', evalHTMLonClick); //JSON.stringify(o) to copy object

@@ -147,13 +147,14 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    font-size: 11px;
 }
 
 .brackets-nodejs-integration-debugger-log span.object:before {
-    padding-right: 5px;
+    padding-right: 3px;
 }
 
 .brackets-nodejs-integration-debugger-log span.object ~ .var {
     display: block;
-    padding-left: 10px;
+    padding-left: 24px;
 }
