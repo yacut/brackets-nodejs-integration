@@ -12,15 +12,15 @@
     <div class="mocha-summary"></div>
 </div>
 <section class="split-panel">
+    <div class="mocha-treeview-toggle btn-alt-quiet" style="width: 8px; position: relative; display:none;" title="Toggle mocha view"><i class="fa fa-angle-double-left" aria-hidden="true" style="top: 50%; position: absolute;"></i></div>
     <div class="mocha-treeview resizable-content horz-resizable right-resizer" style="display: none;height: -webkit-calc(100% - 34px);">
-        <div class="btn-group" style="padding: 4px 8px;">
-            <button class="collapse_btn btn btn-mini" title="Collapse All"><i class="fa fa-compress"></i></button>
-            <button class="expand_btn btn btn-mini" title="Expand All"><i class="fa fa-expand"></i></button>
-        </div>
         <ul>
             <li>
                 <input type="checkbox" id="all_tests_results" class="all-tests-results" checked/>
-                <label id="all_tests_results_label" for="all_tests_results">Tests</label>
+                <label id="all_tests_results_label" for="all_tests_results">Tests
+                    <span class="collapse_btn btn-alt-quiet" title="Collapse All"><i class="fa fa-compress"></i></span>
+                    <span class="expand_btn btn-alt-quiet" title="Expand All"><i class="fa fa-expand"></i></span>
+                </label>
                 <ul class="test-list">
                 </ul>
             </li>
@@ -29,6 +29,8 @@
     <div class="table-container resizable" style="border-right: 1px solid rgba(0, 0, 0, 0.2);">
         <div class="brackets-nodejs-integration-console resizable" style="font-size: 14px; border: 0px solid black; -webkit-user-select: text; word-break: normal; white-space: pre; word-wrap: break-word;"></div>
     </div>
+    <div class="cw-hover-sidebar"></div>
     <div class="brackets-nodejs-integration-debugger">
     </div>
+    <div class="brackets-nodejs-integration-debugger-toggle btn-alt-quiet" style="width: 6px; position: relative; display:none;" title="Toggle debugger"><i class="fa fa-angle-double-right" aria-hidden="true" style="top: 50%; position: absolute;"></i></div>
 </section>

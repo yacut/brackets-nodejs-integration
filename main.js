@@ -1,5 +1,7 @@
+/*global brackets,$*/
+'use strict';
+
 define(function (require, exports, module) {
-    'use strict';
 
     var _ = brackets.getModule('thirdparty/lodash');
     var command_manager = brackets.getModule('command/CommandManager');
@@ -80,6 +82,28 @@ define(function (require, exports, module) {
     runner_panel = workspace_manager.createBottomPanel(panel.id, $(panel_template));
     $runner_panel = runner_panel.$panel;
 
+    $runner_panel.on('click', '.mocha-treeview-toggle', function (e) {
+        var mocha_treeview = $(this).parent().find('.mocha-treeview');
+        if (mocha_treeview.is(':visible')) {
+            $(this).html('<i class="fa fa-angle-double-right" aria-hidden="true" style="top: 50%; position: absolute;"></i>');
+        }
+        else {
+            $(this).html('<i class="fa fa-angle-double-left" aria-hidden="true" style="top: 50%; position: absolute;"></i>');
+        }
+        mocha_treeview.toggle();
+    });
+
+    $runner_panel.on('click', '.brackets-nodejs-integration-debugger-toggle', function (e) {
+        var brackets_nodejs_integration_debugger = $(this).parent().find('.brackets-nodejs-integration-debugger');
+        if (brackets_nodejs_integration_debugger.is(':visible')) {
+            $(this).html('<i class="fa fa-angle-double-right" aria-hidden="true" style="top: 50%; position: absolute;"></i>');
+        }
+        else {
+            $(this).html('<i class="fa fa-angle-double-left" aria-hidden="true" style="top: 50%; position: absolute;"></i>');
+        }
+        brackets_nodejs_integration_debugger.toggle();
+    });
+
     $runner_panel.on('click', '.link_to_source', function (e) {
         var link = e.target.innerHTML;
         var link_properties = link.split(':');
@@ -154,6 +178,7 @@ define(function (require, exports, module) {
         get_runner(id).debug();
         get_debugger(id).init();
         $runner_panel.find('.brackets-nodejs-integration-debugger').show();
+        $runner_panel.find('.brackets-nodejs-integration-debugger-toggle').show();
     });
     $runner_panel.on('click', '.collapse_btn', function () {
         $(this).parent().parent().find('.test-list').find('input').prop('checked', false);

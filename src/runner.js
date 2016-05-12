@@ -1,5 +1,8 @@
+/*global brackets,$*/
+
+'use strict';
 define(function main(require, exports, module) {
-    'use strict';
+
 
     var _ = brackets.getModule('thirdparty/lodash');
     var extension_utils = brackets.getModule('utils/ExtensionUtils');
@@ -30,6 +33,7 @@ define(function main(require, exports, module) {
         this.mocha_stats = null;
         this.mocha_summary = this.$panel.find('.mocha-summary');
         this.mocha_treeview = this.$panel.find('.mocha-treeview');
+        this.mocha_treeview_toggle = this.$panel.find('.mocha-treeview-toggle');
         this.run_configurations = run_configurations;
         this.test_list = this.$panel.find('.test-list');
         this.test_tree = [];
@@ -284,9 +288,14 @@ define(function main(require, exports, module) {
         if (run_configuration) {
             if (run_configuration.type !== 'mocha') {
                 this.mocha_treeview.hide();
+                this.mocha_treeview_toggle.hide();
             }
             else {
                 this.mocha_treeview.show();
+                this.mocha_treeview_toggle
+                    .html('<i class="fa fa-angle-double-left" aria-hidden="true" style="top: 50%; position: absolute;"></i>')
+                    .show();
+
                 if (!this.mocha_treeview.css('width')) {
                     this.mocha_treeview.css('width', '250px');
                 }
