@@ -104,10 +104,10 @@ define(function (require, exports, module) {
     $runner_panel.on('click', '.brackets-nodejs-integration-debugger-toggle', function (e) {
         var brackets_nodejs_integration_debugger = $(this).parent().find('.brackets-nodejs-integration-debugger');
         if (brackets_nodejs_integration_debugger.is(':visible')) {
-            $(this).html('<i class="fa fa-angle-double-right" aria-hidden="true" style="top: 50%; position: absolute;"></i>');
+            $(this).html('<i class="fa fa-angle-double-left" aria-hidden="true" style="top: 50%; position: absolute;"></i>');
         }
         else {
-            $(this).html('<i class="fa fa-angle-double-left" aria-hidden="true" style="top: 50%; position: absolute;"></i>');
+            $(this).html('<i class="fa fa-angle-double-right" aria-hidden="true" style="top: 50%; position: absolute;"></i>');
         }
         brackets_nodejs_integration_debugger.toggle();
     });
