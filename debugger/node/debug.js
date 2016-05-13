@@ -39,8 +39,7 @@ debugConnector.prototype.connect = function () {
 
     this.socket.on('error', function (err) {
         self.emit('error', err);
-        console.error('[Node Debugger] Error on socket: ');
-        console.error(err);
+        //console.error('[Node Debugger] Error on socket: ', err);
     });
 
     this.socket.on('close', function (err) {
