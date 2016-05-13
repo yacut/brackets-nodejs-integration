@@ -1,16 +1,18 @@
 /*global define, $, brackets */
-define(function (require, exports) {
-    "use strict";
+'use strict';
 
-    var PanelManager = brackets.getModule("view/PanelManager"),
-        PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
-        prefs = PreferencesManager.getExtensionPrefs("brackets-nodejs-integration");
+define(function (require, exports) {
+
+
+    var PanelManager = brackets.getModule('view/PanelManager'),
+        PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
+        prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
 
     var _nodeDebuggerDomain,
         _maxDepth = 3,
         history = [],
         historyCurrent = 0,
-        logContainerHTML = require("text!./assets/debuggerLog.html");
+        logContainerHTML = require('text!./assets/debuggerLog.html');
 
     exports.create_new = function () {
         return new debuggerPanel();
@@ -91,9 +93,9 @@ define(function (require, exports) {
      **/
     debuggerPanel.prototype.init = function (nodeDebuggerDomain, domain_id) {
         //Create the BottomPanel
-        this.panel = $('#' + domain_id).find('.brackets-nodejs-integration-debugger').html($(logContainerHTML)).show(); //PanelManager.createBottomPanel("brackets-node-debugger.log", $(logContainerHTML));
+        this.panel = $('#' + domain_id).find('.brackets-nodejs-integration-debugger').html($(logContainerHTML)).show(); //PanelManager.createBottomPanel('brackets-node-debugger.log', $(logContainerHTML));
         this.$logPanel = $('#' + domain_id).find('.brackets-nodejs-integration-debugger-log-panel'); //debuggerPanel.panel.$panel;
-        _maxDepth = prefs.get("lookupDepth");
+        _maxDepth = prefs.get('lookupDepth');
         _nodeDebuggerDomain = nodeDebuggerDomain;
 
         //Find HTML
@@ -140,7 +142,7 @@ define(function (require, exports) {
      *Adds a new line to the log within brackets
      **/
     debuggerPanel.prototype.log = function ($msg) {
-        var $h = $("<div>")
+        var $h = $('<div>')
             .addClass('brackets-nodejs-integration-debugger-log');
 
         $h.append($msg);
@@ -189,8 +191,8 @@ define(function (require, exports) {
                 if (lookup[p.ref]) {
                     o[p.name] = lookup[p.ref].text;
                     lookup[p.ref].varName = p.name;
-                    if(depth <= maxDepth){ // Don't go too deep
-                        that.createEvalHTML(lookup[p.ref], depth, lookup).addClass('var hidden').appendTo($html);
+                    if (depth <= maxDepth) { // Don't go too deep
+                        that.createEvalHTML(lookup[p.ref], depth, lookup, maxDepth).addClass('var hidden').appendTo($html);
                     }
                     $inside.addClass('object fa fa-chevron-right');
                 }

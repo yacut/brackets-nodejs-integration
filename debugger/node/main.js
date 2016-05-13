@@ -12,44 +12,44 @@ var reconnecting = null;
 
 var stepCallback = function (c, b, running) {
     if (running) {
-        _domainManager.emitEvent(DOMAIN_NAME, "running");
+        _domainManager.emitEvent(DOMAIN_NAME, 'running');
     }
 };
 
 function stepNext() {
     debug.sendCommand(debug, {
-        "command": "continue",
-        "callback": stepCallback,
-        "arguments": {
-            "stepaction": "next"
+        'command': 'continue',
+        'callback': stepCallback,
+        'arguments': {
+            'stepaction': 'next'
         }
     });
 }
 
 function stepIn() {
     debug.sendCommand(debug, {
-        "command": "continue",
-        "callback": stepCallback,
-        "arguments": {
-            "stepaction": "in"
+        'command': 'continue',
+        'callback': stepCallback,
+        'arguments': {
+            'stepaction': 'in'
         }
     });
 }
 
 function stepOut() {
     debug.sendCommand(debug, {
-        "command": "continue",
-        "callback": stepCallback,
-        "arguments": {
-            "stepaction": "out"
+        'command': 'continue',
+        'callback': stepCallback,
+        'arguments': {
+            'stepaction': 'out'
         }
     });
 }
 
 function stepContinue() {
     debug.sendCommand(debug, {
-        "callback": stepCallback,
-        "command": "continue"
+        'callback': stepCallback,
+        'command': 'continue'
     });
 }
 
@@ -71,7 +71,7 @@ function setBreakpoint(file, line) {
 
     obj.callback = function (c, body) {
         body.fullPath = fullPath;
-        _domainManager.emitEvent(DOMAIN_NAME, "setBreakpoint", body);
+        _domainManager.emitEvent(DOMAIN_NAME, 'setBreakpoint', body);
     };
 
     debug.sendCommand(debug, obj);
@@ -90,7 +90,7 @@ function removeBreakpoint(breakpoint) {
     };
 
     obj.callback = function (c, body) {
-        _domainManager.emitEvent(DOMAIN_NAME, "clearBreakpoint", body);
+        _domainManager.emitEvent(DOMAIN_NAME, 'clearBreakpoint', body);
     };
 
     debug.sendCommand(debug, obj);
@@ -114,11 +114,11 @@ function evaluate(com) {
             _recursiveLookup(handles, 0, {}, function (cmd, b) {
                 //Add the lookup stuff and emit the event
                 body.lookup = b;
-                _domainManager.emitEvent(DOMAIN_NAME, "eval", body);
+                _domainManager.emitEvent(DOMAIN_NAME, 'eval', body);
             });
         }
         else {
-            _domainManager.emitEvent(DOMAIN_NAME, "eval", body);
+            _domainManager.emitEvent(DOMAIN_NAME, 'eval', body);
         }
     };
 
@@ -129,8 +129,8 @@ function evaluate(com) {
 //TODO Get the scopes and then the locals from the scope to get more information
 function getFrame() {
     debug.sendCommand(debug, {
-        "command": "frame",
-        "callback": function (c, body) {
+        'command': 'frame',
+        'callback': function (c, body) {
             var handles = [];
             if (body.arguments && body.arguments.length > 0) {
                 body.arguments.forEach(function (b) {
@@ -147,7 +147,7 @@ function getFrame() {
             _recursiveLookup(handles, 0, {}, function (cmd, b) {
                 //Add the lookup stuff and emit the event
                 body.lookup = b;
-                _domainManager.emitEvent(DOMAIN_NAME, "frame", body);
+                _domainManager.emitEvent(DOMAIN_NAME, 'frame', body);
             });
         }
     });
@@ -155,11 +155,11 @@ function getFrame() {
 
 function _recursiveLookup(handles, depth, objects, callback) {
     debug.sendCommand(debug, {
-        "command": "lookup",
-        "arguments": {
+        'command': 'lookup',
+        'arguments': {
             'handles': handles
         },
-        "callback": function (c, body) {
+        'callback': function (c, body) {
             var newHandles = [];
             //Go through every object, get the handles and send it again
             Object.keys(body).forEach(function (b) {
@@ -190,7 +190,7 @@ function _recursiveLookup(handles, depth, objects, callback) {
 function disconnect() {
     //Make sure that you don't connect again
     debug.sendCommand(debug, {
-        "command": "disconnect"
+        'command': 'disconnect'
     });
     clearTimeout(reconnecting);
     reconnecting = null;
@@ -198,9 +198,9 @@ function disconnect() {
 
 function getBreakpoints() {
     debug.sendCommand(debug, {
-        "command": "listbreakpoints",
-        "callback": function (c, body) {
-            _domainManager.emitEvent(DOMAIN_NAME, "allBreakpoints", body);
+        'command': 'listbreakpoints',
+        'callback': function (c, body) {
+            _domainManager.emitEvent(DOMAIN_NAME, 'allBreakpoints', body);
         }
     });
 }
@@ -222,17 +222,17 @@ function setEventHandlers() {
     debug.on('connect', function () {
         //Get information
         debug.sendCommand(debug, {
-            "command": "version",
-            "callback": function (c, body, running) {
+            'command': 'version',
+            'callback': function (c, body, running) {
                 body.running = running;
-                _domainManager.emitEvent(DOMAIN_NAME, "connect", body);
+                _domainManager.emitEvent(DOMAIN_NAME, 'connect', body);
             }
         });
     });
 
     debug.on('error', function (err) {
         if (err.errno !== 'ECONNREFUSED') {
-            _domainManager.emitEvent(DOMAIN_NAME, "close", err.errno);
+            _domainManager.emitEvent(DOMAIN_NAME, 'close', err.errno);
         }
 
     });
@@ -249,12 +249,12 @@ function setEventHandlers() {
         }
 
         if (!err) {
-            _domainManager.emitEvent(DOMAIN_NAME, "close", false);
+            _domainManager.emitEvent(DOMAIN_NAME, 'close', false);
         }
     });
 
     debug.on('break', function (body) {
-        _domainManager.emitEvent(DOMAIN_NAME, "break", body);
+        _domainManager.emitEvent(DOMAIN_NAME, 'break', body);
     });
 }
 
@@ -270,202 +270,202 @@ function init(domainManager) {
 
     _domainManager.registerCommand(
         DOMAIN_NAME,
-        "debugger_start",
+        'debugger_start',
         start,
         false,
-        "Start the socket to listen to the debugger", [
+        'Start the socket to listen to the debugger', [
             {
-                name: "port",
-                type: "number",
-                description: "The port the V8 debugger is running on"
+                name: 'port',
+                type: 'number',
+                description: 'The port the V8 debugger is running on'
             },
             {
-                name: "host",
-                type: "string",
-                description: "The host the V8 debugger is running on"
+                name: 'host',
+                type: 'string',
+                description: 'The host the V8 debugger is running on'
             },
 
             {
-                name: "maxDepth",
-                type: "number",
-                description: "The max depth the lookup goes down"
-            },
+                name: 'maxDepth',
+                type: 'number',
+                description: 'The max depth the lookup goes down'
+            }
         ]
     );
 
     _domainManager.registerCommand(
         DOMAIN_NAME,
-        "stepNext",
+        'stepNext',
         stepNext,
         false,
-        "Continue with action 'next'"
+        'Continue with action next'
     );
 
     _domainManager.registerCommand(
         DOMAIN_NAME,
-        "disconnect",
+        'disconnect',
         disconnect,
         false,
-        "Disconnect from the V8 debugger"
+        'Disconnect from the V8 debugger'
     );
 
     _domainManager.registerCommand(
         DOMAIN_NAME,
-        "stepIn",
+        'stepIn',
         stepIn,
         false,
-        "Continue with action 'In'"
+        'Continue with action In'
     );
 
     _domainManager.registerCommand(
         DOMAIN_NAME,
-        "stepOut",
+        'stepOut',
         stepOut,
         false,
-        "Continue with action 'out'"
+        'Continue with action out'
     );
 
     _domainManager.registerCommand(
         DOMAIN_NAME,
-        "continue",
+        'continue',
         stepContinue,
         false,
-        "Continue running the script"
+        'Continue running the script'
     );
 
 
     _domainManager.registerCommand(
         DOMAIN_NAME,
-        "eval",
+        'eval',
         evaluate,
         false,
-        "Evaluate an expression", [{
-            name: "Com",
-            type: "string",
-            description: "The expression to evaluate"
+        'Evaluate an expression', [{
+            name: 'Com',
+            type: 'string',
+            description: 'The expression to evaluate'
         }]
     );
 
     _domainManager.registerCommand(
         DOMAIN_NAME,
-        "getFrame",
+        'getFrame',
         getFrame,
         false,
-        "Get the current frame with all arguments/locals"
+        'Get the current frame with all arguments/locals'
     );
 
     _domainManager.registerCommand(
         DOMAIN_NAME,
-        "setBreakpoint",
+        'setBreakpoint',
         setBreakpoint,
         false,
-        "Set a new Breakpoint", [
+        'Set a new Breakpoint', [
             {
-                name: "file",
-                type: "string",
-                description: "The path to the file where the breakpoint is to set"
+                name: 'file',
+                type: 'string',
+                description: 'The path to the file where the breakpoint is to set'
             },
             {
-                name: "line",
-                type: "number",
-                description: "The line number where the breakpoint is to set"
+                name: 'line',
+                type: 'number',
+                description: 'The line number where the breakpoint is to set'
             }]
     );
 
     _domainManager.registerCommand(
         DOMAIN_NAME,
-        "removeBreakpoint",
+        'removeBreakpoint',
         removeBreakpoint,
         false,
-        "Remove a Breakpoint", [{
-            name: "breakpoint",
-            type: "number",
-            description: "The id from the breakpoint to remove"
+        'Remove a Breakpoint', [{
+            name: 'breakpoint',
+            type: 'number',
+            description: 'The id from the breakpoint to remove'
         }]
     );
 
     _domainManager.registerCommand(
         DOMAIN_NAME,
-        "getBreakpoints",
+        'getBreakpoints',
         getBreakpoints,
         false,
-        "Get a list of all Breakpoints"
+        'Get a list of all Breakpoints'
     );
 
     _domainManager.registerEvent(
         DOMAIN_NAME,
-        "connect", [{
-            name: "body",
-            type: "Object",
-            description: "Response from the V8 debugger"
+        'connect', [{
+            name: 'body',
+            type: 'Object',
+            description: 'Response from the V8 debugger'
         }]
     );
 
     _domainManager.registerEvent(
         DOMAIN_NAME,
-        "running"
+        'running'
     );
 
     _domainManager.registerEvent(
         DOMAIN_NAME,
-        "close", [{
-            name: "error",
-            type: "string",
-            description: "Reason for close"
+        'close', [{
+            name: 'error',
+            type: 'string',
+            description: 'Reason for close'
         }]
     );
 
     _domainManager.registerEvent(
         DOMAIN_NAME,
-        "break", [{
-            name: "Body",
-            type: "{ invocationText: string, sourceLine: number, sourceColumn: number, sourceLineText: string, script: object, breakpoints: array }",
-            description: "The body V8 sends us"
+        'break', [{
+            name: 'Body',
+            type: '{ invocationText: string, sourceLine: number, sourceColumn: number, sourceLineText: string, script: object, breakpoints: array }',
+            description: 'The body V8 sends us'
         }]
     );
 
     _domainManager.registerEvent(
         DOMAIN_NAME,
-        "eval", [{
-            name: "Body",
-            type: "object",
-            description: "The body V8 sends us as response"
+        'eval', [{
+            name: 'Body',
+            type: 'object',
+            description: 'The body V8 sends us as response'
         }]
     );
 
     _domainManager.registerEvent(
         DOMAIN_NAME,
-        "setBreakpoint", [{
-            name: "args",
-            type: "object",
-            description: "The Arguments V8 sends us as response"
+        'setBreakpoint', [{
+            name: 'args',
+            type: 'object',
+            description: 'The Arguments V8 sends us as response'
         }]
     );
 
     _domainManager.registerEvent(
         DOMAIN_NAME,
-        "clearBreakpoint", [{
-            name: "args",
-            type: "object",
-            description: "The Arguments V8 sends us as response"
+        'clearBreakpoint', [{
+            name: 'args',
+            type: 'object',
+            description: 'The Arguments V8 sends us as response'
         }]
     );
 
     _domainManager.registerEvent(
         DOMAIN_NAME,
-        "allBreakpoints", [{
-            name: "args",
-            type: "object",
-            description: "The Arguments V8 sends us as response"
+        'allBreakpoints', [{
+            name: 'args',
+            type: 'object',
+            description: 'The Arguments V8 sends us as response'
         }]
     );
 
     _domainManager.registerEvent(
         DOMAIN_NAME,
-        "frame", [{
-            name: "args",
-            type: "object",
-            description: "The Arguments V8 sends us as response"
+        'frame', [{
+            name: 'args',
+            type: 'object',
+            description: 'The Arguments V8 sends us as response'
         }]
     );
 }

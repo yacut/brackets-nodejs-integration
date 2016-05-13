@@ -1,3 +1,5 @@
+'use strict';
+
 var net = require('net'),
     events = require('events'),
     util = require('util');
@@ -28,6 +30,7 @@ debugConnector.prototype.connect = function () {
         self._body = '';
         self._ignoreNext = 0;
         self._contentLength = -1;
+        self.empty_chars = false;
         self.header = true;
         self._waitingForResponse = {};
         self.emit('connect');
@@ -59,8 +62,8 @@ debugConnector.prototype.connect = function () {
                 }
             }
         };
-
-        l.forEach(function (line) {
+        self.empty_chars = false;
+        l.forEach(function (line, index) {
             //after the header there is just an empty line
             if (!line) {
                 if (self._ignoreNext > 0) {
@@ -70,6 +73,7 @@ debugConnector.prototype.connect = function () {
                     self._header = false;
                     self._body = '';
                 }
+                self.empty_chars = true;
                 //return;
             }
             //If we are still in the header check the content length
@@ -84,13 +88,19 @@ debugConnector.prototype.connect = function () {
                 //so we need to parse it a little hackey...or rewrite the parser completely at some point
                 if (self._body.length > self._contentLength) {
                     self._body = oldBody;
-                    var splitLine = line.split("Content-Length:");
+                    var splitLine = line.split('Content-Length:');
                     self.body += splitLine[0];
                     parseHeader('Content-Length:' + splitLine[1]);
                 }
             }
-            //console.log('BodyLength: %d | ContentLength: %d', self._body.length, self._contentLength);
-            if (self._body.length === self._contentLength && self._contentLength > 0) {
+            console.log('BodyLength: %d | ContentLength: %d - %d', self._body.length, self._contentLength, self.empty_chars);
+            //console.log(data.toString());
+            if (self._contentLength > 0 &&
+                (self._body.length === self._contentLength ||
+                    self._body.length === (self._contentLength - 4) ||
+                    self._body.length === (self._contentLength - 8) ||
+                    index === l.length - 1)) {
+
                 var responseIgnored = true;
                 try {
                     var body = JSON.parse(self._body);
@@ -101,21 +111,27 @@ debugConnector.prototype.connect = function () {
                     if (body.type === 'response') {
                         if (self._waitingForResponse[body.request_seq].callback) {
                             responseIgnored = false;
+                            if (!body.body) {
+                                body.body = {
+                                    type: 'error',
+                                    text: body.message
+                                };
+                            }
                             self._waitingForResponse[body.request_seq].callback(body.command, body.body, body.running);
                         }
                         delete self._waitingForResponse[body.request_seq];
-                        
-                        if(body.command === 'version'){
-                            var version = body.body.V8Version;
+
+                        if (body.command === 'version') {
+                            //var version = body.body.V8Version;
                             //TODO Print node/debugger version on connect
                         }
                     }
-                    if (body.event === 'afterCompile'){
+                    if (body.event === 'afterCompile') {
                         // Muffle for now
                         // Maybe use this add a feature to list the files the debugger has loaded
                         responseIgnored = false;
                     }
-                    
+
                     if (responseIgnored) {
                         console.warn('[Node Debugger] V8 Response ignored: ');
                         console.warn(JSON.parse(self._body));
@@ -138,12 +154,12 @@ debugConnector.prototype.sendCommand = function (self, obj) {
     //var self = this;
     // if (self.connected) {
     obj.seq = ++self._seq;
-    obj.type = "request";
+    obj.type = 'request';
 
     var str = JSON.stringify(obj);
 
     self._waitingForResponse[obj.seq] = obj;
-    self.socket.write("Content-Length:" + str.length + "\r\n\r\n" + str);
+    self.socket.write('Content-Length:' + str.length + '\r\n\r\n' + str);
     /*}
     else {
         //Just ignore it, that is ok
