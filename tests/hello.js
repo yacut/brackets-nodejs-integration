@@ -4,11 +4,6 @@ console.log('Hello World');
 console.log('Secound line');
 console.log('Third');
 
-if (process.env.npm_package_name) {
-    console.log('I am %s', process.env.npm_package_name);
-}
-console.log(process.execPath);
-
 var colors = {
     black: '\u001b[30m',
     red: '\u001b[31m',
@@ -20,6 +15,7 @@ var colors = {
     grey: '\u001b[90m',
     reset: '\u001b[0m'
 };
+
 var foo = 5;
 
 console.log(colors.red + 'This is red' + colors.reset + ' while ' + colors.blue + 'this is blue' + colors.reset);
