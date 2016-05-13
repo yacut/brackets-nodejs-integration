@@ -417,3 +417,19 @@ button.nodejs-integration-tab-close {
         }
     }
 }
+
+.mocha-progress-container {
+    width: 100px;
+    height: 1.5em;
+    right: 10px;
+    position: absolute;
+    background-color: #f1f1f1
+}
+
+.mocha-progressbar {
+    height: 100%;
+    position: absolute;
+    line-height: inherit;
+    color: #000!important;
+    background-color: #4CAF50!important
+}
