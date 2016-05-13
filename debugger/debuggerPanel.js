@@ -93,8 +93,8 @@ define(function (require, exports) {
      **/
     debuggerPanel.prototype.init = function (nodeDebuggerDomain, domain_id) {
         //Create the BottomPanel
-        this.panel = $('#' + domain_id).find('.brackets-nodejs-integration-debugger').html($(logContainerHTML)).show(); //PanelManager.createBottomPanel('brackets-node-debugger.log', $(logContainerHTML));
-        this.$logPanel = $('#' + domain_id).find('.brackets-nodejs-integration-debugger-log-panel'); //debuggerPanel.panel.$panel;
+        this.panel = $('#' + domain_id).find('.brackets-nodejs-integration-debugger').html($(logContainerHTML)).show();
+        this.$logPanel = $('#' + domain_id).find('.brackets-nodejs-integration-debugger-log-panel');
         _maxDepth = prefs.get('lookupDepth');
         _nodeDebuggerDomain = nodeDebuggerDomain;
 

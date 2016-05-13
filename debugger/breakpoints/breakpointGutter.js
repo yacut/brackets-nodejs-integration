@@ -114,6 +114,10 @@ define(function (require, exports) {
             return;
         }
 
+        if (!that.cd.endsWith('.js')) {
+            return;
+        }
+
         var line_info = code_mirror.lineInfo(line_number);
 
         if (line_info.gutterMarkers && line_info.gutterMarkers[gutterName]) {
