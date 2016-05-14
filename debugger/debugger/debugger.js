@@ -2,12 +2,14 @@
 /*global define, $, brackets */
 define(function (require, exports) {
 
-    var PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
-        DocumentManager = brackets.getModule('document/DocumentManager'),
-        CommandManager = brackets.getModule('command/CommandManager'),
-        Commands = brackets.getModule('command/Commands'),
-        Editor = brackets.getModule('editor/EditorManager'),
-        prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
+    var PreferencesManager = brackets.getModule('preferences/PreferencesManager');
+    var DocumentManager = brackets.getModule('document/DocumentManager');
+    var CommandManager = brackets.getModule('command/CommandManager');
+    var Commands = brackets.getModule('command/Commands');
+    var Editor = brackets.getModule('editor/EditorManager');
+    var prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
+
+    var utils = require('../../utils');
 
     var debug = function () {
         this._nodeDebuggerDomain = null;
@@ -130,13 +132,12 @@ define(function (require, exports) {
             that._activeDocPath = docPath;
             //Open the document and jump to line
             openActiveDoc(that);
-
         });
 
         //If the Debugger connects highlight the UI parts that need to be highlighted
         that._nodeDebuggerDomain.on('connect', function (e, body) {
             that.nodeDebuggerPanel.$logPanel.find('.activate').html('<i class="fa fa-check-circle" aria-hidden="true"></i>');
-            //$('#node-debugger-indicator').addClass('connected');
+            utils.show_popup_message('Debugger: connected. Please set breakpoint and click "Continue" button on runner panel.');
 
             if (body.running) {
                 that.nodeDebuggerPanel.$logPanel.find('a.active').addClass('inactive').removeClass('active');
@@ -153,12 +154,18 @@ define(function (require, exports) {
                 msg = 'Could not connect to ' + prefs.get('debugger-host') + ':' + prefs.get('debugger-port');
             }
 
-            that.nodeDebuggerPanel.log($('<span>').text(msg));
+            if (msg) {
+                that.nodeDebuggerPanel.log($('<span>').text(msg));
+                utils.show_popup_message('Debugger: ' + msg);
+            }
+            else {
+                utils.show_popup_message('Debugger: disconnected.');
+            }
 
             //GUI update
             that.nodeDebuggerPanel.$logPanel.find('.activate').html('<i class="fa fa-times-circle" aria-hidden="true"></i>');
             that.nodeDebuggerPanel.$logPanel.find('a.active').addClass('inactive').removeClass('active');
-            //$('#node-debugger-indicator').removeClass('connected');
+
 
             //remove highlight
             if (that._highlightCm) {
@@ -177,25 +184,6 @@ define(function (require, exports) {
             that.nodeDebuggerPanel.log($wrapper);
         });
 
-        //control debugger with keyboard
-        /*$(document).on('keydown', function (e) {
-            if (e.keyCode === 119) {
-                continueClickHandler();
-            }
-
-            if (e.keyCode === 121) {
-                nextClickHandler();
-            }
-
-            if (e.keyCode === 122 && e.shiftKey) {
-                outClickHandler();
-            }
-            else if (e.keyCode === 122) {
-                inClickHandler();
-            }
-        });*/
     };
 
-
-    //exports.debug = debug;
 });

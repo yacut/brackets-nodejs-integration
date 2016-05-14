@@ -35,6 +35,7 @@ define(function (require, exports, module) {
     var runner_panel_template = require('text!templates/runner_panel.html');
     var prefs = require('./preferences');
     var run_configurations = prefs.get('configurations');
+    var utils = require('./utils');
 
     var runner = require('src/runner');
     var runners = [];
@@ -209,12 +210,7 @@ define(function (require, exports, module) {
     $runner_panel.on('click', '.nodejs-integration-tab-new', function () {
         var $tabs = $runner_panel.find('.nodejs-integration-tab');
         if ($tabs.length >= 5) {
-            dialogs.showModalDialog(
-                INFO_DIALOG_ID,
-                'Brackets nodejs integration - limitations',
-                'You can start only 5 runners.'
-            );
-            return;
+            return utils.show_popup_message('Limitations: You can start only 5 runners.');
         }
         create_new_tab();
     });

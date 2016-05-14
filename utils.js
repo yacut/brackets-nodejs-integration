@@ -1,5 +1,8 @@
+/*global brackets,$*/
+'use strict';
+
 define(function (require, exports) {
-    "use strict";
+
     var file_system = brackets.getModule('filesystem/FileSystem');
 
     exports.mkdirp = function (path) {
@@ -42,6 +45,20 @@ define(function (require, exports) {
             }
         });
         return promise;
+    };
+
+    exports.show_popup_message = function (message) {
+        var _$indicator = $('#brackets-nodejs-integration-runner-indicator');
+        _$indicator.twipsy('hide').removeData('twipsy');
+        var options = {
+            placement: 'left',
+            trigger: 'manual',
+            autoHideDelay: 5000,
+            title: function () {
+                return message;
+            }
+        };
+        _$indicator.twipsy(options).twipsy('show');
     };
 
 });
