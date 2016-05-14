@@ -29,6 +29,13 @@
         <td>
             <input type="text" placeholder="(leave empty for global node command)" class="brackets-nodejs-integration-runner-node-bin" style="width: 300px; float: right;">
         </td>
+        <td> </td>
+        <td style="padding-left: 2em;">
+            <label>Debugger lookup depth:</label>
+        </td>
+        <td>
+            <input type="number" min="0" class="brackets-nodejs-integration-runner-lookup-depth" style="float: right;">
+        </td>
     </tr>
     <tr>
         <td>
@@ -36,6 +43,12 @@
         </td>
         <td>
             <input type="text" placeholder="(leave empty for global mocha command)" class="brackets-nodejs-integration-runner-mocha-bin" style="width: 300px; float: right;">
+        </td>
+        <td> </td>
+        <td style="padding-left: 2em;">
+            <label>Remove breakpoints on disconnect:
+                <input type="checkbox" class="brackets-nodejs-integration-runner-remove-breakpoints-on-disconnect">
+            </label>
         </td>
     </tr>
     <tr>
@@ -118,7 +131,7 @@
                             <label for="">Additional Flags:</label>
                         </td>
                         <td>
-                            <input id="brackets-nodejs-integration-additional-flags" value="" type="text" placeholder='e.g. --bail for mocha, --require for node'>
+                            <input class="brackets-nodejs-integration-additional-flags" value="" type="text" placeholder='e.g. --bail for mocha, --require for node'>
                         </td>
                     </tr>
                 </table>
