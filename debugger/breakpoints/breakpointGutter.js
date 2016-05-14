@@ -122,10 +122,7 @@ define(function (require, exports) {
 
         if (line_info.gutterMarkers && line_info.gutterMarkers[gutterName]) {
             if (that._nodeDebuggerDomain) {
-                that._nodeDebuggerDomain.exec('removeBreakpoint', {
-                    line: line_number,
-                    fullPath: that.cd
-                });
+                that._nodeDebuggerDomain.exec('setBreakpoint', that.cd, line_number);
             }
             else {
                 var breakpoints_to_save = prefs.get('breakpoints');
@@ -141,12 +138,10 @@ define(function (require, exports) {
         }
         else {
             if (that._nodeDebuggerDomain) {
-                if (_.indexOf(prefs.get('breakpoints'), {
-                        fullPath: that.cd,
-                        line: line_number
-                    }) !== -1) {
-                    that._nodeDebuggerDomain.exec('setBreakpoint', that.cd, line_number);
-                }
+                that._nodeDebuggerDomain.exec('removeBreakpoint', {
+                    line: line_number,
+                    fullPath: that.cd
+                });
             }
             else {
                 that.addBreakpoint({
