@@ -248,14 +248,11 @@ define(function (require, exports) {
         textArea.value = text;
         document.body.appendChild(textArea);
         textArea.select();
-
         try {
-            var successful = document.execCommand('copy');
-            var msg = successful ? 'successful' : 'unsuccessful';
-            console.log('Copying text command was ' + msg);
+            document.execCommand('copy');
         }
         catch (err) {
-            console.log('Oops, unable to copy');
+            console.error(err);
         }
         document.body.removeChild(textArea);
     }
