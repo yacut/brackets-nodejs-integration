@@ -92,7 +92,7 @@ debugConnector.prototype.connect = function () {
                     parseHeader('Content-Length:' + splitLine[1]);
                 }
             }
-            console.log('BodyLength: %d | ContentLength: %d - %d', self._body.length, self._contentLength, self.empty_chars);
+            //console.log('BodyLength: %d | ContentLength: %d - %d', self._body.length, self._contentLength, self.empty_chars);
             //console.log(data.toString());
             if (self._contentLength > 0 &&
                 (self._body.length === self._contentLength ||

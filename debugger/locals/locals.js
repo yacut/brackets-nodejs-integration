@@ -1,8 +1,11 @@
 /*global define, $, brackets */
+
+'use strict';
 define(function (require, exports) {
-    "use strict";
-    var PreferencesManager = brackets.getModule("preferences/PreferencesManager");
-    var prefs = PreferencesManager.getExtensionPrefs("brackets-nodejs-integration");
+
+    var PreferencesManager = brackets.getModule('preferences/PreferencesManager');
+    var prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
+
     exports.create_new = function () {
         return new locals();
     };
@@ -24,7 +27,7 @@ define(function (require, exports) {
                 var $a = $('<div>').addClass('brackets-nodejs-integration-debugger-log');
                 //Add the varName again
                 that.locals[l].varName = l;
-                that.nodeDebuggerPanel.createEvalHTML(that.locals[l], 0, that.lookup, prefs.get("lookupDepth")).appendTo($a);
+                that.nodeDebuggerPanel.createEvalHTML(that.locals[l], 0, that.lookup, prefs.get('lookupDepth')).appendTo($a);
                 $a.appendTo($wrapper);
             }
         });
@@ -91,11 +94,12 @@ define(function (require, exports) {
             if (a.length > 0) {
                 //See if we have something that begins with that
                 that._allLocals.some(function (l) {
-                    if (l.indexOf(a) == '0' && l.length > a.length) {
+                    if (l.indexOf(a) === '0' && l.length > a.length) {
                         var $sug = $('<span>').addClass('suggestion').text(l.substr(a.length));
                         that.nodeDebuggerPanel.$debuggerInput.append($sug);
                         return true;
                     }
+                    return false;
                 });
             }
         });

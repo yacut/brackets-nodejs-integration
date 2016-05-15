@@ -138,7 +138,7 @@
 }
 
 .brackets-nodejs-integration-debugger-log {
-    padding-left: 3px;
+    padding: 4px;
 }
 
 .brackets-nodejs-integration-debugger-log span.object {
@@ -147,7 +147,11 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+.brackets-nodejs-integration-debugger-log * {
     font-size: 11px;
+    font-family: FontAwesome;
 }
 
 .brackets-nodejs-integration-debugger-log span.object:before {

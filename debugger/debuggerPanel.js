@@ -4,9 +4,12 @@
 define(function (require, exports) {
 
 
-    var PanelManager = brackets.getModule('view/PanelManager'),
-        PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
-        prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
+    var PanelManager = brackets.getModule('view/PanelManager');
+    var PreferencesManager = brackets.getModule('preferences/PreferencesManager');
+    var prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
+    var menus = brackets.getModule('command/Menus');
+
+    var LOCALS_CONTEXT_MENU_ID = 'brackets-nodejs-integration-locals-context-menu';
 
     var _nodeDebuggerDomain,
         _maxDepth = 3,
@@ -31,7 +34,7 @@ define(function (require, exports) {
      */
     function onKeyDown(e, that) {
         //On enter send command
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             //Remove all may existing suggestions
             that.$debuggerInput.find('.suggestion').remove();
             var com = that.$debuggerInput.val();
@@ -46,7 +49,7 @@ define(function (require, exports) {
             }
         }
         //On key up/down scroll through history
-        if (e.keyCode == 40) {
+        if (e.keyCode === 40) {
             historyCurrent++;
             if (history[historyCurrent]) {
                 that.$debuggerInput.val(history[historyCurrent]);
@@ -57,7 +60,7 @@ define(function (require, exports) {
             }
             //e.preventDefault();
         }
-        if (e.keyCode == 38) {
+        if (e.keyCode === 38) {
             historyCurrent--;
             if (history[historyCurrent]) {
                 that.$debuggerInput.val(history[historyCurrent]);
@@ -179,9 +182,10 @@ define(function (require, exports) {
      * @return {jquery object} A jquery HTML object you can inject into the console
      **/
     debuggerPanel.prototype.createEvalHTML = function (body, depth, lookup, maxDepth) {
-        var $html = $('<span>');
+        var $html = $('<span>').css('display', 'block');
         var $inside = $('<span>');
-
+        var object_name = '';
+        var object_value = '';
         var that = this;
         depth++;
         //Exception for Date Object
@@ -197,20 +201,35 @@ define(function (require, exports) {
                     $inside.addClass('object fa fa-chevron-right');
                 }
             });
-            $inside.text('{ ... }').on('click', evalHTMLonClick); //JSON.stringify(o) to copy object
+            $inside.text('{ ... }').on('click', evalHTMLonClick);
+            object_value = JSON.stringify(o, null, 2);
         }
         else if (body.type === 'function') {
             $inside.text('<native code>');
+            object_value = body.text;
         }
         else {
             $inside.text(body.text);
+            object_value = body.text;
         }
 
         if (body.varName) {
             $('<span>').addClass('var-name').text(body.varName + ': ').prependTo($inside);
+            object_name = body.varName;
         }
 
-        $('<span>').addClass('type').text('[' + body.type + '] ').prependTo($inside);
+        var $type = $('<span>').addClass('type').html('[' + body.type + ']');
+        $('<a>').html('<i class="fa fa-files-o copy" aria-hidden="true"></i>')
+            .css('padding', '2px')
+            .attr('href', '#').attr('title', 'Copy value')
+            .attr('object_value', object_value)
+            .on('click', function () {
+                console.log(this, $(this).attr('object_value'));
+                //copy_to_clipboard($(this).attr('object_value'));
+            }).prependTo($type);
+
+        $type.prependTo($inside);
+
         $inside.prependTo($html);
         return $html;
     };

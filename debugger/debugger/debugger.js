@@ -158,7 +158,7 @@ define(function (require, exports) {
                 that.nodeDebuggerPanel.log($('<span>').text(msg));
                 utils.show_popup_message('Debugger: ' + msg);
             }
-            else {
+            if (err === false) {
                 utils.show_popup_message('Debugger: disconnected.');
             }
 

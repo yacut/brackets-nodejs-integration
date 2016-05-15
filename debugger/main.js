@@ -1,11 +1,12 @@
 /*global define, brackets, $ */
-define(function (require, exports, module) {
-    "use strict";
+'use strict';
 
-    var NodeDomain = brackets.getModule("utils/NodeDomain"),
-        PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
-        prefs = PreferencesManager.getExtensionPrefs("brackets-nodejs-integration"),
-        ExtensionUtils = brackets.getModule("utils/ExtensionUtils");
+define(function (require, exports, module) {
+
+    var NodeDomain = brackets.getModule('utils/NodeDomain');
+    var PreferencesManager = brackets.getModule('preferences/PreferencesManager');
+    var prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
+    var ExtensionUtils = brackets.getModule('utils/ExtensionUtils');
     var file_system = brackets.getModule('filesystem/FileSystem');
     var file_utils = brackets.getModule('file/FileUtils');
 
@@ -68,17 +69,17 @@ define(function (require, exports, module) {
             this.breakpoints.init(this.nodeDebuggerDomain, this.nodeDebuggerPanel);
             this.locals.init(this.nodeDebuggerDomain, this.nodeDebuggerPanel, this.id);
         }
-        this.nodeDebuggerDomain.exec("debugger_start", this.debug_port, prefs.get("debugger-host"), prefs.get("lookupDepth"));
+        this.nodeDebuggerDomain.exec('debugger_start', this.debug_port, prefs.get('debugger-host'), prefs.get('lookupDepth'));
     };
 
     //exports.nodeDebugger = NodeDebugger;
     NodeDebugger.prototype.stop = function () {
-        this.nodeDebuggerDomain.exec("disconnect");
+        this.nodeDebuggerDomain.exec('disconnect');
     };
 
     //exports.nodeDebugger = NodeDebugger;
     NodeDebugger.prototype.exit = function () {
-        this.nodeDebuggerDomain.exec("disconnect");
+        this.nodeDebuggerDomain.exec('disconnect');
         var file = file_system.getFileForPath(this.file_path);
         file.unlink(function () {});
     };
