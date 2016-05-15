@@ -224,8 +224,7 @@ define(function (require, exports) {
             .attr('href', '#').attr('title', 'Copy value')
             .attr('object_value', object_value)
             .on('click', function () {
-                console.log(this, $(this).attr('object_value'));
-                //copy_to_clipboard($(this).attr('object_value'));
+                copy_to_clipboard($(this).attr('object_value'));
             }).prependTo($type);
 
         $type.prependTo($inside);
@@ -233,4 +232,31 @@ define(function (require, exports) {
         $inside.prependTo($html);
         return $html;
     };
+
+    function copy_to_clipboard(text) {
+        var textArea = document.createElement('textarea');
+        textArea.style.position = 'fixed';
+        textArea.style.top = 0;
+        textArea.style.left = 0;
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+        textArea.style.padding = 0;
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        textArea.style.background = 'transparent';
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        }
+        catch (err) {
+            console.log('Oops, unable to copy');
+        }
+        document.body.removeChild(textArea);
+    }
 });
