@@ -219,7 +219,8 @@ define(function (require, exports) {
         }
 
         var $type = $('<span>').addClass('type').html('[' + body.type + ']');
-        $('<a>').html('<i class="fa fa-files-o copy" aria-hidden="true"></i>')
+        $('<a>').addClass('action_btn')
+            .html('<i class="fa fa-files-o copy" aria-hidden="true"></i>')
             .css('padding', '2px')
             .attr('href', '#').attr('title', 'Copy value')
             .attr('object_value', object_value)

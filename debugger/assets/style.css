@@ -30,6 +30,13 @@
 .brackets-nodejs-integration-debugger-log-panel .toolbar.bottom a:hover {
     color: #78B2F2;
 }
+.brackets-nodejs-integration-debugger-log-panel .action_btn {
+    color: #bbb;
+}
+
+.brackets-nodejs-integration-debugger-log-panel .action_btn:hover {
+    color: #78B2F2;
+}
 
 .brackets-nodejs-integration-debugger-log-panel a.removeBP:hover {
     color: #F74687;
@@ -152,6 +159,7 @@
 .brackets-nodejs-integration-debugger-log * {
     font-size: 11px;
     font-family: FontAwesome;
+    -webkit-user-select: text;
 }
 
 .brackets-nodejs-integration-debugger-log span.object:before {
