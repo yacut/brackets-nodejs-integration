@@ -3,9 +3,9 @@
 
 var debugConnector = require('./debug.js').debugConnector;
 
-var _domainManager,
-    debug,
-    _maxDepth;
+var _domainManager;
+var debug;
+var _maxDepth;
 var path = require('path');
 var DOMAIN_NAME = path.basename(__filename);
 var reconnecting = null;
@@ -78,22 +78,26 @@ function setBreakpoint(file, line) {
 }
 
 function removeBreakpoint(breakpoint) {
-    var obj = {};
-    obj.command = 'clearbreakpoint';
-    obj.arguments = {
-        'breakpoint': breakpoint
+    var listbreakpoints_request = {};
+    listbreakpoints_request.command = 'listbreakpoints';
+    listbreakpoints_request.callback = function (cc, listbreakpoints_body) {
+        if (listbreakpoints_body && listbreakpoints_body.breakpoints) {
+            listbreakpoints_body.breakpoints.forEach(function (bt) {
+                if (bt.line === breakpoint.line && bt.script_name === breakpoint.fullPath) {
+                    var obj = {};
+                    obj.command = 'clearbreakpoint';
+                    obj.arguments = {
+                        'breakpoint': bt.number
+                    };
+                    obj.callback = function (c, body) {
+                        _domainManager.emitEvent(DOMAIN_NAME, 'clearBreakpoint', body);
+                    };
+                    debug.sendCommand(debug, obj);
+                }
+            });
+        }
     };
-    obj.arguments = {
-        'type': 'script',
-        'target': breakpoint.fullPath,
-        'line': breakpoint.line
-    };
-
-    obj.callback = function (c, body) {
-        _domainManager.emitEvent(DOMAIN_NAME, 'clearBreakpoint', body);
-    };
-
-    debug.sendCommand(debug, obj);
+    debug.sendCommand(debug, listbreakpoints_request);
 }
 
 function evaluate(com) {
