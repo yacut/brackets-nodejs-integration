@@ -168,7 +168,7 @@ define(function (require, exports) {
         });
 
         //add show callback stack button
-        var $callback_stack_link = $('<a>').attr('href', '#').attr('title', 'Console').html('<i class="fa fa-indent"></i>');
+        var $callback_stack_link = $('<a>').attr('href', '#').attr('title', 'Callback stack').html('<i class="fa fa-indent"></i>');
         this.addControlElement($callback_stack_link, false, function () {
             var $domain = $('#' + domain_id);
             var $callback_stack = $domain.find('.brackets-nodejs-integration-debugger-callback-stack');
@@ -185,7 +185,6 @@ define(function (require, exports) {
                 $content.hide();
             }
         });
-
     };
 
     /**
