@@ -26,7 +26,7 @@ Extension can be configured by opening the `NodeJS integration` Panel and clicki
 
 Currently **Brackets - NodeJS integration** supports these features (this list may be incomplete as we add new features regularly):
 
-- Run multiple nodejs processes inside editor with console output
+- Run multiple nodejs processes inside editor with console output (actual limit is only 5 processes, because brackets connections limitation)
 - Run mocha test inside editor with tree view results
 - Open file via mouse click from error stack
 - Show Actual/Expected difference for mocha test
@@ -72,8 +72,8 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 
 - Refactoring :)
 - ~~Integrate debugger~~
-- Support for npm scrits
-- Support for gulp scrits
+- Support for npm scripts
+- Support for gulp scripts
 - Support for jasmine
 - Localization
 - Better support for require.js and goto definition
