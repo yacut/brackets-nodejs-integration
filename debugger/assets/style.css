@@ -144,6 +144,11 @@
     height: -webkit-calc(100% - 28px);
 }
 
+.brackets-nodejs-integration-debugger-wrapper .brackets-nodejs-integration-debugger-callback-stack {
+    display: none;
+    height: -webkit-calc(100% - 28px);
+}
+
 .brackets-nodejs-integration-debugger-log {
     padding: 4px;
 }

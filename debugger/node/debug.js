@@ -128,6 +128,7 @@ debugConnector.prototype.connect = function () {
                     if (body.event === 'afterCompile') {
                         // Muffle for now
                         // Maybe use this add a feature to list the files the debugger has loaded
+                        self.emit('afterCompile', body.body);
                         responseIgnored = false;
                     }
 

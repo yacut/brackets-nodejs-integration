@@ -113,8 +113,11 @@ define(function (require, exports) {
 
         //If the debugger breaks, activate buttons and open the file we break/highlight line
         that._nodeDebuggerDomain.on('break', function (e, body) {
-            //Fixme: Just to support windows, however this most likely won't work in every case
-            var docPath = body.script.name.replace(/\\/g, '/');
+            var docPath = '';
+            if (body.script && body.script.name) {
+                //Fixme: Just to support windows, however this most likely won't work in every case
+                docPath = body.script.name.replace(/\\/g, '/');
+            }
 
             //Make sure the panel is open
             that.nodeDebuggerPanel.panel.show();

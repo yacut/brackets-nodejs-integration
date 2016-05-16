@@ -260,6 +260,10 @@ function setEventHandlers() {
     debug.on('break', function (body) {
         _domainManager.emitEvent(DOMAIN_NAME, 'break', body);
     });
+
+    debug.on('afterCompile', function (body) {
+        _domainManager.emitEvent(DOMAIN_NAME, 'afterCompile', body);
+    });
 }
 
 function init(domainManager) {
@@ -425,6 +429,15 @@ function init(domainManager) {
             name: 'Body',
             type: '{ invocationText: string, sourceLine: number, sourceColumn: number, sourceLineText: string, script: object, breakpoints: array }',
             description: 'The body V8 sends us'
+        }]
+    );
+
+    _domainManager.registerEvent(
+        DOMAIN_NAME,
+        'afterCompile', [{
+            name: 'Body',
+            type: 'object',
+            description: 'The body V8 sends us as response'
         }]
     );
 

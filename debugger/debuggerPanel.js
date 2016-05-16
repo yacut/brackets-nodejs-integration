@@ -3,19 +3,19 @@
 
 define(function (require, exports) {
 
-
-    var PanelManager = brackets.getModule('view/PanelManager');
-    var PreferencesManager = brackets.getModule('preferences/PreferencesManager');
-    var prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
+    var command_manager = brackets.getModule('command/CommandManager');
+    var commands = brackets.getModule('command/Commands');
+    var panel_manager = brackets.getModule('view/PanelManager');
+    var preferences_manager = brackets.getModule('preferences/PreferencesManager');
+    var prefs = preferences_manager.getExtensionPrefs('brackets-nodejs-integration');
     var menus = brackets.getModule('command/Menus');
 
     var LOCALS_CONTEXT_MENU_ID = 'brackets-nodejs-integration-locals-context-menu';
 
-    var _nodeDebuggerDomain,
-        _maxDepth = 3,
-        history = [],
-        historyCurrent = 0,
-        logContainerHTML = require('text!./assets/debuggerLog.html');
+    var _maxDepth = 3;
+    var history = [];
+    var historyCurrent = 0;
+    var logContainerHTML = require('text!./assets/debuggerLog.html');
 
     exports.create_new = function () {
         return new debuggerPanel();
@@ -27,6 +27,7 @@ define(function (require, exports) {
         this.$debuggerContent = $(null);
         this.$debuggerSideBar = $(null);
         this.$debuggerInput = $(null);
+        this._nodeDebuggerDomain = null;
     };
 
     /*
@@ -43,7 +44,7 @@ define(function (require, exports) {
                 history.push(com);
                 historyCurrent = history.length;
                 that.log($('<span>').text('>> ' + com));
-                _nodeDebuggerDomain.exec('eval', com);
+                that._nodeDebuggerDomain.exec('eval', com);
                 //reset the input field
                 that.$debuggerInput.val('');
             }
@@ -99,10 +100,11 @@ define(function (require, exports) {
         this.panel = $('#' + domain_id).find('.brackets-nodejs-integration-debugger').html($(logContainerHTML)).show();
         this.$logPanel = $('#' + domain_id).find('.brackets-nodejs-integration-debugger-log-panel');
         _maxDepth = prefs.get('lookupDepth');
-        _nodeDebuggerDomain = nodeDebuggerDomain;
+        this._nodeDebuggerDomain = nodeDebuggerDomain;
 
         //Find HTML
         this.$debuggerContent = this.$logPanel.find('.brackets-nodejs-integration-debugger-content');
+        this.$debuggerCallbackStack = this.$logPanel.find('.brackets-nodejs-integration-debugger-callback-stack');
         this.$debuggerSideBar = this.$logPanel.find('.brackets-nodejs-integration-debugger-sidebar');
         this.$debuggerInput = this.$logPanel.find('.brackets-nodejs-integration-debugger-input');
 
@@ -112,14 +114,12 @@ define(function (require, exports) {
             onKeyDown(e, that);
         });
 
-        //add show console button
-        var $show_console = $('<a>').attr('href', '#').attr('title', 'Console').html('<i class="fa fa-terminal"></i>');
-        this.addControlElement($show_console, false, function () {
-            $('#' + domain_id).find('.brackets-nodejs-integration-debugger-sidebar').toggle();
-            $('#' + domain_id).find('.brackets-nodejs-integration-debugger-content').toggle();
-            $('#' + domain_id).find('.brackets-nodejs-integration-debugger-input').select();
-            $(that).toggleClass('brackets-nodejs-integration-debugger-selected-button').find('i').toggleClass('fa-bold');
-        });
+
+        //Add help button
+        var $help = $('<a>').html('<i class="fa fa-question-circle" aria-hidden="true"></i>')
+            .attr('href', 'https://github.com/yacut/brackets-nodejs-integration#how-to-use-debugger')
+            .attr('title', 'Help!');
+        this.addControlElement($help, false, function () {});
 
         //Add clear console button
         var $clear = $('<a>').attr('href', '#').attr('title', 'Clear console').html('<i class="fa fa-trash" aria-hidden="true"></i>');
@@ -132,12 +132,59 @@ define(function (require, exports) {
             });
         });
 
+        this._nodeDebuggerDomain.on('afterCompile', function (e, body) {
+            if (body && body.script && body.script.name) {
+                console.log('panel 144', e, JSON.stringify(body.script));
+                var $callback_file = $('<li>').text(body.script.name).on('click', function () {
+                    command_manager.execute(commands.FILE_OPEN, {
+                        fullPath: $(this).text()
+                    });
+                });
+                $callback_file.prependTo(that.$debuggerCallbackStack);
+            }
+        });
 
-        //Add help button
-        var $help = $('<a>').html('<i class="fa fa-question-circle" aria-hidden="true"></i>')
-            .attr('href', 'https://github.com/yacut/brackets-nodejs-integration#how-to-use-debugger')
-            .attr('title', 'Help!');
-        this.addControlElement($help, false, function () {});
+        //add show console button
+        var $show_console = $('<a>').attr('href', '#').attr('title', 'Console').html('<i class="fa fa-terminal"></i>');
+        this.addControlElement($show_console, false, function () {
+            var $domain = $('#' + domain_id);
+            var $callback_stack = $domain.find('.brackets-nodejs-integration-debugger-callback-stack');
+            var $sidebar = $domain.find('.brackets-nodejs-integration-debugger-sidebar');
+            var $content = $domain.find('.brackets-nodejs-integration-debugger-content');
+            var $console_input = $domain.find('.brackets-nodejs-integration-debugger-input');
+            if ($content.is(':visible')) {
+                $sidebar.show();
+                $callback_stack.hide();
+                $console_input.hide();
+                $content.show();
+            }
+            else {
+                $callback_stack.hide();
+                $sidebar.hide();
+                $content.show();
+                $console_input.show().select();
+                $(that).toggleClass('brackets-nodejs-integration-debugger-selected-button').find('i').toggleClass('fa-bold');
+            }
+        });
+
+        //add show callback stack button
+        var $callback_stack_link = $('<a>').attr('href', '#').attr('title', 'Console').html('<i class="fa fa-indent"></i>');
+        this.addControlElement($callback_stack_link, false, function () {
+            var $domain = $('#' + domain_id);
+            var $callback_stack = $domain.find('.brackets-nodejs-integration-debugger-callback-stack');
+            var $sidebar = $domain.find('.brackets-nodejs-integration-debugger-sidebar');
+            var $content = $domain.find('.brackets-nodejs-integration-debugger-content');
+            if ($callback_stack.is(':visible')) {
+                $callback_stack.hide();
+                $sidebar.show();
+                $content.hide();
+            }
+            else {
+                $callback_stack.show();
+                $sidebar.hide();
+                $content.hide();
+            }
+        });
 
     };
 
