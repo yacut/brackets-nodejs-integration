@@ -168,5 +168,5 @@ debugConnector.prototype.sendCommand = function (self, obj) {
 };
 
 module.exports = {
-    debugConnector: debugConnector
+    DebugConnector: debugConnector
 };

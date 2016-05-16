@@ -1,7 +1,7 @@
 /*global require*/
 'use strict';
 
-var debugConnector = require('./debug.js').debugConnector;
+var DebugConnector = require('./debug.js').DebugConnector;
 
 var _domainManager;
 var debug;
@@ -54,7 +54,6 @@ function stepContinue() {
 }
 
 function setBreakpoint(file, line) {
-    //TODO use global preferences to save all breakpoints and sent them at debug start!
     var obj = {};
     var fullPath = file;
     //Windows work around
@@ -213,7 +212,7 @@ function start(port, host, maxDepth) {
 
     _maxDepth = maxDepth;
     if (!debug) {
-        debug = new debugConnector(port, host);
+        debug = new DebugConnector(port, host);
         debug.port = port;
         debug.host = host;
         setEventHandlers();

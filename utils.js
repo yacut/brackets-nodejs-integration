@@ -9,7 +9,10 @@ define(function (require, exports) {
         var dir = file_system.getDirectoryForPath(path);
         var promise = $.Deferred();
 
-        dir.exists(function (err, exists) {
+        dir.exists(function (dir_exists_err, exists) {
+            if (dir_exists_err) {
+                console.error(dir_exists_err);
+            }
             if (!exists) {
                 var parentFolder = path.replace(/\/+\s*$/, '').split('/').slice(0, -1).join('/');
                 exports.mkdirp(parentFolder).then(function () {

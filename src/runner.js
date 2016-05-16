@@ -6,7 +6,7 @@ define(function main(require, exports, module) {
 
     var _ = brackets.getModule('thirdparty/lodash');
     var extension_utils = brackets.getModule('utils/ExtensionUtils');
-    var node_domain = brackets.getModule('utils/NodeDomain');
+    var NodeDomain = brackets.getModule('utils/NodeDomain');
     var project_manager = brackets.getModule('project/ProjectManager');
     var file_utils = brackets.getModule('file/FileUtils');
     var file_system = brackets.getModule('filesystem/FileSystem');
@@ -42,7 +42,10 @@ define(function main(require, exports, module) {
         var file_path = extension_utils.getModulePath(module, 'domains/' + id); //+ '.js'
         this.file_path = file_path;
         var file = file_system.getFileForPath(domain_template_path);
-        file.read(function (err, content) {
+        file.read(function (error, content) {
+            if (error) {
+                return console.error(error);
+            }
             create_new_domain(that, id, file_path, content);
         });
         this.all_tests_results_label = this.$panel.find('#all_tests_results_label')
@@ -66,7 +69,7 @@ define(function main(require, exports, module) {
     }
 
     function new_domain(that, id, path) {
-        that.process_domain = new node_domain(id, path);
+        that.process_domain = new NodeDomain(id, path);
         that.process_domain.on('console_output', function (info, data) {
             if (that.id !== info.target._domainPath.replace(/^.*[\\\/]/, '')) {
                 return;
@@ -115,7 +118,7 @@ define(function main(require, exports, module) {
                 that.finalize_test(event_model.fullTitle, 'fail_test');
                 that.write(that, event_model.stack, {
                     actual: event_model.actual ? JSON.stringify(event_model.actual, null, 2) : null,
-                    expected: event_model.expected ? JSON.stringify(event_model.expected, null, 2) : null,
+                    expected: event_model.expected ? JSON.stringify(event_model.expected, null, 2) : null
                 });
                 break;
             case 'pending_test':

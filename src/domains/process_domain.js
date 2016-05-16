@@ -1,5 +1,5 @@
+'use strict';
 (function () {
-    'use strict';
 
     var treekill = require('treekill');
     var child_process = require('child_process');
@@ -66,7 +66,6 @@
     }
 
     function init(domainManager) {
-        var DOMAIN_NAME = path.basename(__filename);
         domain = domainManager;
         if (!domainManager.hasDomain(DOMAIN_NAME)) {
             domainManager.registerDomain(DOMAIN_NAME, {

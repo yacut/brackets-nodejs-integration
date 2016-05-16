@@ -7,9 +7,9 @@ define(function (require, exports) {
     var prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
 
     exports.create_new = function () {
-        return new locals();
+        return new Locals();
     };
-    var locals = function () {
+    var Locals = function () {
         this.locals = {};
         this.lookup = null;
         this.$locals = $(null);
@@ -40,7 +40,7 @@ define(function (require, exports) {
     /**
      * Initialise the locals module
      **/
-    locals.prototype.init = function (nodeDebuggerDomain, nodeDebuggerPanel, domain_id) {
+    Locals.prototype.init = function (nodeDebuggerDomain, nodeDebuggerPanel, domain_id) {
         this._nodeDebuggerDomain = nodeDebuggerDomain;
         this.nodeDebuggerPanel = nodeDebuggerPanel;
 

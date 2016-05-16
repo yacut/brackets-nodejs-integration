@@ -14,10 +14,10 @@ define(function (require, exports) {
     var gutterName = 'node-debugger-bp-gutter';
 
     exports.create_new = function () {
-        return new breakpointGutter();
+        return new BreakpointGutter();
     };
 
-    var breakpointGutter = function () {
+    var BreakpointGutter = function () {
         this.cm = null;
         this.cd = null;
         this.breakpoints = prefs.get('breakpoints') || [];
@@ -158,7 +158,7 @@ define(function (require, exports) {
      * bp as object like the V8 Debugger sends it
      *
      */
-    breakpointGutter.prototype.addBreakpoint = function addBreakpoint(bp, self) {
+    BreakpointGutter.prototype.addBreakpoint = function addBreakpoint(bp, self) {
         //if debug mocha test:
         //bp.actual_line = bp.line;
         var that = this ? this : self;
@@ -191,7 +191,7 @@ define(function (require, exports) {
     /*
      * Removes all Breakpoints
      */
-    breakpointGutter.prototype.removeAllBreakpoints = function removeAllBreakpoints() {
+    BreakpointGutter.prototype.removeAllBreakpoints = function removeAllBreakpoints() {
         var that = this;
         _clearGutters(that);
         //And actually remove the breakpoints when the debugger is running
@@ -211,7 +211,7 @@ define(function (require, exports) {
      * Remove all gutters and request a list of breakpoints
      * to make sure we're consistent
      */
-    breakpointGutter.prototype.setAllBreakpoints = function setAllBreakpoints() {
+    BreakpointGutter.prototype.setAllBreakpoints = function setAllBreakpoints() {
         var that = this;
         _.each(prefs.get('breakpoints'), function (bp) {
             that._nodeDebuggerDomain.exec('setBreakpoint', bp.fullPath, bp.line);
@@ -221,7 +221,7 @@ define(function (require, exports) {
         //_nodeDebuggerDomain.exec('getBreakpoints');
     };
 
-    breakpointGutter.prototype.init = function init(nodeDebuggerDomain, main_menu) {
+    BreakpointGutter.prototype.init = function init(nodeDebuggerDomain, main_menu) {
         this._nodeDebuggerDomain = nodeDebuggerDomain;
         var that = this;
         _updateCm(this);

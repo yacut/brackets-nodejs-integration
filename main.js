@@ -118,8 +118,8 @@ define(function (require, exports, module) {
         var link_properties = link.split(':');
         var path_to_file = link_properties[0];
         if (!file_system.isAbsolutePath(path_to_file)) {
-            var runner = get_runner($(this).parent().parent().parent().parent().parent().attr('id'));
-            var working_directory = runner ? runner.get_last_cwd() : '';
+            var active_runner = get_runner($(this).parent().parent().parent().parent().parent().attr('id'));
+            var working_directory = active_runner ? active_runner.get_last_cwd() : '';
             if (!working_directory) {
                 var project_root = project_manager.getProjectRoot();
                 working_directory = project_root ? project_root.fullPath : '';
@@ -212,7 +212,7 @@ define(function (require, exports, module) {
         if ($tabs.length >= 5) {
             return utils.show_popup_message('Limitations: You can start only 5 runners.');
         }
-        create_new_tab();
+        return create_new_tab();
     });
     $runner_panel.on('click', '.nodejs-integration-tab-settings', function () {
         dialog.settings.show();
@@ -305,7 +305,7 @@ define(function (require, exports, module) {
             $tabs.detach();
             $tab_container.append(t);
 
-            if (ati != $('.nodejs-integration-tabs').find('.nodejs-integration-tab.active').index()) {
+            if (ati !== $('.nodejs-integration-tabs').find('.nodejs-integration-tab.active').index()) {
                 $('.nodejs-integration-tabs').find('.nodejs-integration-tab.active').css('left', '');
             }
 
@@ -323,7 +323,7 @@ define(function (require, exports, module) {
         });
     }
 
-    extension_utils.loadStyleSheet(module, "debugger/assets/style.css");
+    extension_utils.loadStyleSheet(module, 'debugger/assets/style.css');
     extension_utils.loadStyleSheet(module, 'styles/panel.css');
     extension_utils.loadStyleSheet(module, 'thirdparty/objectDiff/objectDiff.css');
     extension_utils.loadStyleSheet(module, 'styles/font-awesome.min.css');
@@ -341,24 +341,24 @@ define(function (require, exports, module) {
         });
     panel.console_output = $('.brackets-nodejs-integration-console');
     $runner_panel.on('change', '.run-configuration-selector', function () {
-        var runner = get_runner($(this).parent().parent().attr('id'));
-        runner.clear();
-        var run_configuration = runner.get_selected_configuration();
-        runner.set_indicators(run_configuration);
+        var selected_runner = get_runner($(this).parent().parent().attr('id'));
+        selected_runner.clear();
+        var run_configuration = selected_runner.get_selected_configuration();
+        selected_runner.set_indicators(run_configuration);
     });
 
     function get_runner(panel_id) {
-        var runner_tab = _.findLast(runners, function (runner_tab) {
+        var selected_runner_tab = _.findLast(runners, function (runner_tab) {
             return runner_tab.id === panel_id;
         });
-        return runner_tab ? runner_tab.process : null;
+        return selected_runner_tab ? selected_runner_tab.process : null;
     }
 
     function get_debugger(panel_id) {
-        var runner_tab = _.findLast(runners, function (runner_tab) {
+        var selected_runner_tab = _.findLast(runners, function (runner_tab) {
             return runner_tab.id === panel_id;
         });
-        return runner_tab ? runner_tab.debugger : null;
+        return selected_runner_tab ? selected_runner_tab.debugger : null;
     }
 
     var dialog = {
@@ -385,13 +385,13 @@ define(function (require, exports, module) {
                     }
 
                     var changed_configurations = [];
-                    _.each(runner_list.find('option'), function (runner) {
-                        if (runner.text) {
+                    _.each(runner_list.find('option'), function (runner_list_item) {
+                        if (runner_list_item.text) {
                             changed_configurations.push({
-                                'name': runner.text,
-                                'cwd': runner.getAttribute('runner_cwd'),
-                                'type': runner.getAttribute('runner_type'),
-                                'target': runner.getAttribute('runner_target'),
+                                'name': runner_list_item.text,
+                                'cwd': runner_list_item.getAttribute('runner_cwd'),
+                                'type': runner_list_item.getAttribute('runner_type'),
+                                'target': runner_list_item.getAttribute('runner_target'),
                                 'debug': false
                             });
                         }
@@ -400,7 +400,7 @@ define(function (require, exports, module) {
                     prefs.set('mocha-bin', mocha_bin_input.val().trim());
                     prefs.set('v8-flags', v8_flags_input.val().trim());
                     prefs.set('additional-flags', additional_flags.val().trim());
-                    prefs.set('lookupDepth', parseInt(lookup_depth.val().trim()));
+                    prefs.set('lookupDepth', parseInt(lookup_depth.val().trim(), 10));
                     prefs.set('removeBreakpointsOnDisconnect', remove_breakpoints_on_disconnect.prop('checked'));
                     prefs.set('autoscroll', scroll_input.prop('checked'));
                     prefs.set('configurations', changed_configurations);
@@ -408,26 +408,26 @@ define(function (require, exports, module) {
 
                     var configuration_to_remove = run_configurations.filter(function (run_configuration) {
                         return changed_configurations.filter(function (changed_configuration) {
-                            return changed_configuration.name == run_configuration.name &&
-                                changed_configuration.target == run_configuration.target &&
-                                changed_configuration.cwd == run_configuration.cwd &&
-                                changed_configuration.type == run_configuration.type;
+                            return changed_configuration.name === run_configuration.name &&
+                                changed_configuration.target === run_configuration.target &&
+                                changed_configuration.cwd === run_configuration.cwd &&
+                                changed_configuration.type === run_configuration.type;
                         }).length === 0;
                     });
 
                     var configuration_to_add = changed_configurations.filter(function (changed_configuration) {
                         return run_configurations.filter(function (run_configuration) {
-                            return run_configuration.name == changed_configuration.name &&
-                                run_configuration.target == changed_configuration.target &&
-                                run_configuration.cwd == changed_configuration.cwd &&
-                                run_configuration.type == changed_configuration.type;
+                            return run_configuration.name === changed_configuration.name &&
+                                run_configuration.target === changed_configuration.target &&
+                                run_configuration.cwd === changed_configuration.cwd &&
+                                run_configuration.type === changed_configuration.type;
                         }).length === 0;
                     });
 
                     run_configurations = changed_configurations;
-                    _.each(runners, function (runner) {
-                        runner.process.run_configurations = changed_configurations;
-                        runner.process.scroll_enabled = prefs.get('autoscroll');
+                    _.each(runners, function (runner_item) {
+                        runner_item.process.run_configurations = changed_configurations;
+                        runner_item.process.scroll_enabled = prefs.get('autoscroll');
                     });
 
                     _.each(configuration_to_add, function (configuration) {
@@ -467,11 +467,11 @@ define(function (require, exports, module) {
                 });
                 var runner_list = $('#brackets-nodejs-integration-runner-list')
                     .change(function () {
-                        var runner = $(this).children(':selected');
-                        runner_name.val(runner.html());
-                        runner_type.val(runner.attr('runner_type'));
-                        runner_target.val(runner.attr('runner_target'));
-                        runner_cwd.val(runner.attr('runner_cwd'));
+                        var selected_runner = $(this).children(':selected');
+                        runner_name.val(selected_runner.html());
+                        runner_type.val(selected_runner.attr('runner_type'));
+                        runner_target.val(selected_runner.attr('runner_target'));
+                        runner_cwd.val(selected_runner.attr('runner_cwd'));
                     });
 
                 var configurations = prefs.get('configurations');
@@ -527,6 +527,9 @@ define(function (require, exports, module) {
                         init_folder = init_folder.substring(0, init_folder.lastIndexOf('/')).substring(0, init_folder.lastIndexOf('\\'));
                     }
                     file_system.showOpenDialog(false, selected_runner.attr('runner_type') === 'mocha', 'Choose target...', init_folder, [], function (error, target_list) {
+                        if (error) {
+                            console.error(error);
+                        }
                         if (target_list && target_list.length > 0) {
                             runner_target.val(target_list[0]);
                             selected_runner.attr('runner_target', target_list[0]);
@@ -537,6 +540,9 @@ define(function (require, exports, module) {
                     var selected_runner = runner_list.find('option:selected');
                     var init_folder = selected_runner.attr('runner_cwd').replace(/([ ])/g, '\\$1');
                     file_system.showOpenDialog(false, true, 'Choose working directory...', init_folder, null, function (error, target_list) {
+                        if (error) {
+                            console.error(error);
+                        }
                         if (target_list && target_list.length > 0) {
                             runner_cwd.val(target_list[0]);
                             selected_runner.attr('runner_cwd', target_list[0]);
@@ -554,11 +560,14 @@ define(function (require, exports, module) {
         var runner_directory_path = extension_utils.getModulePath(module, 'src/domains/');
         var runner_directory = file_system.getDirectoryForPath(runner_directory_path);
         runner_directory.getContents(function (error, files) {
+            if (error) {
+                console.error(error);
+            }
             _.each(files, function (file) {
                 if (!_.endsWith(file._path, '.js')) {
-                    var runner = get_runner(file._name);
-                    if (runner) {
-                        runner.stop();
+                    var found_runner = get_runner(file._name);
+                    if (found_runner) {
+                        found_runner.stop();
                     }
                     file.unlink(function () {});
                 }
@@ -567,11 +576,14 @@ define(function (require, exports, module) {
         var debugger_directory_path = extension_utils.getModulePath(module, 'debugger/node/');
         var debugger_directory = file_system.getDirectoryForPath(debugger_directory_path);
         debugger_directory.getContents(function (error, files) {
+            if (error) {
+                console(error);
+            }
             _.each(files, function (file) {
                 if (!_.endsWith(file._path, '.js')) {
-                    var runner = get_runner(file._name);
-                    if (runner) {
-                        runner.stop();
+                    var found_runner = get_runner(file._name);
+                    if (found_runner) {
+                        found_runner.stop();
                     }
                     file.unlink(function () {});
                 }
@@ -652,14 +664,14 @@ define(function (require, exports, module) {
                     var word_before = word_before_match ? word_before_match.pop() : '';
                     var word_after_match = string_after.match(/[\w\d_=\(]+/g);
                     var word_after = word_after_match ? word_after_match.shift() : '';
-                    if ((word_before === "exports" && word_after === "=") ||
-                        (word_before === "prototype" && word_after === "=") ||
-                        (word_before === "function" && word_after === "(")) {
+                    if ((word_before === 'exports' && word_after === '=') ||
+                        (word_before === 'prototype' && word_after === '=') ||
+                        (word_before === 'function' && word_after === '(')) {
                         line_index = i;
                     }
                 }
             }
-            if (line_index != -1) {
+            if (line_index !== -1) {
                 editor.setCursorPos(line_index, 0, true, false);
                 editor._codeMirror.setSelection({
                     line: line_index,
@@ -706,14 +718,14 @@ define(function (require, exports, module) {
         }
 
         var current_editor = editor_manager.getCurrentFullEditor();
-        if (current_editor.getModeForSelection() !== "javascript") {
+        if (current_editor.getModeForSelection() !== 'javascript') {
             return null;
         }
         var cursor_position = current_editor.getCursorPos();
         var current_line_position = cursor_position.line;
         var current_line = current_editor._codeMirror.doc.getLine(current_line_position);
         var search_name = current_editor._codeMirror.getTokenAt(cursor_position, true).string;
-        if (!/\S/.test(search_name) || search_name === ".") {
+        if (!/\S/.test(search_name) || search_name === '.') {
             search_name = current_editor._codeMirror.getTokenAt({
                 line: cursor_position.line,
                 ch: cursor_position.ch + 1

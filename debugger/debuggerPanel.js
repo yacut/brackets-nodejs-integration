@@ -18,10 +18,10 @@ define(function (require, exports) {
     var logContainerHTML = require('text!./assets/debuggerLog.html');
 
     exports.create_new = function () {
-        return new debuggerPanel();
+        return new DebuggerPanel();
     };
 
-    var debuggerPanel = function () {
+    var DebuggerPanel = function () {
         this.panel = null;
         this.$logPanel = $(null);
         this.$debuggerContent = $(null);
@@ -95,7 +95,7 @@ define(function (require, exports) {
      *
      * @param {NodeDomain} nodeDebuggerDomain
      **/
-    debuggerPanel.prototype.init = function (nodeDebuggerDomain, domain_id) {
+    DebuggerPanel.prototype.init = function (nodeDebuggerDomain, domain_id) {
         //Create the BottomPanel
         this.panel = $('#' + domain_id).find('.brackets-nodejs-integration-debugger').html($(logContainerHTML)).show();
         this.$logPanel = $('#' + domain_id).find('.brackets-nodejs-integration-debugger-log-panel');
@@ -191,7 +191,7 @@ define(function (require, exports) {
     /**
      *Adds a new line to the log within brackets
      **/
-    debuggerPanel.prototype.log = function ($msg) {
+    DebuggerPanel.prototype.log = function ($msg) {
         var $h = $('<div>')
             .addClass('brackets-nodejs-integration-debugger-log');
 
@@ -209,7 +209,7 @@ define(function (require, exports) {
      * @param {boolean} If true element will be in the top row, false: bottom row
      * @param {function} clickHandler
      **/
-    debuggerPanel.prototype.addControlElement = function ($el, top, clickHandler) {
+    DebuggerPanel.prototype.addControlElement = function ($el, top, clickHandler) {
         var $t = $(null);
         if (top) {
             $t = this.$logPanel.find('.toolbar.top');
@@ -228,7 +228,7 @@ define(function (require, exports) {
      * @param {object} Initally the body.lookup propertie
      * @return {jquery object} A jquery HTML object you can inject into the console
      **/
-    debuggerPanel.prototype.createEvalHTML = function (body, depth, lookup, maxDepth) {
+    DebuggerPanel.prototype.createEvalHTML = function (body, depth, lookup, maxDepth) {
         var $html = $('<span>').css('display', 'block');
         var $inside = $('<span>');
         var object_name = '';

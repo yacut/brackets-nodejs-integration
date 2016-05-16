@@ -1,5 +1,6 @@
-'use strict';
 /*global define, $, brackets */
+'use strict';
+
 define(function (require, exports) {
 
     var PreferencesManager = brackets.getModule('preferences/PreferencesManager');
@@ -11,14 +12,14 @@ define(function (require, exports) {
 
     var utils = require('../../utils');
 
-    var debug = function () {
+    var Debug = function () {
         this._nodeDebuggerDomain = null;
         this._activeLine = 0;
         this._activeDocPath = '';
         this._highlightCm = null;
     };
     exports.create_new = function () {
-        return new debug();
+        return new Debug();
     };
 
     var nextClickHandler = function (nodeDebuggerDomain) {
@@ -63,7 +64,7 @@ define(function (require, exports) {
         }
     };
 
-    debug.prototype.init = function (nodeDebuggerDomain, nodeDebuggerPanel) {
+    Debug.prototype.init = function (nodeDebuggerDomain, nodeDebuggerPanel) {
         this._nodeDebuggerDomain = nodeDebuggerDomain;
         this.nodeDebuggerPanel = nodeDebuggerPanel;
         //and set the event listener

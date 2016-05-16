@@ -28,7 +28,7 @@
             50
         ],
         "consistent-this": 0,
-        "consistent-return": 1,
+        "consistent-return": 0,
         "curly": 2,
         "default-case": 1,
         "dot-notation": [
@@ -86,7 +86,7 @@
             "always"
         ],
         "no-console": 0,
-        "no-control-regex": 2,
+        "no-control-regex": 0,
         "no-debugger": 1,
         "no-delete-var": 2,
         "no-div-regex": 2,

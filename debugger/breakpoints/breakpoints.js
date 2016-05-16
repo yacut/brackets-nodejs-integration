@@ -6,7 +6,7 @@ define(function (require, exports) {
     var PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
         prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
 
-    var breakpoints = function () {
+    var Breakpoints = function () {
         this._nodeDebuggerDomain = null;
         this.bpGutter = require('./breakpointGutter').create_new();
         this.nodeDebuggerPanel = null;
@@ -17,7 +17,7 @@ define(function (require, exports) {
      *
      * @param {NodeDomain} nodeDebuggerDomain
      **/
-    breakpoints.prototype.init = function (nodeDebuggerDomain, nodeDebuggerPanel) {
+    Breakpoints.prototype.init = function (nodeDebuggerDomain, nodeDebuggerPanel) {
         this._nodeDebuggerDomain = nodeDebuggerDomain;
         this.nodeDebuggerPanel = nodeDebuggerPanel;
         var that = this;
@@ -54,6 +54,6 @@ define(function (require, exports) {
     };
 
     exports.create_new = function () {
-        return new breakpoints();
+        return new Breakpoints();
     };
 });
