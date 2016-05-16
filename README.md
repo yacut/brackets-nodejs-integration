@@ -51,17 +51,27 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 *Settings dialog*
 
 
-##How to use debugger
+## How to use debugger
 
 - Start your script in debug mode
 - Use the Buttons to _Step over_, _Step in_, _Step out_ or to _continue_ the script execution.
 - Click on a line number to set/remove a Breakpoint and use the console to get an variable for the current scope.
 - Use the arrow keys to browse through the history.
 
+## Recomended Brackets extensions for NodeJS developer
+
+- [https://github.com/MiguelCastillo/Brackets-Ternific](https://github.com/MiguelCastillo/Brackets-Ternific)
+
+## In this project used
+
+- [http://fontawesome.io/](http://fontawesome.io/)
+- [https://github.com/caolan/async](https://github.com/caolan/async)
+- [https://github.com/NV/objectDiff.js](https://github.com/NV/objectDiff.js)
+
 ## TODO:
 
 - Refactoring :)
-- Integrate debugger
+- ~~Integrate debugger~~
 - Support for npm scrits
 - Support for gulp scrits
 - Support for jasmine
@@ -70,5 +80,5 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 
 
 ## Known issues
-- Mocha debugger do not shows the local variables
+- ~~Mocha debugger do not shows the local variables~~
 - Brackets throws error at connection limit
