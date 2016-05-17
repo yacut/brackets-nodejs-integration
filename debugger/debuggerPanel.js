@@ -134,7 +134,6 @@ define(function (require, exports) {
 
         this._nodeDebuggerDomain.on('afterCompile', function (e, body) {
             if (body && body.script && body.script.name) {
-                console.log('panel 144', e, JSON.stringify(body.script));
                 var $callback_file = $('<li>').text(body.script.name).on('click', function () {
                     command_manager.execute(commands.FILE_OPEN, {
                         fullPath: $(this).text()
@@ -247,7 +246,13 @@ define(function (require, exports) {
                     $inside.addClass('object fa fa-chevron-right');
                 }
             });
-            $inside.text('{ ... }').on('click', evalHTMLonClick);
+            if (body.className === 'Array') {
+                $inside.text('[...]').on('click', evalHTMLonClick);
+
+            }
+            else {
+                $inside.text('{...}').on('click', evalHTMLonClick);
+            }
             object_value = JSON.stringify(o, null, 2);
         }
         else if (body.type === 'function') {
@@ -263,8 +268,8 @@ define(function (require, exports) {
             $('<span>').addClass('var-name').text(body.varName + ': ').prependTo($inside);
             object_name = body.varName;
         }
-
-        var $type = $('<span>').addClass('type').html('[' + body.type + ']');
+        var type = body.className ? body.className : body.type;
+        var $type = $('<span>').addClass('type').html('[' + type + ']');
         $('<a>').addClass('action_btn')
             .html('<i class="fa fa-files-o copy" aria-hidden="true"></i>')
             .css('padding', '2px')

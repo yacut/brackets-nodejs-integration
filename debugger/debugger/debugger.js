@@ -158,7 +158,7 @@ define(function (require, exports) {
                 msg = 'Could not connect to ' + prefs.get('debugger-host') + ':' + prefs.get('debugger-port');
             }
 
-            if (msg) {
+            if (msg && msg !== 'ECONNRESET') {
                 that.nodeDebuggerPanel.log($('<span>').text(msg));
                 utils.show_popup_message('Debugger: ' + msg);
             }
@@ -182,7 +182,7 @@ define(function (require, exports) {
         //On evaluate display the result
         that._nodeDebuggerDomain.on('eval', function (e, body) {
             var $wrapper = $('<span>').addClass('wrapper');
-            var $output = that.nodeDebuggerPanel.createEvalHTML(body, 0, body.lookup);
+            var $output = that.nodeDebuggerPanel.createEvalHTML(body, 0, body.lookup, prefs.get('lookupDepth'));
 
             $output.appendTo($wrapper);
             that.nodeDebuggerPanel.log($wrapper);

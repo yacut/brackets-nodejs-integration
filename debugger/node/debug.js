@@ -6,7 +6,6 @@ var net = require('net'),
 
 var debugConnector = function (port, host) {
     events.EventEmitter.call(this);
-
     this.connected = false;
     this.port = port;
     this.host = host;
@@ -20,8 +19,10 @@ var debugConnector = function (port, host) {
 
 util.inherits(debugConnector, events.EventEmitter);
 
+/**
+ * Connect to v8 debugger
+ */
 debugConnector.prototype.connect = function () {
-
     var self = this;
     this.socket = net.createConnection(self.port, self.host);
 
@@ -34,7 +35,7 @@ debugConnector.prototype.connect = function () {
         self.header = true;
         self._waitingForResponse = {};
         self.emit('connect');
-        console.log('[Node Debugger] Connected to V8 debugger');
+        console.log('[Node Debugger] Connected');
     });
 
     this.socket.on('error', function (err) {
@@ -46,6 +47,7 @@ debugConnector.prototype.connect = function () {
         self.connected = false;
         self.emit('close', err);
         self.socket.end();
+        console.log('[Node Debugger] Disconnected');
     });
 
     this.socket.on('data', function (data) {
@@ -92,54 +94,44 @@ debugConnector.prototype.connect = function () {
                     parseHeader('Content-Length:' + splitLine[1]);
                 }
             }
-            //console.log('BodyLength: %d | ContentLength: %d - %d', self._body.length, self._contentLength, self.empty_chars);
-            //console.log(data.toString());
-            if (self._contentLength > 0 &&
-                (self._body.length === self._contentLength ||
-                    self._body.length === (self._contentLength - 4) ||
-                    self._body.length === (self._contentLength - 8) ||
-                    index === l.length - 1)) {
-
+            var body = try_parse_json(self._body);
+            if (self._body.length > 0 && body) {
                 var responseIgnored = true;
-                try {
-                    var body = JSON.parse(self._body);
-                    if (body.event === 'break') {
-                        self.emit('break', body.body);
+                if (body.event === 'break') {
+                    self.emit('break', body.body);
+                    responseIgnored = false;
+                }
+                if (body.type === 'response') {
+                    if (self._waitingForResponse[body.request_seq].callback) {
                         responseIgnored = false;
-                    }
-                    if (body.type === 'response') {
-                        if (self._waitingForResponse[body.request_seq].callback) {
-                            responseIgnored = false;
-                            if (!body.body) {
-                                body.body = {
-                                    type: 'error',
-                                    text: body.message
-                                };
-                            }
-                            self._waitingForResponse[body.request_seq].callback(body.command, body.body, body.running);
+                        if (!body.body) {
+                            body.body = {
+                                type: 'error',
+                                text: body.message
+                            };
                         }
-                        delete self._waitingForResponse[body.request_seq];
+                        self._waitingForResponse[body.request_seq].callback(body.command, body.body, body.running);
+                    }
+                    delete self._waitingForResponse[body.request_seq];
 
-                        if (body.command === 'version') {
-                            //var version = body.body.V8Version;
-                            //TODO Print node/debugger version on connect
-                        }
+                    if (body.command === 'version') {
+                        //var version = body.body.V8Version;
+                        //TODO Print node/debugger version on connect
                     }
-                    if (body.event === 'afterCompile') {
-                        // Muffle for now
-                        // Maybe use this add a feature to list the files the debugger has loaded
-                        self.emit('afterCompile', body.body);
+                    if (body.command === 'disconnect') {
                         responseIgnored = false;
-                    }
-
-                    if (responseIgnored) {
-                        console.warn('[Node Debugger] V8 Response ignored: ');
-                        console.warn(JSON.parse(self._body));
                     }
                 }
-                catch (e) {
-                    //Just ignore it for now
-                    console.error('Invalid response: ' + data.toString(), e);
+                if (body.event === 'afterCompile') {
+                    // Muffle for now
+                    // Maybe use this add a feature to list the files the debugger has loaded
+                    self.emit('afterCompile', body.body);
+                    responseIgnored = false;
+                }
+
+                if (responseIgnored) {
+                    console.warn('[Node Debugger] V8 Response ignored: ');
+                    console.warn(JSON.stringify(self._body));
                 }
                 //reset header && body
                 self._header = true;
@@ -150,23 +142,31 @@ debugConnector.prototype.connect = function () {
     });
 };
 
-debugConnector.prototype.sendCommand = function (self, obj) {
-    //var self = this;
-    // if (self.connected) {
-    obj.seq = ++self._seq;
-    obj.type = 'request';
-
-    var str = JSON.stringify(obj);
-
-    self._waitingForResponse[obj.seq] = obj;
+/**
+ * Send command to v8 debugger
+ * @param {object} self
+ * @param {object} send_request
+ */
+debugConnector.prototype.sendCommand = function (self, send_request) {
+    send_request.seq = ++self._seq;
+    send_request.type = 'request';
+    var str = JSON.stringify(send_request);
+    self._waitingForResponse[send_request.seq] = send_request;
     self.socket.write('Content-Length:' + str.length + '\r\n\r\n' + str);
-    /*}
-    else {
-        //Just ignore it, that is ok
-        console.error('[Node-Debugger] Can\'t send command, not connected!');
-    }*/
 };
 
 module.exports = {
     DebugConnector: debugConnector
 };
+
+function try_parse_json(string) {
+    var result;
+    try {
+        result = JSON.parse(string);
+    }
+    catch (e) {
+        result = null;
+    }
+
+    return result;
+}
