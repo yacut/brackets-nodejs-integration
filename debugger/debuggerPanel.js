@@ -134,11 +134,13 @@ define(function (require, exports) {
 
         this._nodeDebuggerDomain.on('afterCompile', function (e, body) {
             if (body && body.script && body.script.name) {
-                var $callback_file = $('<li>').text(body.script.name).on('click', function () {
-                    command_manager.execute(commands.FILE_OPEN, {
-                        fullPath: $(this).text()
+                var $callback_file = $('<li>').text(body.script.name)
+                    .attr('title', 'Click to open')
+                    .on('click', function () {
+                        command_manager.execute(commands.FILE_OPEN, {
+                            fullPath: $(this).text()
+                        });
                     });
-                });
                 $callback_file.prependTo(that.$debuggerCallbackStack);
             }
         });
@@ -155,7 +157,7 @@ define(function (require, exports) {
                 $sidebar.show();
                 $callback_stack.hide();
                 $console_input.hide();
-                $content.show();
+                $content.hide();
             }
             else {
                 $callback_stack.hide();
@@ -167,7 +169,7 @@ define(function (require, exports) {
         });
 
         //add show callback stack button
-        var $callback_stack_link = $('<a>').attr('href', '#').attr('title', 'Callback stack').html('<i class="fa fa-indent"></i>');
+        var $callback_stack_link = $('<a>').attr('href', '#').attr('title', 'Scripts').html('<i class="fa fa-indent"></i>');
         this.addControlElement($callback_stack_link, false, function () {
             var $domain = $('#' + domain_id);
             var $callback_stack = $domain.find('.brackets-nodejs-integration-debugger-callback-stack');
