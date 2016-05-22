@@ -168,7 +168,7 @@
 }
 
 .brackets-nodejs-integration-debugger-log * {
-    font-size: 11px;
+    /*font-size: 11px;*/
     font-family: FontAwesome;
     -webkit-user-select: text;
 }
