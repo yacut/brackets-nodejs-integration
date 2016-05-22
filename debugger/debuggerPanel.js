@@ -233,6 +233,7 @@ define(function (require, exports) {
         var object_value = '';
         var that = this;
         depth++;
+        var type_icon = '';
         //Exception for Date Object
         if (body.type === 'object' && body.properties.length > 0 && (body.className !== 'Date')) {
             var o = {};
@@ -247,37 +248,47 @@ define(function (require, exports) {
                 }
             });
             if (body.className === 'Array') {
-                $inside.text('[...]').on('click', evalHTMLonClick);
-
+                type_icon = '<i class="fa fa-list-ol" aria-hidden="true"></i>';
             }
             else {
-                $inside.text('{...}').on('click', evalHTMLonClick);
+                type_icon = '<i class="fa fa-bars" aria-hidden="true"></i>';
             }
+            $inside.text(body.text).on('click', evalHTMLonClick);
             object_value = JSON.stringify(o, null, 2);
         }
         else if (body.type === 'function') {
-            $inside.text('<native code>');
+            var function_head = body.text.split('{')[0] || 'function()';
+            $inside.text(function_head + '{');
             object_value = body.text;
+            type_icon = '<i class="fa fa-bars" aria-hidden="true"></i>';
+        }
+        else if (body.type === 'string') {
+            $inside.text('"' + body.text + '"');
+            object_value = body.text;
+            type_icon = '<i class="fa fa-font" aria-hidden="true"></i>';
+        }
+        else if (body.type === 'number') {
+            $inside.text(body.text);
+            object_value = body.text;
+            type_icon = '<i class="fa fa-superscript" aria-hidden="true"></i>';
         }
         else {
             $inside.text(body.text);
             object_value = body.text;
+            type_icon = '<i class="fa fa-bars" aria-hidden="true"></i>';
         }
 
         if (body.varName) {
-            $('<span>').addClass('var-name').text(body.varName + ': ').prependTo($inside);
+            $('<span>').addClass('var-name').text(body.varName + ' = ').prependTo($inside);
             object_name = body.varName;
         }
-        var type = body.className ? body.className : body.type;
-        var $type = $('<span>').addClass('type').html('[' + type + ']');
-        $('<a>').addClass('action_btn')
-            .html('<i class="fa fa-files-o copy" aria-hidden="true"></i>')
-            .css('padding', '2px')
-            .attr('href', '#').attr('title', 'Copy value')
+        var $type = $('<span>').addClass('type').addClass('action_btn')
+            .html(type_icon)
+            .attr('href', '#').attr('title', 'Click to copy value')
             .attr('object_value', object_value)
             .on('click', function () {
                 copy_to_clipboard($(this).attr('object_value'));
-            }).prependTo($type);
+            });
 
         $type.prependTo($inside);
 

@@ -30,6 +30,7 @@
 .brackets-nodejs-integration-debugger-log-panel .toolbar.bottom a:hover {
     color: #78B2F2;
 }
+
 .brackets-nodejs-integration-debugger-log-panel .action_btn {
     color: #bbb;
 }
@@ -93,7 +94,7 @@
 }
 
 .brackets-nodejs-integration-debugger-wrapper .type {
-    color: #78B2F2;
+    color: orange;
     padding-right: 5px;
 }
 

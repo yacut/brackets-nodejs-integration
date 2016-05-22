@@ -18,6 +18,12 @@ var colors = {
 
 var foo = 5;
 
+var bar = ['abc', 123, {
+    a: function (a) {
+        return a + 2;
+    }
+}, null, undefined];
+
 console.log(colors.red + 'This is red' + colors.reset + ' while ' + colors.blue + 'this is blue' + colors.reset);
 console.log(colors.green + 'hello green color' + colors.reset);
 console.error(new Error('wtf error'));
