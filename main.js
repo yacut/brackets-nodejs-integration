@@ -23,6 +23,7 @@ define(function (require, exports, module) {
     var SETTINGS_DIALOG_ID = 'brackets-nodejs-integration-settings-dialog';
     var INFO_DIALOG_ID = 'brackets-nodejs-integration-info-dialog';
     var RUNNER_CMD_ID = 'brackets-nodejs-integration.runner';
+    var SETTINGS_CMD_ID = 'brackets-nodejs-integration.settings';
     var START_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.start-runner';
     var STOP_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.stop-runner';
     var DEBUG_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.debug-runner';
@@ -770,6 +771,11 @@ define(function (require, exports, module) {
         panel.show_or_hide();
     });
     main_menu.addMenuItem(RUNNER_CMD_ID, 'F4');
+
+    command_manager.register('Settings...', SETTINGS_CMD_ID, function () {
+        dialog.settings.show();
+    });
+    main_menu.addMenuItem(SETTINGS_CMD_ID, '');
 
     command_manager.register('Start (active runner)', START_ACTIVE_RUNNER_ID, function () {
         panel.show();
