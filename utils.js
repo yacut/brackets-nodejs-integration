@@ -62,6 +62,11 @@ define(function (require, exports) {
             }
         };
         _$indicator.twipsy(options).twipsy('show');
+        setTimeout(function () {
+            if (_$indicator.data('twipsy')) {
+                _$indicator.twipsy('hide').removeData('twipsy');
+            }
+        }, 5000);
     };
 
 });
