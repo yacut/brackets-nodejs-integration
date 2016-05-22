@@ -113,8 +113,13 @@ define(function (require, exports) {
         if (gutter_id !== gutterName && gutter_id !== 'CodeMirror-linenumbers') {
             return;
         }
-
-        if (!that.cd.endsWith('.js')) {
+        if (!that.cd) {
+            var _cd = document_manager.getCurrentDocument();
+            if (_cd) {
+                that.cd = _cd.file.fullPath;
+            }
+        }
+        if (!_.endsWith(that.cd, '.js')) {
             return;
         }
 
