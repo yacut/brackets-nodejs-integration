@@ -265,12 +265,12 @@ define(function (require, exports) {
         else if (body.type === 'string') {
             $inside.text('"' + body.text + '"');
             object_value = body.text;
-            type_icon = '<i class="fa fa-font" aria-hidden="true"></i>';
+            type_icon = '<span class="fa-stack fa-1x" style="width: 1em;height: 1em;line-height: 1em;"><i class="fa fa-square fa-stack-2x" style="font-size: 1.2em;"></i><strong class="fa-stack-1x text-primary" style="color: white;font-size: 70%;">ab</strong></span>';
         }
         else if (body.type === 'number') {
             $inside.text(body.text);
             object_value = body.text;
-            type_icon = '<i class="fa fa-superscript" aria-hidden="true"></i>';
+            type_icon = '<span class="fa-stack fa-1x" style="width: 1em;height: 1em;line-height: 1em;"><i class="fa fa-square fa-stack-2x" style="font-size: 1.2em;"></i><strong class="fa-stack-1x text-primary" style="color: white;font-size: 60%;">01</strong></span>';
         }
         else {
             $inside.text(body.text);
