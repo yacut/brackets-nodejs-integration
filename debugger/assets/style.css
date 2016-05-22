@@ -45,6 +45,7 @@
 
 .brackets-nodejs-integration-debugger-log-panel a.inactive {
     opacity: 0.4;
+    pointer-events: none;
 }
 
 .brackets-nodejs-integration-debugger-log-panel a.active {
