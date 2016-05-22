@@ -78,13 +78,13 @@ define(function (require, exports) {
      */
     function evalHTMLonClick(e) {
         var $t = $(e.target);
-        if ($t.hasClass('fa-chevron-right')) {
-            $t.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+        if ($t.hasClass('fa-caret-right')) {
+            $t.removeClass('fa-caret-right').addClass('fa-caret-down');
             $t.siblings().removeClass('hidden');
         }
         else {
-            if ($t.hasClass('fa-chevron-down')) {
-                $t.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+            if ($t.hasClass('fa-caret-down')) {
+                $t.removeClass('fa-caret-down').addClass('fa-caret-right');
                 $t.siblings().addClass('hidden');
             }
         }
@@ -234,6 +234,7 @@ define(function (require, exports) {
         var that = this;
         depth++;
         var type_icon = '';
+        var type_classes = 'type action_btn';
         //Exception for Date Object
         if (body.type === 'object' && body.properties.length > 0 && (body.className !== 'Date')) {
             var o = {};
@@ -244,7 +245,7 @@ define(function (require, exports) {
                     if (depth <= maxDepth) { // Don't go too deep
                         that.createEvalHTML(lookup[p.ref], depth, lookup, maxDepth).addClass('var hidden').appendTo($html);
                     }
-                    $inside.addClass('object fa fa-chevron-right');
+                    $inside.addClass('object fa fa-caret-right');
                 }
             });
             if (body.className === 'Array') {
@@ -260,21 +261,25 @@ define(function (require, exports) {
             var function_head = body.text.split('{')[0] || 'function()';
             $inside.text(function_head + '{');
             object_value = body.text;
+            type_classes += ' simple_var';
             type_icon = '<i class="fa fa-bars" aria-hidden="true"></i>';
         }
         else if (body.type === 'string') {
             $inside.text('"' + body.text + '"');
             object_value = body.text;
-            type_icon = '<span class="fa-stack fa-1x" style="width: 1em;height: 1em;line-height: 1em;"><i class="fa fa-square fa-stack-2x" style="font-size: 1.2em;"></i><strong class="fa-stack-1x text-primary" style="color: white;font-size: 70%;">ab</strong></span>';
+            type_classes += ' simple_var';
+            type_icon = '<span class="fa-stack fa-1x" style="width: 1em;height: 1em;line-height: 1em;"><i class="fa fa-stop fa-stack-2x" style="font-size: 1em;"></i><strong class="fa-stack-1x text-primary" style="color: white;font-size: 70%;">ab</strong></span>';
         }
         else if (body.type === 'number') {
             $inside.text(body.text);
             object_value = body.text;
-            type_icon = '<span class="fa-stack fa-1x" style="width: 1em;height: 1em;line-height: 1em;"><i class="fa fa-square fa-stack-2x" style="font-size: 1.2em;"></i><strong class="fa-stack-1x text-primary" style="color: white;font-size: 60%;">01</strong></span>';
+            type_classes += ' simple_var';
+            type_icon = '<span class="fa-stack fa-1x" style="width: 1em;height: 1em;line-height: 1em;"><i class="fa fa-stop fa-stack-2x" style="font-size: 1em;"></i><strong class="fa-stack-1x text-primary" style="color: white;font-size: 60%;">01</strong></span>';
         }
         else {
             $inside.text(body.text);
             object_value = body.text;
+            type_classes += ' simple_var';
             type_icon = '<i class="fa fa-bars" aria-hidden="true"></i>';
         }
 
@@ -282,7 +287,7 @@ define(function (require, exports) {
             $('<span>').addClass('var-name').text(body.varName + ' = ').prependTo($inside);
             object_name = body.varName;
         }
-        var $type = $('<span>').addClass('type').addClass('action_btn')
+        var $type = $('<span>').addClass(type_classes)
             .html(type_icon)
             .attr('href', '#').attr('title', 'Click to copy value')
             .attr('object_value', object_value)
