@@ -283,7 +283,7 @@ define(function (require, exports) {
         }
         else {
             if (body.varName !== 'exports') {
-                value_color = 'blue';
+                value_color = '#0083e8';
                 $html.css('font-weight', 'bold');
             }
             $inside.text(body.text);

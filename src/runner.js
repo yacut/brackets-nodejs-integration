@@ -33,6 +33,7 @@ define(function main(require, exports, module) {
         this.mocha_stats = null;
         this.mocha_summary = this.$panel.find('.mocha-summary');
         this.mocha_treeview = this.$panel.find('.mocha-treeview');
+        this.debugger_panel = this.$panel.find('.brackets-nodejs-integration-debugger');
         this.mocha_treeview_toggle = this.$panel.find('.mocha-treeview-toggle');
         this.run_configurations = run_configurations;
         this.test_list = this.$panel.find('.test-list');
@@ -289,6 +290,7 @@ define(function main(require, exports, module) {
 
     Process.prototype.set_indicators = function (run_configuration) {
         if (run_configuration) {
+            this.debugger_panel.hide();
             if (run_configuration.type !== 'mocha') {
                 this.mocha_treeview.hide();
                 this.mocha_treeview_toggle.hide();
