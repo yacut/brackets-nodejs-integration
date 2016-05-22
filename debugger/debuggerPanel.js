@@ -5,6 +5,7 @@ define(function (require, exports) {
 
     var command_manager = brackets.getModule('command/CommandManager');
     var commands = brackets.getModule('command/Commands');
+    var file_utils = brackets.getModule('file/FileUtils');
     var panel_manager = brackets.getModule('view/PanelManager');
     var preferences_manager = brackets.getModule('preferences/PreferencesManager');
     var prefs = preferences_manager.getExtensionPrefs('brackets-nodejs-integration');
@@ -137,8 +138,10 @@ define(function (require, exports) {
                 var $callback_file = $('<li>').text(body.script.name)
                     .attr('title', 'Click to open')
                     .on('click', function () {
+                        var path_to_file = $(this).text();
+                        path_to_file = file_utils.convertWindowsPathToUnixPath(path_to_file);
                         command_manager.execute(commands.FILE_OPEN, {
-                            fullPath: $(this).text()
+                            fullPath: path_to_file
                         });
                     });
                 $callback_file.prependTo(that.$debuggerCallbackStack);
