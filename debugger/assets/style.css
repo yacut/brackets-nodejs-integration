@@ -96,6 +96,7 @@
 .brackets-nodejs-integration-debugger-wrapper .type {
     color: orange;
     padding-right: 5px;
+    padding-left: 1px;
 }
 
 .brackets-nodejs-integration-debugger-wrapper .simple_var {
