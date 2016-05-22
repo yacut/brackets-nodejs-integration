@@ -14,3 +14,7 @@
 - fixed twipsy autohide
 - added show settings to main menu
 - better var color for dark theme
+
+### 1.4.2
+
+- fixed set breakpoints
