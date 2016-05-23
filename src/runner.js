@@ -110,12 +110,12 @@ define(function main(require, exports, module) {
             case 'pass_test':
                 that.finished_tests_count++;
                 that.mocha_summary.html(get_mocha_summary(that));
-                that.finalize_test(event_model.fullTitle, 'pass_test');
+                that.finalize_test(event_model, 'pass_test');
                 break;
             case 'fail_test':
                 that.finished_tests_count++;
                 that.mocha_summary.html(get_mocha_summary(that));
-                that.finalize_test(event_model.fullTitle, 'fail_test');
+                that.finalize_test(event_model, 'fail_test', event_model);
                 that.write(that, event_model.stack, {
                     actual: event_model.actual ? JSON.stringify(event_model.actual, null, 2) : null,
                     expected: event_model.expected ? JSON.stringify(event_model.expected, null, 2) : null
@@ -124,10 +124,10 @@ define(function main(require, exports, module) {
             case 'pending_test':
                 that.finished_tests_count++;
                 that.mocha_summary.html(get_mocha_summary(that));
-                that.finalize_test(event_model.fullTitle, 'pending_test');
+                that.finalize_test(event_model, 'pending_test');
                 break;
             case 'end_suite':
-                that.finalize_test(event_model.fullTitle, 'end_suite');
+                that.finalize_test(event_model, 'end_suite');
                 break;
             case 'end':
                 that.mocha_stats = event_model;
@@ -165,7 +165,7 @@ define(function main(require, exports, module) {
                 that.write(that, '\nProgram exited with code ' + (error ? error.code : '0'));
                 _.forEach(that.test_tree, function (item) {
                     if (item.running) {
-                        that.finalize_test(item.title, 'fail_test');
+                        that.finalize_test(item.event_model, 'fail_test');
                     }
                 });
             })
@@ -378,11 +378,12 @@ define(function main(require, exports, module) {
         }
     }
 
-    Process.prototype.finalize_test = function (event_full_title, class_name) {
+    Process.prototype.finalize_test = function (event_model, class_name) {
         var tree_element = _.find(this.test_tree, function (item) {
-            return item.title === event_full_title && item.running;
+            return item.title === event_model.fullTitle && item.running;
         });
         if (!tree_element) {
+            this.add_to_test_list(uuid(), event_model, class_name);
             return;
         }
         var element_id = tree_element.event_id;
@@ -469,6 +470,7 @@ define(function main(require, exports, module) {
 
         this.test_tree.push({
             title: event_model.fullTitle,
+            event_model: event_model,
             event_id: event_id,
             running: true
         });

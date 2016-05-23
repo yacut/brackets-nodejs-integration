@@ -18,3 +18,7 @@
 ### 1.4.2
 
 - fixed set breakpoints
+
+### 1.4.3
+
+- fixed after and before cases when test failed
