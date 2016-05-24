@@ -96,6 +96,7 @@ define(function main(require, exports, module) {
             }
             switch (event_type) {
             case 'start':
+                clear(that);
                 that.mocha_stats = event_model;
                 that.mocha_summary.html(get_mocha_summary(that));
                 break;

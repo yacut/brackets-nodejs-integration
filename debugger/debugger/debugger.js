@@ -140,6 +140,7 @@ define(function (require, exports) {
 
         //If the Debugger connects highlight the UI parts that need to be highlighted
         that._nodeDebuggerDomain.on('connect', function (e, body) {
+            that.nodeDebuggerPanel.$debuggerSideBar.find('.brackets-nodejs-integration-debugger-log').remove();
             that.nodeDebuggerPanel.$logPanel.find('.activate').html('<i class="fa fa-check-circle" aria-hidden="true"></i>');
             utils.show_popup_message('Debugger: connected. Please set breakpoint and click "Continue" button on runner panel.');
 
