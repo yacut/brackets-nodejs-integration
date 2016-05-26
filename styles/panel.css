@@ -346,6 +346,11 @@ button.nodejs-integration-tab-close {
     background: url("img/wait.gif") no-repeat;
 }
 
+.mocha-treeview input:checked + label.start_test::before {
+    background-position: 0 -16px;
+    background: url("img/wait.gif") no-repeat;
+}
+
 .mocha-treeview input:checked + label.pending_test::before {
     background-position: 0 -16px;
     background: url("img/warning.svg") no-repeat;
