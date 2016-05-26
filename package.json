@@ -3,7 +3,7 @@
     "title": "NodeJS integration",
     "description": "Nodejs and Mocha integration for Brackets with debugger",
     "homepage": "https://github.com/yacut/brackets-nodejs-integration",
-    "version": "1.4.3",
+    "version": "1.4.5",
     "license": "MIT",
     "engines": {
         "brackets": ">=0.44.0"

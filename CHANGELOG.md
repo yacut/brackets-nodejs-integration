@@ -26,6 +26,9 @@
 ### 1.4.4
 
 - clear debugger if restart and clear mocha treeview if tests restart at watch
+
+### 1.4.5
+
 - fixed show diff link when click to test case
 - change mocha summary output
 - added popup for mocha summary if panel hidded
