@@ -54,8 +54,6 @@ define(function main(require, exports, module) {
             });
     };
 
-
-
     function create_new_domain(that, id, file_path, content) {
         var file = file_system.getFileForPath(file_path);
         var dir = file_utils.getDirectoryPath(file.fullPath);
@@ -133,6 +131,9 @@ define(function main(require, exports, module) {
             case 'end':
                 that.mocha_stats = event_model;
                 that.mocha_summary.html(get_mocha_summary(that));
+                if (!that.mocha_summary.is(':visible')) {
+                    utils.show_popup_message(that.mocha_summary.text());
+                }
                 that.finished_tests_count = 0;
                 break;
             default:
@@ -141,7 +142,6 @@ define(function main(require, exports, module) {
             }
         });
     }
-
 
     function new_connection(that, command, cwd) {
         var working_directory;
@@ -266,26 +266,25 @@ define(function main(require, exports, module) {
     }
 
     function get_mocha_summary(that) {
-        var status_string = 'Total tests: ' + that.finished_tests_count + ' of ' + that.mocha_stats.tests;
-        if (that.mocha_stats.passes || that.mocha_stats.pending || that.mocha_stats.failures) {
-            status_string += ' [';
+        if (that.finished_tests_count !== that.mocha_stats.tests) {
+            return that.finished_tests_count + ' of ' + that.mocha_stats.tests + ' tests';
         }
-        if (that.mocha_stats.passes) {
-            status_string += ' passes: ' + that.mocha_stats.passes;
+        else {
+            var status_string = '';
+            if (that.mocha_stats.passes) {
+                status_string += '  <i class="fa fa-check-circle" aria-hidden="true"></i> ' + that.mocha_stats.passes + ' passed';
+            }
+            if (that.mocha_stats.pending) {
+                status_string += '  <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> ' + that.mocha_stats.pending + ' ignored';
+            }
+            if (that.mocha_stats.failures) {
+                status_string += '  <i class="fa fa-times-circle" aria-hidden="true"></i> ' + that.mocha_stats.failures + ' failed';
+            }
+            if (that.mocha_stats.duration) {
+                status_string += ' - <i class="fa fa-clock-o" aria-hidden="true"></i> ' + that.mocha_stats.duration + 'ms';
+            }
+            return status_string;
         }
-        if (that.mocha_stats.pending) {
-            status_string += ' pending: ' + that.mocha_stats.pending;
-        }
-        if (that.mocha_stats.failures) {
-            status_string += ' failures: ' + that.mocha_stats.failures;
-        }
-        if (that.mocha_stats.passes || that.mocha_stats.pending || that.mocha_stats.failures) {
-            status_string += ' ] ';
-        }
-        if (that.mocha_stats.duration) {
-            status_string += that.mocha_stats.duration + 'ms';
-        }
-        return status_string;
     }
 
     Process.prototype.set_indicators = function (run_configuration) {
@@ -371,6 +370,7 @@ define(function main(require, exports, module) {
                     'actual': diff.actual,
                     'expected': diff.expected
                 })
+                .attr('test_title', that.actual_test_title)
                 .html('>>> See difference <<<<br><br>'));
         }
         if (that.scroll_enabled) {
