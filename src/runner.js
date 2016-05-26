@@ -269,25 +269,23 @@ define(function main(require, exports, module) {
     }
 
     function get_mocha_summary(that) {
-        if (that.finished_tests_count !== that.mocha_stats.tests) {
-            return that.finished_tests_count + ' of ' + that.mocha_stats.tests + ' tests';
+        var status_string = '';
+
+        if (that.mocha_stats.passes) {
+            status_string += '  <i class="fa fa-check-circle" aria-hidden="true"></i> ' + that.mocha_stats.passes + ' passed';
         }
-        else {
-            var status_string = '';
-            if (that.mocha_stats.passes) {
-                status_string += '  <i class="fa fa-check-circle" aria-hidden="true"></i> ' + that.mocha_stats.passes + ' passed';
-            }
-            if (that.mocha_stats.pending) {
-                status_string += '  <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> ' + that.mocha_stats.pending + ' ignored';
-            }
-            if (that.mocha_stats.failures) {
-                status_string += '  <i class="fa fa-times-circle" aria-hidden="true"></i> ' + that.mocha_stats.failures + ' failed';
-            }
-            if (that.mocha_stats.duration) {
-                status_string += ' - <i class="fa fa-clock-o" aria-hidden="true"></i> ' + that.mocha_stats.duration + 'ms';
-            }
-            return status_string;
+        if (that.mocha_stats.pending) {
+            status_string += '  <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> ' + that.mocha_stats.pending + ' ignored';
         }
+        if (that.mocha_stats.failures) {
+            status_string += '  <i class="fa fa-times-circle" aria-hidden="true"></i> ' + that.mocha_stats.failures + ' failed';
+        }
+        if (that.mocha_stats.duration) {
+            status_string += ' - <i class="fa fa-clock-o" aria-hidden="true"></i> ' + that.mocha_stats.duration + 'ms  -  ';
+        }
+        status_string += that.finished_tests_count + ' of ' + that.mocha_stats.tests + ' tests';
+
+        return status_string;
     }
 
     Process.prototype.set_indicators = function (run_configuration) {
