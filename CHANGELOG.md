@@ -29,3 +29,4 @@
 - fixed show diff link when click to test case
 - change mocha summary output
 - added popup for mocha summary if panel hidded
+- fixed skip test in mocha view

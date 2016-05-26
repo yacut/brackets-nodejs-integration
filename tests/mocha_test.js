@@ -107,4 +107,10 @@ describe('Brackets mocha runner', function () {
             console.info('test pass');
         });
     });
+
+    describe('Skip this', function () {
+        it.skip('should skip test', function () {
+            console.info('test skiped');
+        });
+    });
 });

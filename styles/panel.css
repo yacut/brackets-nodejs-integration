@@ -313,8 +313,8 @@ button.nodejs-integration-tab-close {
     background: url("img/okay.svg") no-repeat;
 }
 
-.mocha-treeview label.inactive::before {
-    background: url("img/inactive.svg") no-repeat;
+.mocha-treeview label.pending_test::before {
+    background: url("img/warning.svg") no-repeat;
 }
 
 .mocha-treeview label.fail_test::before {
@@ -346,9 +346,9 @@ button.nodejs-integration-tab-close {
     background: url("img/wait.gif") no-repeat;
 }
 
-.mocha-treeview input:checked + label.inactive::before {
+.mocha-treeview input:checked + label.pending_test::before {
     background-position: 0 -16px;
-    background: url("img/inactive.svg") no-repeat;
+    background: url("img/warning.svg") no-repeat;
 }
 
 .mocha-treeview input:checked + label.pass_test::before {

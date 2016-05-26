@@ -169,7 +169,7 @@ define(function main(require, exports, module) {
                 that.write(that, '\nProgram exited with code ' + (error ? error.code : '0'));
                 _.forEach(that.test_tree, function (item) {
                     if (item.running) {
-                        that.finalize_test(item.event_model, 'fail_test');
+                        that.finalize_test(item.event_model, 'pending_test');
                     }
                 });
             })
@@ -397,7 +397,7 @@ define(function main(require, exports, module) {
             if (test_describe) {
                 var test_describe_labels = test_describe.find('label');
                 if (test_describe_labels.length > 0) {
-                    var some_test_fail = _.some(test_describe_labels, 'className', 'fail_test');
+                    var some_test_fail = _.some(test_describe_labels, 'className', 'start_test fail_test');
                     var some_test_pending = _.some(test_describe_labels, 'className', 'pending_test');
                     if (some_test_fail) {
                         class_name = 'fail_test';
