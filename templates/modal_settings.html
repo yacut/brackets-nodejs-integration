@@ -20,6 +20,7 @@
     #brackets-nodejs-integration-runner-settings select {
         float: right;
     }
+
 </style>
 <table>
     <tr>
@@ -57,6 +58,13 @@
         </td>
         <td>
             <input type="text" placeholder="(example: --use_strict --harmony)" class="brackets-nodejs-integration-runner-flags" style="width: 300px; float: right;">
+        </td>
+        <td> </td>
+        <td style="padding-left: 2em;">
+            <label for="brackets-nodejs-integration-additional-flags">Global Additional Flags:</label>
+        </td>
+        <td>
+            <input class="brackets-nodejs-integration-additional-flags" value="" type="text" placeholder='e.g. --bail for mocha, --require for node'>
         </td>
     </tr>
     <tr>
@@ -128,10 +136,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <label for="">Additional Flags:</label>
+                            <label for="brackets-nodejs-integration-additional-flags-for-setting">Additional Flags:</label>
                         </td>
                         <td>
-                            <input class="brackets-nodejs-integration-additional-flags" value="" type="text" placeholder='e.g. --bail for mocha, --require for node'>
+                            <input id="brackets-nodejs-integration-additional-flags-for-setting" value="" type="text" placeholder='e.g. --bail for mocha, --require for node'>
                         </td>
                     </tr>
                 </table>

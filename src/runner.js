@@ -26,6 +26,8 @@ define(function main(require, exports, module) {
         this.id = id;
         prefs = prefs;
         this.$panel = $('#' + id);
+        this.command = '';
+        this.cwd = '';
         this.actual_test_title = null;
         this.all_tests_results = this.$panel.find('.all-tests-results');
         this.console_output = this.$panel.find('.brackets-nodejs-integration-console');
@@ -95,6 +97,7 @@ define(function main(require, exports, module) {
             switch (event_type) {
             case 'start':
                 clear(that);
+                that.write(that, that.command + that.cwd);
                 that.mocha_stats = event_model;
                 that.mocha_summary.html(get_mocha_summary(that));
                 break;
@@ -152,9 +155,9 @@ define(function main(require, exports, module) {
             working_directory = project_manager.getProjectRoot().fullPath;
         }
         clear(that);
-        write(that, '<strong>Command: ' + command + '</strong>\n');
+        that.command = '<strong>Command: ' + command + '</strong>\n';
         if (cwd) {
-            write(that, '<strong>Working directory: ' + cwd + '</strong>\n');
+            that.cwd = '<strong>Working directory: ' + cwd + '</strong>\n';
         }
         write(that, '\n');
         that.process_domain.exec('start_process', command, working_directory)
@@ -195,7 +198,7 @@ define(function main(require, exports, module) {
         }
         this.set_indicators(run_configuration);
         this.set_controls_by_status(true);
-        execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, null);
+        execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, null, run_configuration.flags);
     };
 
     Process.prototype.debug = function () {
@@ -206,7 +209,7 @@ define(function main(require, exports, module) {
         }
         this.set_indicators(run_configuration);
         this.set_controls_by_status(true);
-        execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, this.debug_port);
+        execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, this.debug_port, run_configuration.flags);
     };
 
     Process.prototype.exit = function () {
@@ -228,14 +231,14 @@ define(function main(require, exports, module) {
         that.process_domain.exec('stop_process');
     }
 
-    function execute_command(that, command_type, command_target, command_cwd, debug_port) {
+    function execute_command(that, command_type, command_target, command_cwd, debug_port, flags) {
         var command;
         var v8flags = prefs.get('v8-flags');
-        var additional_flags = prefs.get('additional-flags');
+        var additional_flags = _.union(prefs.get('additional-flags').split(' '), flags.split(' ')).join(' ');
         var node_bin = prefs.get('node-bin') ? prefs.get('node-bin') : 'node';
         var mocha_bin = prefs.get('mocha-bin') ? prefs.get('mocha-bin') : 'mocha';
         var mocha_reporter_path = extension_utils.getModulePath(module) + 'reporter/mocha_json_stream.js';
-        var mocha_default_flags = ' --recursive --reporter "' + mocha_reporter_path + '" ';
+        var mocha_default_flags = ' --reporter "' + mocha_reporter_path + '" ';
         v8flags = v8flags.replace(/--debug(-brk)?=?(\d+)?/g, '');
         if (debug_port) {
             v8flags += ' --debug-brk=' + debug_port + ' ';

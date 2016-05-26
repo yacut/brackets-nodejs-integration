@@ -392,6 +392,7 @@ define(function (require, exports, module) {
                             changed_configurations.push({
                                 'name': runner_list_item.text,
                                 'cwd': runner_list_item.getAttribute('runner_cwd'),
+                                'flags': runner_list_item.getAttribute('runner_flags') || '',
                                 'type': runner_list_item.getAttribute('runner_type'),
                                 'target': runner_list_item.getAttribute('runner_target'),
                                 'debug': false
@@ -467,6 +468,9 @@ define(function (require, exports, module) {
                 var runner_cwd = $('#brackets-nodejs-integration-runner-cwd').on('change', function () {
                     runner_list.children(':selected').attr('runner_cwd', $(this).val());
                 });
+                var runner_flags = $('#brackets-nodejs-integration-additional-flags-for-setting').on('change', function () {
+                    runner_list.children(':selected').attr('runner_flags', $(this).val());
+                });
                 var runner_list = $('#brackets-nodejs-integration-runner-list')
                     .change(function () {
                         var selected_runner = $(this).children(':selected');
@@ -474,6 +478,7 @@ define(function (require, exports, module) {
                         runner_type.val(selected_runner.attr('runner_type'));
                         runner_target.val(selected_runner.attr('runner_target'));
                         runner_cwd.val(selected_runner.attr('runner_cwd'));
+                        runner_flags.val(selected_runner.attr('runner_flags'));
                     });
 
                 var configurations = prefs.get('configurations');
@@ -482,7 +487,8 @@ define(function (require, exports, module) {
                         .html(configuration.name)
                         .attr('runner_type', configuration.type)
                         .attr('runner_target', configuration.target)
-                        .attr('runner_cwd', configuration.cwd);
+                        .attr('runner_cwd', configuration.cwd)
+                        .attr('runner_flags', configuration.flags);
                     runner_list.append(option);
                 });
 
@@ -491,6 +497,7 @@ define(function (require, exports, module) {
                 runner_type.val(first_runner.attr('runner_type'));
                 runner_target.val(first_runner.attr('runner_target'));
                 runner_cwd.val(first_runner.attr('runner_cwd'));
+                runner_flags.val(first_runner.attr('runner_flags'));
 
                 $('#brackets-nodejs-integration-runner-add-btn').on('click', function () {
                     runner_name.val('');
@@ -501,7 +508,8 @@ define(function (require, exports, module) {
                         .html('')
                         .attr('runner_type', 'node')
                         .attr('runner_target', '')
-                        .attr('runner_cwd', '');
+                        .attr('runner_cwd', '')
+                        .attr('runner_flags', '');
                     runner_list.append(option);
                     runner_list.find('option:last').attr('selected', true);
                 });
@@ -518,6 +526,7 @@ define(function (require, exports, module) {
                     runner_type.val(next_runner.attr('runner_type'));
                     runner_target.val(next_runner.attr('runner_target'));
                     runner_cwd.val(next_runner.attr('runner_cwd'));
+                    runner_flags.val(next_runner.attr('runner_flags'));
                 });
                 $('#brackets-nodejs-integration-runner-target-open-btn').on('click', function () {
                     var selected_runner = runner_list.find('option:selected');
