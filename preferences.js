@@ -16,6 +16,7 @@ define(function main(require, exports, module) {
         {
             'name': 'nodejs process sample',
             'cwd': '',
+            'flags':'',
             'type': 'node',
             'target': extension_utils.getModulePath(module, 'tests/hello.js'),
             'debug': false
@@ -23,6 +24,7 @@ define(function main(require, exports, module) {
         {
             'name': 'http server sample',
             'cwd': '',
+            'flags':'',
             'type': 'node',
             'target': extension_utils.getModulePath(module, 'tests/server.js'),
             'debug': false
@@ -31,6 +33,7 @@ define(function main(require, exports, module) {
         {
             'name': 'mocha test sample',
             'cwd': '',
+            'flags':'',
             'type': 'mocha',
             'target': extension_utils.getModulePath(module, 'tests/mocha_test.js'),
             'debug': false
