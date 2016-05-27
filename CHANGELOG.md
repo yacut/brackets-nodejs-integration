@@ -33,3 +33,10 @@
 - change mocha summary output
 - added popup for mocha summary if panel hidded
 - fixed skip test in mocha view
+
+### 1.4.6
+
+- fixed save run configs issue in settings view
+- fixed issue with empty setting flags
+- fixed if procees fails, don't show it as running or put the buttons in a locked state.
+- fixed wait background when test runing
