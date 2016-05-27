@@ -433,19 +433,19 @@ define(function (require, exports, module) {
                         runner_item.process.scroll_enabled = prefs.get('autoscroll');
                     });
 
+                    if (configuration_to_remove.length > 0) {
+                        cleanup();
+                    }
+                    _.each(configuration_to_remove, function (configuration) {
+                        $runner_panel.find('.run-configuration-selector').find('option[value="' + configuration.name + '"]').remove();
+                    });
+
                     _.each(configuration_to_add, function (configuration) {
                         $runner_panel.find('.run-configuration-selector')
                             .append($(document.createElement('option'))
                                 .val(configuration.name)
                                 .html(configuration.name)
                                 .attr('class', configuration.type));
-                    });
-
-                    if (configuration_to_remove.length > 0) {
-                        cleanup();
-                    }
-                    _.each(configuration_to_remove, function (configuration) {
-                        $runner_panel.find('.run-configuration-selector').find('option[value="' + configuration.name + '"]').remove();
                     });
                 });
                 var node_bin_input = $('.brackets-nodejs-integration-runner-node-bin').val(prefs.get('node-bin'));
