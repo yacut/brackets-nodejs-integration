@@ -198,7 +198,12 @@ define(function main(require, exports, module) {
         }
         this.set_indicators(run_configuration);
         this.set_controls_by_status(true);
-        execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, null, run_configuration.flags);
+        try{
+            execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, null, run_configuration.flags);
+        } catch (err) {
+            this.set_controls_by_status(false);
+            throw err;
+        }
     };
 
     Process.prototype.debug = function () {
