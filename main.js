@@ -120,7 +120,7 @@ define(function (require, exports, module) {
         var path_to_file = link_properties[0];
         path_to_file = file_utils.convertWindowsPathToUnixPath(path_to_file);
         if (!file_system.isAbsolutePath(path_to_file)) {
-            var active_runner = get_runner($(this).parent().parent().parent().parent().parent().attr('id'));
+            var active_runner = get_runner($runner_panel.find('.nodejs-integration-tab-pane.active').attr('id'));
             var working_directory = active_runner ? active_runner.get_last_cwd() : '';
             if (!working_directory) {
                 var project_root = project_manager.getProjectRoot();

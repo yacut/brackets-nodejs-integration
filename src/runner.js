@@ -198,9 +198,10 @@ define(function main(require, exports, module) {
         }
         this.set_indicators(run_configuration);
         this.set_controls_by_status(true);
-        try{
+        try {
             execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, null, run_configuration.flags);
-        } catch (err) {
+        }
+        catch (err) {
             this.set_controls_by_status(false);
             throw err;
         }
@@ -239,7 +240,7 @@ define(function main(require, exports, module) {
     function execute_command(that, command_type, command_target, command_cwd, debug_port, flags) {
         var command;
         var v8flags = prefs.get('v8-flags');
-        var additional_flags = _.union(prefs.get('additional-flags').split(' '), flags.split(' ')).join(' ');
+        var additional_flags = _.union((prefs.get('additional-flags') || '').split(' '), (flags || '').split(' ')).join(' ');
         var node_bin = prefs.get('node-bin') ? prefs.get('node-bin') : 'node';
         var mocha_bin = prefs.get('mocha-bin') ? prefs.get('mocha-bin') : 'mocha';
         var mocha_reporter_path = extension_utils.getModulePath(module) + 'reporter/mocha_json_stream.js';
@@ -403,8 +404,9 @@ define(function main(require, exports, module) {
                 var test_describe_labels = test_describe.find('label');
                 if (test_describe_labels.length > 0) {
                     var some_test_fail = _.some(test_describe_labels, 'className', 'start_test fail_test');
+                    var some_before_or_after_fail = _.some(test_describe_labels, 'className', 'fail_test');
                     var some_test_pending = _.some(test_describe_labels, 'className', 'pending_test');
-                    if (some_test_fail) {
+                    if (some_test_fail || some_before_or_after_fail) {
                         class_name = 'fail_test';
                     }
                     else if (some_test_pending) {
