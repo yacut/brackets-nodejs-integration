@@ -33,6 +33,7 @@ define(function main(require, exports, module) {
         this.console_output = this.$panel.find('.brackets-nodejs-integration-console');
         this.finished_tests_count = 0;
         this.mocha_stats = null;
+        this.total_tests = 0;
         this.mocha_summary = this.$panel.find('.mocha-summary');
         this.mocha_treeview = this.$panel.find('.mocha-treeview');
         this.mocha_treeview_toggle = this.$panel.find('.mocha-treeview-toggle');
@@ -99,6 +100,7 @@ define(function main(require, exports, module) {
                 clear(that);
                 that.write(that, that.command + that.cwd);
                 that.mocha_stats = event_model;
+                that.total_tests = event_model.tests;
                 that.mocha_summary.html(get_mocha_summary(that));
                 break;
             case 'start_suite':
@@ -289,7 +291,7 @@ define(function main(require, exports, module) {
         if (that.mocha_stats.duration) {
             status_string += ' - <i class="fa fa-clock-o" aria-hidden="true"></i> ' + that.mocha_stats.duration + 'ms  -  ';
         }
-        status_string += that.finished_tests_count + ' of ' + that.mocha_stats.tests + ' tests';
+        status_string += that.finished_tests_count + ' of ' + that.total_tests + ' tests';
 
         return status_string;
     }
