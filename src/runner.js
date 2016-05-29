@@ -3,7 +3,6 @@
 'use strict';
 define(function main(require, exports, module) {
 
-
     var _ = brackets.getModule('thirdparty/lodash');
     var extension_utils = brackets.getModule('utils/ExtensionUtils');
     var NodeDomain = brackets.getModule('utils/NodeDomain');
@@ -105,11 +104,11 @@ define(function main(require, exports, module) {
                 break;
             case 'start_suite':
                 if (event_model.title) {
-                    that.add_to_test_list(uuid(), event_model, 'start_suite');
+                    that.add_to_test_list(utils.uuid(), event_model, 'start_suite');
                 }
                 break;
             case 'start_test':
-                that.add_to_test_list(uuid(), event_model, 'start_test');
+                that.add_to_test_list(utils.uuid(), event_model, 'start_test');
                 break;
             case 'pass_test':
                 that.finished_tests_count++;
@@ -266,16 +265,6 @@ define(function main(require, exports, module) {
         new_connection(that, command + ' "' + command_target + '" ', command_cwd);
     }
 
-    function uuid() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
-    }
-
     function get_mocha_summary(that) {
         var status_string = '';
 
@@ -393,7 +382,7 @@ define(function main(require, exports, module) {
             return item.title === event_model.fullTitle && item.running;
         });
         if (!tree_element) {
-            this.add_to_test_list(uuid(), event_model, class_name);
+            this.add_to_test_list(utils.uuid(), event_model, class_name);
             return;
         }
         var element_id = tree_element.event_id;
