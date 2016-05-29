@@ -3,15 +3,18 @@
 'use strict';
 define(function main(require, exports, module) {
 
-    var _ = brackets.getModule('thirdparty/lodash');
-    var extension_utils = brackets.getModule('utils/ExtensionUtils');
     var NodeDomain = brackets.getModule('utils/NodeDomain');
-    var project_manager = brackets.getModule('project/ProjectManager');
-    var file_utils = brackets.getModule('file/FileUtils');
-    var file_system = brackets.getModule('filesystem/FileSystem');
+    var _ = brackets.getModule('thirdparty/lodash');
+    var command_manager = brackets.getModule('command/CommandManager');
+    var commands = brackets.getModule('command/Commands');
+    var editor_manager = brackets.getModule('editor/EditorManager');
+    var extension_utils = brackets.getModule('utils/ExtensionUtils');
     var domain_template_path = extension_utils.getModulePath(module, 'domains/process_domain.js');
+    var file_system = brackets.getModule('filesystem/FileSystem');
+    var file_utils = brackets.getModule('file/FileUtils');
+    var find_in_files = brackets.getModule('search/FindInFiles');
+    var project_manager = brackets.getModule('project/ProjectManager');
 
-    //var DOMAIN_NAME = 'brackets-nodejs-integration';
     var ansi = require('./ansi');
     var prefs = require('../preferences');
     var utils = require('../utils');
@@ -423,15 +426,6 @@ define(function main(require, exports, module) {
 
 
     Process.prototype.add_to_test_list = function (event_id, event_model, class_name) {
-        /*
-        FindUtils       = require('search/FindUtils')
-
-        function () {
-            FindInFiles.doSearchInScope({query: 'foo'}, null, null, null).done(function (results) {
-                //open file
-            });
-        }
-        */
         var li = $(document.createElement('li'));
         var checkbox = $(document.createElement('input'))
             .attr({
@@ -459,6 +453,32 @@ define(function main(require, exports, module) {
                         console_element.style.display = 'none';
                     }
                 });
+            })
+            .on('dblclick', function () {
+                find_in_files.doSearchInScope({
+                        query: this.innerHTML,
+                        caseSensitive: false,
+                        isRegexp: false
+                    }, null, null, null, null)
+                    .done(function (results) {
+                        var found_files = _.keys(results);
+                        if (found_files.length > 0) {
+                            var first_filename = found_files[0];
+                            var first_result = results[first_filename];
+                            var current_editor = editor_manager.getCurrentFullEditor();
+                            console.log(current_editor, first_filename);
+
+                            if (current_editor.document.file._path === first_filename) {
+                                move_cursor_to_test_case(first_result);
+                            }
+                            command_manager.execute(commands.FILE_OPEN, {
+                                    fullPath: first_filename
+                                })
+                                .done(function () {
+                                    move_cursor_to_test_case(first_result);
+                                });
+                        }
+                    });
             });
         li.append(label);
 
@@ -496,5 +516,15 @@ define(function main(require, exports, module) {
             }
         }
     };
+
+    function move_cursor_to_test_case(result) {
+        if (result.matches && result.matches.length > 0) {
+            var position = result.matches[0].start;
+            editor_manager.getCurrentFullEditor().setCursorPos({
+                line: position.line ? position.line : 0,
+                ch: position.ch ? position.ch : 0
+            });
+        }
+    }
 
 });
