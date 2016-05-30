@@ -315,13 +315,13 @@ define(function main(require, exports, module) {
 
     Process.prototype.set_controls_by_status = function (process_running) {
         if (process_running) {
-            this.$panel.find('.run-configuration-selector').prop('disabled', true);
+            this.$panel.find('.run-configuration-dropdown-toggle').prop('disabled', true);
             this.$panel.find('.run_btn').prop('disabled', true);
             this.$panel.find('.debug_btn').prop('disabled', true);
             this.$panel.find('.stop_btn').prop('disabled', false);
         }
         else {
-            this.$panel.find('.run-configuration-selector').prop('disabled', false);
+            this.$panel.find('.run-configuration-dropdown-toggle').prop('disabled', false);
             this.$panel.find('.run_btn').prop('disabled', false);
             this.$panel.find('.debug_btn').prop('disabled', false);
             this.$panel.find('.stop_btn').prop('disabled', true);
@@ -330,10 +330,14 @@ define(function main(require, exports, module) {
     };
 
     Process.prototype.get_selected_configuration = function () {
-        var selected_config = this.$panel.find('.run-configuration-selector').val();
-        return _.find(this.run_configurations, function (item) {
-            return item.name === selected_config;
-        });
+        var selected_run_configuration = this.$panel.find('.run-configuration-dropdown-toggle');
+        return {
+            name: selected_run_configuration.attr('name'),
+            target: selected_run_configuration.attr('target'),
+            cwd: selected_run_configuration.attr('cwd'),
+            flags: selected_run_configuration.attr('flags'),
+            type: selected_run_configuration.attr('type')
+        };
     };
 
     Process.prototype.clear = function () {

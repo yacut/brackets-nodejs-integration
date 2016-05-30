@@ -40,7 +40,6 @@ define(function (require, exports, module) {
 
     var $node_runner_indicator = $('<a id="brackets-nodejs-integration-runner-indicator" class="inactive"></a>')
         .on('click', function () {
-            console.log(runner_panel);
             runner_panel.panel.show_or_hide();
         });
     $('#main-toolbar .buttons').append($node_runner_indicator);

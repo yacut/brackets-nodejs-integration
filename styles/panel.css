@@ -438,3 +438,19 @@ button.nodejs-integration-tab-close {
     color: #000!important;
     background-color: #4CAF50!important
 }
+
+#run-configurations-dropdown span {
+    padding-left: 22px;
+}
+
+#run-configurations-dropdown li:hover {
+    color: @bc-menu-text;
+    /*background: @bc-bg-highlight;*/
+    background-color: #e0f0fa;
+    /*#f0f0f0;*/
+}
+
+.dark #run-configurations-dropdown li:hover {
+    color: @dark-bc-menu-text;
+    background-color: #284160;
+}

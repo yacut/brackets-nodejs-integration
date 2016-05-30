@@ -1,4 +1,4 @@
-/*global brackets,$*/
+/*global brackets,$,Mustache*/
 
 'use strict';
 define(function main(require, exports, module) {
@@ -11,6 +11,9 @@ define(function main(require, exports, module) {
     var extension_utils = brackets.getModule('utils/ExtensionUtils');
     var file_system = brackets.getModule('filesystem/FileSystem');
     var file_utils = brackets.getModule('file/FileUtils');
+    var main_view_manager = brackets.getModule('view/MainViewManager');
+    var menus = brackets.getModule('command/Menus');
+    var pop_up_manager = brackets.getModule('widgets/PopUpManager');
     var project_manager = brackets.getModule('project/ProjectManager');
     var workspace_manager = brackets.getModule('view/WorkspaceManager');
 
@@ -23,13 +26,15 @@ define(function main(require, exports, module) {
     var runner = require('./runner');
     var runner_panel_template = require('text!../templates/runner_panel.html');
     var settings_dialog = require('./settings_dialog');
+    var projects_menu_template = require('text!../templates/runner_menu.html');
     var utils = require('../utils');
 
-    var $node_runner_indicator = $('#brackets-nodejs-integration-runner-indicator');
+    var $dropdown = null;
     var $runner_panel = $(null);
     var panel = null;
     var runner_panel = null;
     var runners = [];
+    var $node_runner_indicator = $('#brackets-nodejs-integration-runner-indicator');
 
     panel = {
         id: 'brackets-nodejs-integration-panel',
@@ -219,6 +224,8 @@ define(function main(require, exports, module) {
         settings_dialog.show();
     });
 
+    $runner_panel.on('click', '.run-configuration-dropdown-toggle', showDropdown);
+
     function create_new_tab() {
         var $tabs = $runner_panel.find('.nodejs-integration-tabs');
         $runner_panel.find('.nodejs-integration-tab.active').removeClass('active');
@@ -244,7 +251,6 @@ define(function main(require, exports, module) {
             .attr('id', new_tab_id)
             .html(runner_panel_template)
         );
-        fill_run_selector($runner_panel.find('#' + new_tab_id).find('.run-configuration-selector'));
 
         var max_port = 49152;
         var min_port = 65535;
@@ -257,8 +263,7 @@ define(function main(require, exports, module) {
             process: new_runner,
             debugger: new_debugger
         });
-        var run_configuration = new_runner.get_selected_configuration();
-        new_runner.set_indicators(run_configuration);
+        change_run_configuration(null, run_configurations[0]);
     }
 
     //tab view
@@ -323,13 +328,6 @@ define(function main(require, exports, module) {
         });
     }
 
-    $runner_panel.on('change', '.run-configuration-selector', function () {
-        var selected_runner = get_runner($(this).parent().parent().attr('id'));
-        selected_runner.clear();
-        var run_configuration = selected_runner.get_selected_configuration();
-        selected_runner.set_indicators(run_configuration);
-    });
-
     function get_runner(panel_id) {
         var selected_runner_tab = _.findLast(runners, function (runner_tab) {
             return runner_tab.id === panel_id;
@@ -344,15 +342,94 @@ define(function main(require, exports, module) {
         return selected_runner_tab ? selected_runner_tab.debugger : null;
     }
 
-    fill_run_selector($runner_panel.find('.run-configuration-selector'));
+    function change_run_configuration(event, run_configuration) {
+        if (!run_configuration) {
+            run_configuration = {
+                name: $(this).attr('name'),
+                type: $(this).attr('type'),
+                cwd: $(this).attr('cwd'),
+                target: $(this).attr('target'),
+                flags: $(this).attr('flags')
+            };
+        }
+        var selected_run_configuration = $runner_panel.find('.nodejs-integration-tab-pane.active .run-configuration-dropdown-toggle');
+        console.log(selected_run_configuration);
+        selected_run_configuration.find('.type').removeClass('node').removeClass('mocha').addClass(run_configuration.type);
+        selected_run_configuration.find('.name').html(run_configuration.name);
+        selected_run_configuration.attr('name', run_configuration.name);
+        selected_run_configuration.attr('type', run_configuration.type);
+        selected_run_configuration.attr('cwd', run_configuration.cwd);
+        selected_run_configuration.attr('target', run_configuration.target);
+        selected_run_configuration.attr('flags', run_configuration.flags);
+        var id = selected_run_configuration.parent().parent().attr('id');
+        console.log(id);
+        var selected_runner = get_runner(id);
+        selected_runner.clear();
+        selected_runner.set_indicators(run_configuration);
+    }
 
-    function fill_run_selector($run_selector) {
-        run_configurations.forEach(function (run_configuration) {
-            $run_selector.append($(document.createElement('option'))
-                .val(run_configuration.name)
-                .html(run_configuration.name)
-                .attr('class', run_configuration.type));
-        });
+    function closeDropdown() {
+        if ($dropdown) {
+            console.log('close menu');
+            pop_up_manager.removePopUp($dropdown);
+        }
+        detachCloseEvents();
+    }
+
+    function showDropdown(e) {
+        if ($dropdown) {
+            return;
+        }
+        e.stopPropagation();
+        menus.closeAll();
+        $dropdown = $(renderList());
+        var buttonOffset = $(this).offset();
+        var buttonHeight = $(this).outerHeight();
+
+        $dropdown
+            .css({
+                left: buttonOffset.left,
+                top: buttonOffset.top + buttonHeight
+            })
+            .appendTo($('body'));
+        console.log($dropdown);
+        pop_up_manager.addPopUp($dropdown, detachCloseEvents, true);
+        attachCloseEvents();
+        $dropdown.find('div').on('click', change_run_configuration);
+
+        $dropdown.show();
+    }
+
+    function renderList() {
+        var templateVars = {
+            run_configurations: prefs.get('configurations')
+        };
+
+        return Mustache.render(projects_menu_template, templateVars);
+    }
+
+    function attachCloseEvents() {
+        $('html').on('click', closeDropdown);
+        $('#project-files-container').on('scroll', closeDropdown);
+        $('#titlebar .nav').on('click', closeDropdown);
+
+        var currentEditor = editor_manager.getCurrentFullEditor();
+        if (currentEditor) {
+            currentEditor._codeMirror.on('focus', closeDropdown);
+        }
+    }
+
+    function detachCloseEvents() {
+        $('html').off('click', closeDropdown);
+        $('#project-files-container').off('scroll', closeDropdown);
+        $('#titlebar .nav').off('click', closeDropdown);
+
+        var currentEditor = editor_manager.getCurrentFullEditor();
+        if (currentEditor) {
+            currentEditor._codeMirror.off('focus', closeDropdown);
+        }
+        $dropdown = null;
+        main_view_manager.focusActivePane();
     }
 
     exports.$runner_panel = $runner_panel;
