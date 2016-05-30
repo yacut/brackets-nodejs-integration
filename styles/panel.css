@@ -443,11 +443,15 @@ button.nodejs-integration-tab-close {
     padding-left: 22px;
 }
 
+#run-configurations-dropdown:focus,
+#run-configurations-dropdown li:focus {
+    text-decoration: none;
+    outline: 0;
+}
+
 #run-configurations-dropdown li:hover {
     color: @bc-menu-text;
-    /*background: @bc-bg-highlight;*/
     background-color: #e0f0fa;
-    /*#f0f0f0;*/
 }
 
 .dark #run-configurations-dropdown li:hover {
