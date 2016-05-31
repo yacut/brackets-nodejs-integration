@@ -186,7 +186,8 @@ define(function main(require, exports, module) {
         get_debugger(id).stop();
     });
     $runner_panel.on('click', '.run_btn', function () {
-        get_runner($(this).parent().parent().parent().attr('id')).run();
+        var id = $(this).parent().parent().parent().attr('id');
+        get_runner(id).run();
     });
     $runner_panel.on('click', '.debug_btn', function () {
         var id = $(this).parent().parent().parent().attr('id');
@@ -353,16 +354,31 @@ define(function main(require, exports, module) {
             };
         }
         var selected_run_configuration = $runner_panel.find('.nodejs-integration-tab-pane.active .run-configuration-dropdown-toggle');
-        console.log(selected_run_configuration);
-        selected_run_configuration.find('.type').removeClass('node').removeClass('mocha').addClass(run_configuration.type);
+        selected_run_configuration.find('.type').removeClass('node').removeClass('mocha').removeClass('npm').addClass(run_configuration.type);
         selected_run_configuration.find('.name').html(run_configuration.name);
         selected_run_configuration.attr('name', run_configuration.name);
         selected_run_configuration.attr('type', run_configuration.type);
         selected_run_configuration.attr('cwd', run_configuration.cwd);
         selected_run_configuration.attr('target', run_configuration.target);
         selected_run_configuration.attr('flags', run_configuration.flags);
+        var $script_selector = $runner_panel.find('.script-selector');
+        if (run_configuration.type === 'npm') {
+            $script_selector.show();
+            $script_selector.find('option').remove();
+            $.getJSON(run_configuration.target, function (npm_file) {
+                var script_names = _.keys(npm_file.scripts);
+                var standard_scripts = ['install', 'start', 'stop', 'restart', 'test'];
+                _.each(_.union(script_names, standard_scripts), function (name) {
+                    $script_selector.append($(document.createElement('option'))
+                        .val(name)
+                        .html(name));
+                });
+            });
+        }
+        else {
+            $script_selector.hide();
+        }
         var id = selected_run_configuration.parent().parent().attr('id');
-        console.log(id);
         var selected_runner = get_runner(id);
         selected_runner.clear();
         selected_runner.set_indicators(run_configuration);
@@ -370,7 +386,6 @@ define(function main(require, exports, module) {
 
     function closeDropdown() {
         if ($dropdown) {
-            console.log('close menu');
             pop_up_manager.removePopUp($dropdown);
         }
         detachCloseEvents();
@@ -392,7 +407,6 @@ define(function main(require, exports, module) {
                 top: buttonOffset.top + buttonHeight
             })
             .appendTo($('body'));
-        console.log($dropdown);
         pop_up_manager.addPopUp($dropdown, detachCloseEvents, true);
         attachCloseEvents();
         $dropdown.find('div').on('click', change_run_configuration);

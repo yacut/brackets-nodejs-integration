@@ -35,6 +35,13 @@
     background-size: contain;
 }
 
+.npm {
+    background-image: url(img/npm.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding-right: 5px;
+}
+
 #brackets-nodejs-integration-runner-indicator {
     background-position: center;
     background-image: url(img/nodejs.svg);
@@ -472,8 +479,12 @@ button.nodejs-integration-tab-close {
 
 .run-configuration-dropdown-toggle {
     display: flex;
-    width: 250px;
+    max-width: 250px;
+    min-width: 100px;
     height: 20px;
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 3px;
 }
 
 .run-configuration-dropdown-toggle i {

@@ -163,6 +163,7 @@ define(function main(require, exports, module) {
         if (cwd) {
             that.cwd = '<strong>Working directory: ' + cwd + '</strong>\n';
         }
+        write(that, that.command + that.cwd);
         write(that, '\n');
         that.process_domain.exec('start_process', command, working_directory)
             .done(function (error) {
@@ -200,10 +201,11 @@ define(function main(require, exports, module) {
         if (!run_configuration) {
             return;
         }
+        var script = this.get_selected_script_name();
         this.set_indicators(run_configuration);
         this.set_controls_by_status(true);
         try {
-            execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, null, run_configuration.flags);
+            execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, null, run_configuration.flags, script);
         }
         catch (err) {
             this.set_controls_by_status(false);
@@ -217,9 +219,10 @@ define(function main(require, exports, module) {
         if (!run_configuration) {
             return;
         }
+        var script = this.get_selected_script_name();
         this.set_indicators(run_configuration);
         this.set_controls_by_status(true);
-        execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, this.debug_port, run_configuration.flags);
+        execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, this.debug_port, run_configuration.flags, script);
     };
 
     Process.prototype.exit = function () {
@@ -241,14 +244,16 @@ define(function main(require, exports, module) {
         that.process_domain.exec('stop_process');
     }
 
-    function execute_command(that, command_type, command_target, command_cwd, debug_port, flags) {
+    function execute_command(that, command_type, command_target, command_cwd, debug_port, flags, script) {
         var command;
         var v8flags = prefs.get('v8-flags');
         var additional_flags = _.union((prefs.get('additional-flags') || '').split(' '), (flags || '').split(' ')).join(' ');
         var node_bin = prefs.get('node-bin') ? prefs.get('node-bin') : 'node';
+        var npm_bin = prefs.get('npm-bin') ? prefs.get('node-bin') : 'npm';
         var mocha_bin = prefs.get('mocha-bin') ? prefs.get('mocha-bin') : 'mocha';
         var mocha_reporter_path = extension_utils.getModulePath(module) + 'reporter/mocha_json_stream.js';
         var mocha_default_flags = ' --reporter "' + mocha_reporter_path + '" ';
+        command_target = ' "' + command_target + '" ';
         v8flags = v8flags.replace(/--debug(-brk)?=?(\d+)?/g, '');
         if (debug_port) {
             v8flags += ' --debug-brk=' + debug_port + ' ';
@@ -262,10 +267,17 @@ define(function main(require, exports, module) {
                 mocha_bin + mocha_default_flags + ' ' + additional_flags + ' ' + v8flags :
                 node_bin + ' ' + v8flags + ' ' + mocha_bin + mocha_default_flags + ' ' + additional_flags;
             break;
+        case 'npm':
+            if (script) {
+                script = '"' + script + '"';
+            }
+            command = npm_bin + ' ' + v8flags + ' ' + additional_flags + ' ' + script;
+            command_target = '';
+            break;
         default:
             return;
         }
-        new_connection(that, command + ' "' + command_target + '" ', command_cwd);
+        new_connection(that, command + command_target, command_cwd);
     }
 
     function get_mocha_summary(that) {
@@ -338,6 +350,10 @@ define(function main(require, exports, module) {
             flags: selected_run_configuration.attr('flags'),
             type: selected_run_configuration.attr('type')
         };
+    };
+
+    Process.prototype.get_selected_script_name = function () {
+        return this.$panel.find('.script-selector').val();
     };
 
     Process.prototype.clear = function () {
@@ -470,8 +486,6 @@ define(function main(require, exports, module) {
                             var first_filename = found_files[0];
                             var first_result = results[first_filename];
                             var current_editor = editor_manager.getCurrentFullEditor();
-                            console.log(current_editor, first_filename);
-
                             if (current_editor.document.file._path === first_filename) {
                                 move_cursor_to_test_case(first_result);
                             }

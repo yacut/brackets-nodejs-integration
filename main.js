@@ -11,6 +11,7 @@ define(function (require, exports, module) {
 
     var ADD_MOCHA_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-mocha-to-runner';
     var ADD_NODE_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-node-to-runner';
+    var ADD_NPM_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-npm-to-runner';
     var CONTINUE_RUNNER_ID = 'brackets-nodejs-integration.debug-continue';
     var DEBUG_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.debug-runner';
     var JUMP_TO_REQUIRE_COMMAND_ID = 'brackets-nodejs-integration.go-to-require';
@@ -93,24 +94,41 @@ define(function (require, exports, module) {
     context_menu.addMenuDivider();
     command_manager.register('Add to Node.js runner', ADD_NODE_TO_RUNNER_MENU_ID, function () {
         var path = project_manager.getSelectedItem().fullPath;
-        add_run_configuration('node', path);
+        var cwd = project_manager.getSelectedItem().parentPath;
+        if (!_.endsWith(path, '.js')) {
+            return;
+        }
+        add_run_configuration('node', path, cwd);
         runner_panel.panel.show();
     });
     context_menu.addMenuItem(ADD_NODE_TO_RUNNER_MENU_ID, '', menus.LAST);
     command_manager.register('Add to Mocha runner', ADD_MOCHA_TO_RUNNER_MENU_ID, function () {
         var path = project_manager.getSelectedItem().fullPath;
-        add_run_configuration('mocha', path);
+        var cwd = project_manager.getSelectedItem().parentPath;
+        if (!_.endsWith(path, '.js')) {
+            return;
+        }
+        add_run_configuration('mocha', path, cwd);
         //TODO select config before show panel
         runner_panel.panel.show();
     });
     context_menu.addMenuItem(ADD_MOCHA_TO_RUNNER_MENU_ID, '', menus.LAST);
-    context_menu.addMenuDivider();
+    command_manager.register('Add to NPM runner', ADD_NPM_TO_RUNNER_MENU_ID, function () {
+        var path = project_manager.getSelectedItem().fullPath;
+        var cwd = project_manager.getSelectedItem().parentPath;
+        if (!_.endsWith(path, 'package.json')) {
+            return;
+        }
+        add_run_configuration('npm', path, cwd);
+        runner_panel.panel.show();
+    });
+    context_menu.addMenuItem(ADD_NPM_TO_RUNNER_MENU_ID, '', menus.LAST);
 
-    function add_run_configuration(type, path) {
+    function add_run_configuration(type, path, cwd) {
         //TODO check if config exist
         var filename = path.replace(/^.*[\\\/]/, '');
         var project_root = project_manager.getProjectRoot();
-        var working_directory = project_root ? project_root.fullPath : '';
+        var working_directory = cwd ? cwd : project_root ? project_root.fullPath : '';
         run_configurations.push({
             'name': filename,
             'type': type,
