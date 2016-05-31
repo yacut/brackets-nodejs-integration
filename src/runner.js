@@ -335,7 +335,9 @@ define(function main(require, exports, module) {
         else {
             this.$panel.find('.run-configuration-dropdown-toggle').prop('disabled', false);
             this.$panel.find('.run_btn').prop('disabled', false);
-            this.$panel.find('.debug_btn').prop('disabled', false);
+            if (this.get_selected_configuration().type !== 'npm') {
+                this.$panel.find('.debug_btn').prop('disabled', false);
+            }
             this.$panel.find('.stop_btn').prop('disabled', true);
             this.finished_tests_count = 0;
         }

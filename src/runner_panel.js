@@ -362,8 +362,10 @@ define(function main(require, exports, module) {
         selected_run_configuration.attr('target', run_configuration.target);
         selected_run_configuration.attr('flags', run_configuration.flags);
         var $script_selector = $runner_panel.find('.script-selector');
+        var $debug_btn = $runner_panel.find('.debug_btn');
         if (run_configuration.type === 'npm') {
             $script_selector.show();
+            $debug_btn.prop('disabled', true);
             $script_selector.find('option').remove();
             $.getJSON(run_configuration.target, function (npm_file) {
                 var script_names = _.keys(npm_file.scripts);
@@ -377,6 +379,7 @@ define(function main(require, exports, module) {
         }
         else {
             $script_selector.hide();
+            $debug_btn.prop('disabled', false);
         }
         var id = selected_run_configuration.parent().parent().attr('id');
         var selected_runner = get_runner(id);
