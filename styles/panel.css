@@ -439,6 +439,17 @@ button.nodejs-integration-tab-close {
     background-color: #4CAF50!important
 }
 
+#run-configurations-dropdown {
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: 0px;
+}
+
+#run-configurations-dropdown li {
+    padding-left: 5px;
+}
+
 #run-configurations-dropdown span {
     padding-left: 22px;
 }
@@ -461,7 +472,7 @@ button.nodejs-integration-tab-close {
 
 .run-configuration-dropdown-toggle {
     display: flex;
-    width: 210px;
+    width: 250px;
     height: 20px;
 }
 
