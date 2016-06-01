@@ -9,6 +9,8 @@ define(function main(require, exports, module) {
     // Default settings
     prefs.definePreference('node-bin', 'string', '');
     prefs.definePreference('mocha-bin', 'string', '');
+    prefs.definePreference('npm-bin', 'string', '');
+    prefs.definePreference('gulp-bin', 'string', '');
     prefs.definePreference('autoscroll', 'boolean', true);
     prefs.definePreference('v8-flags', 'string', '');
     prefs.definePreference('additional-flags', 'string', '');
@@ -16,7 +18,7 @@ define(function main(require, exports, module) {
         {
             'name': 'nodejs process sample',
             'cwd': '',
-            'flags':'',
+            'flags': '',
             'type': 'node',
             'target': extension_utils.getModulePath(module, 'tests/hello.js'),
             'debug': false
@@ -24,7 +26,7 @@ define(function main(require, exports, module) {
         {
             'name': 'http server sample',
             'cwd': '',
-            'flags':'',
+            'flags': '',
             'type': 'node',
             'target': extension_utils.getModulePath(module, 'tests/server.js'),
             'debug': false
@@ -33,7 +35,7 @@ define(function main(require, exports, module) {
         {
             'name': 'mocha test sample',
             'cwd': '',
-            'flags':'',
+            'flags': '',
             'type': 'mocha',
             'target': extension_utils.getModulePath(module, 'tests/mocha_test.js'),
             'debug': false
