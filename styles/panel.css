@@ -500,3 +500,14 @@ button.nodejs-integration-tab-close {
 .run-configuration-dropdown-toggle .dropdown-arrow {
     top: 50%;
 }
+
+.script-selector {
+    display: none;
+    background-color: #d4d7d7;
+    box-shadow: initial;
+    min-width: 50px;
+    max-width: 250px;
+    height: 20px;
+    padding: 0px 0px;
+    margin-bottom: 0px;
+}

@@ -454,11 +454,11 @@ define(function main(require, exports, module) {
     exports.runners = runners;
     exports.panel = panel;
     exports.cleanup = function () {
-        var runner_directory_path = extension_utils.getModulePath(module, 'src/domains/');
+        var runner_directory_path = extension_utils.getModulePath(module, 'domains/');
         var runner_directory = file_system.getDirectoryForPath(runner_directory_path);
         runner_directory.getContents(function (error, files) {
             if (error) {
-                console.error(error);
+                console.error('Get content:', runner_directory_path, error, files);
             }
             _.each(files, function (file) {
                 if (!_.endsWith(file._path, '.js')) {
@@ -470,11 +470,11 @@ define(function main(require, exports, module) {
                 }
             });
         });
-        var debugger_directory_path = extension_utils.getModulePath(module, 'debugger/node/');
+        var debugger_directory_path = extension_utils.getModulePath(module, '../debugger/node');
         var debugger_directory = file_system.getDirectoryForPath(debugger_directory_path);
         debugger_directory.getContents(function (error, files) {
             if (error) {
-                console(error);
+                console.error('Get content:', runner_directory_path, error, files);
             }
             _.each(files, function (file) {
                 if (!_.endsWith(file._path, '.js')) {

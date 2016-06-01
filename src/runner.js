@@ -249,7 +249,7 @@ define(function main(require, exports, module) {
         var v8flags = prefs.get('v8-flags');
         var additional_flags = _.union((prefs.get('additional-flags') || '').split(' '), (flags || '').split(' ')).join(' ');
         var node_bin = prefs.get('node-bin') ? prefs.get('node-bin') : 'node';
-        var npm_bin = prefs.get('npm-bin') ? prefs.get('node-bin') : 'npm';
+        var npm_bin = prefs.get('npm-bin') ? prefs.get('npm-bin') : 'npm';
         var mocha_bin = prefs.get('mocha-bin') ? prefs.get('mocha-bin') : 'mocha';
         var mocha_reporter_path = extension_utils.getModulePath(module) + 'reporter/mocha_json_stream.js';
         var mocha_default_flags = ' --reporter "' + mocha_reporter_path + '" ';
@@ -269,7 +269,9 @@ define(function main(require, exports, module) {
             break;
         case 'npm':
             if (script) {
-                script = '"' + script + '"';
+                if (['install', 'start', 'stop', 'restart', 'test'].indexOf(script) === -1) {
+                    script = 'run "' + script + '"';
+                }
             }
             command = npm_bin + ' ' + v8flags + ' ' + additional_flags + ' ' + script;
             command_target = '';
