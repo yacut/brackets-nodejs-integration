@@ -72,8 +72,8 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 
 - Refactoring :)
 - ~~Integrate debugger~~
-- Support for npm scripts
-- Support for gulp scripts
+- ~~Support for npm scripts~~
+- ~~Support for gulp scripts~~
 - Support for jasmine
 - Localization
 - Better support for require.js and goto definition
