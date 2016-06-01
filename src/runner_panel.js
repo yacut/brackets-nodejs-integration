@@ -379,6 +379,7 @@ define(function main(require, exports, module) {
         }
         else if (run_configuration.type === 'gulp') {
             $script_selector.show();
+            $debug_btn.prop('disabled', true);
             $script_selector.find('option').remove();
             $.get(run_configuration.target, function (gulp_file) {
                 var tasks_match = gulp_file.match(/task\(['"](.*)['"]/g);

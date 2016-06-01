@@ -50,3 +50,7 @@
 - added double click for mocha test cases - opens test and moves cursor to the test case
 - fixed empty flags issue for old settings
 - fixed total tests count in mocha summary
+
+### 1.5.1
+
+- disabled debug mode for gulp runner
