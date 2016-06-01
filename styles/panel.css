@@ -42,6 +42,12 @@
     padding-right: 5px;
 }
 
+.gulp {
+    background-image: url(img/gulp.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
 #brackets-nodejs-integration-runner-indicator {
     background-position: center;
     background-image: url(img/nodejs.svg);
@@ -505,7 +511,20 @@ button.nodejs-integration-tab-close {
     display: none;
     background-color: #d4d7d7;
     box-shadow: initial;
-    min-width: 50px;
+    width: initial;
+    min-width: 70px;
+    max-width: 250px;
+    height: 20px;
+    padding: 0px 0px;
+    margin-bottom: 0px;
+}
+
+.dark .script-selector {
+    display: none;
+    background-color: #222;
+    box-shadow: initial;
+    width: initial;
+    min-width: 70px;
     max-width: 250px;
     height: 20px;
     padding: 0px 0px;

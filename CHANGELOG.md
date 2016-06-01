@@ -40,3 +40,13 @@
 - fixed issue with empty setting flags
 - fixed if procees fails, don't show it as running or put the buttons in a locked state.
 - fixed wait background when test runing
+
+
+### 1.5.0
+
+- added npm scripts support
+- added gulp tasks support
+- improved runner selector
+- added double click for mocha test cases - opens test and moves cursor to the test case
+- fixed empty flags issue for old settings
+- fixed total tests count in mocha summary

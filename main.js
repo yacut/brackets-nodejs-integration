@@ -12,6 +12,7 @@ define(function (require, exports, module) {
     var ADD_MOCHA_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-mocha-to-runner';
     var ADD_NODE_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-node-to-runner';
     var ADD_NPM_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-npm-to-runner';
+    var ADD_GULP_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-gulp-to-runner';
     var CONTINUE_RUNNER_ID = 'brackets-nodejs-integration.debug-continue';
     var DEBUG_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.debug-runner';
     var JUMP_TO_REQUIRE_COMMAND_ID = 'brackets-nodejs-integration.go-to-require';
@@ -123,6 +124,16 @@ define(function (require, exports, module) {
         runner_panel.panel.show();
     });
     context_menu.addMenuItem(ADD_NPM_TO_RUNNER_MENU_ID, '', menus.LAST);
+    command_manager.register('Add to gulp runner', ADD_GULP_TO_RUNNER_MENU_ID, function () {
+        var path = project_manager.getSelectedItem().fullPath;
+        var cwd = project_manager.getSelectedItem().parentPath;
+        if (!_.endsWith(path, 'gulpfile.js')) {
+            return;
+        }
+        add_run_configuration('gulp', path, cwd);
+        runner_panel.panel.show();
+    });
+    context_menu.addMenuItem(ADD_GULP_TO_RUNNER_MENU_ID, '', menus.LAST);
 
     function add_run_configuration(type, path, cwd) {
         //TODO check if config exist

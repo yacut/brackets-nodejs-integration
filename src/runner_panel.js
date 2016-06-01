@@ -377,6 +377,25 @@ define(function main(require, exports, module) {
                 });
             });
         }
+        else if (run_configuration.type === 'gulp') {
+            $script_selector.show();
+            $script_selector.find('option').remove();
+            $.get(run_configuration.target, function (gulp_file) {
+                var tasks_match = gulp_file.match(/task\(['"](.*)['"]/g);
+                var tasks = [];
+                _.each(tasks_match, function (match) {
+                    var words = match.split(/['"]/);
+                    if (words && words.length > 0 && words[1]) {
+                        tasks.push(words[1]);
+                    }
+                });
+                _.each(tasks, function (task) {
+                    $script_selector.append($(document.createElement('option'))
+                        .val(task)
+                        .html(task));
+                });
+            }, 'text');
+        }
         else {
             $script_selector.hide();
             $debug_btn.prop('disabled', false);

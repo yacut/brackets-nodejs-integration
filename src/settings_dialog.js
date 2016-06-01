@@ -190,6 +190,12 @@ define(function main(require, exports) {
                     console.error(error);
                 }
                 if (target_list && target_list.length > 0) {
+                    if (selected_runner.attr('runner_type') === 'npm' && !_.endsWith(target_list[0], 'package.json')) {
+                        return;
+                    }
+                    if (selected_runner.attr('runner_type') === 'gulp' && !_.endsWith(target_list[0], 'gulpfile.js')) {
+                        return;
+                    }
                     runner_target.val(target_list[0]);
                     selected_runner.attr('runner_target', target_list[0]);
                 }
