@@ -59,3 +59,7 @@
 
 - force colors in gulp output
 - fixed script and flags order for gulp and npm
+
+### 1.5.3
+
+- fixed icon size if runner name is long

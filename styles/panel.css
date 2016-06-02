@@ -129,6 +129,7 @@ nodejs-integration-tab-view:before {
     text-overflow: ellipsis;
     padding-right: 12px;
     padding-top: 3px;
+    max-width: 170px;
 }
 
 .nodejs-integration-tab:before,
@@ -501,6 +502,7 @@ button.nodejs-integration-tab-close {
 .run-configuration-dropdown-toggle span {
     white-space: nowrap;
     overflow: hidden;
+    max-width: 250px;
 }
 
 .run-configuration-dropdown-toggle .dropdown-arrow {
