@@ -54,3 +54,8 @@
 ### 1.5.1
 
 - disabled debug mode for gulp runner
+
+### 1.5.2
+
+- force colors in gulp output
+- fixed script and flags order for gulp and npm

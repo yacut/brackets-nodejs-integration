@@ -274,11 +274,11 @@ define(function main(require, exports, module) {
                     script = 'run "' + script + '"';
                 }
             }
-            command = npm_bin + ' ' + v8flags + ' ' + additional_flags + ' ' + script;
+            command = npm_bin + ' ' + script + ' ' + v8flags + ' ' + additional_flags;
             command_target = '';
             break;
         case 'gulp':
-            command = gulp_bin + ' ' + v8flags + ' ' + additional_flags + ' ' + script;
+            command = gulp_bin + ' ' + script + ' --color ' + v8flags + ' ' + additional_flags;
             command_target = '';
             break;
         default:
