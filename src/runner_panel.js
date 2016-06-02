@@ -354,7 +354,13 @@ define(function main(require, exports, module) {
             };
         }
         var selected_run_configuration = $runner_panel.find('.nodejs-integration-tab-pane.active .run-configuration-dropdown-toggle');
-        selected_run_configuration.find('.type').removeClass('node').removeClass('mocha').removeClass('npm').addClass(run_configuration.type);
+        selected_run_configuration.find('.type')
+            .removeClass('node')
+            .removeClass('mocha')
+            .removeClass('npm')
+            .removeClass('gulp')
+            .addClass(run_configuration.type);
+
         selected_run_configuration.find('.name').html(run_configuration.name);
         selected_run_configuration.attr('name', run_configuration.name);
         selected_run_configuration.attr('type', run_configuration.type);
