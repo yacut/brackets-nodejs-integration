@@ -335,12 +335,14 @@ define(function main(require, exports, module) {
     Process.prototype.set_controls_by_status = function (process_running) {
         if (process_running) {
             this.$panel.find('.run-configuration-dropdown-toggle').prop('disabled', true);
+            this.$panel.find('.script-selector').prop('disabled', true);
             this.$panel.find('.run_btn').prop('disabled', true);
             this.$panel.find('.debug_btn').prop('disabled', true);
             this.$panel.find('.stop_btn').prop('disabled', false);
         }
         else {
             this.$panel.find('.run-configuration-dropdown-toggle').prop('disabled', false);
+            this.$panel.find('.script-selector').prop('disabled', false);
             this.$panel.find('.run_btn').prop('disabled', false);
             if (this.get_selected_configuration().type !== 'npm' && this.get_selected_configuration().type !== 'gulp') {
                 this.$panel.find('.debug_btn').prop('disabled', false);

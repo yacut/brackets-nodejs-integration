@@ -511,7 +511,8 @@ button.nodejs-integration-tab-close {
 
 .script-selector {
     display: none;
-    background-color: #d4d7d7;
+    background: #d4d7d7;
+    -webkit-appearance: menulist;
     box-shadow: initial;
     width: initial;
     min-width: 70px;
@@ -523,7 +524,8 @@ button.nodejs-integration-tab-close {
 
 .dark .script-selector {
     display: none;
-    background-color: #222;
+    background: #222;
+    -webkit-appearance: menulist;
     box-shadow: initial;
     width: initial;
     min-width: 70px;
