@@ -18,7 +18,13 @@
 .brackets-nodejs-integration-console {
     float: right;
     width: 100%;
-    overflow: scroll;
+    font-size: 14px;
+    border: 0px solid black;
+    -webkit-user-select: text;
+    word-break: normal;
+    white-space: pre;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
 .console-element {

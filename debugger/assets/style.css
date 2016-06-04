@@ -125,7 +125,6 @@
 
 .brackets-nodejs-integration-debugger-wrapper {
     height: -webkit-calc(100% - 44px);
-    overflow-y: scroll;
 }
 
 .brackets-nodejs-integration-debugger {
@@ -136,6 +135,7 @@
 
 .brackets-nodejs-integration-debugger-wrapper .brackets-nodejs-integration-debugger-sidebar {
     height: 100%;
+    overflow: auto;
 }
 
 .brackets-nodejs-integration-debugger-wrapper .locals {
