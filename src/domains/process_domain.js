@@ -30,15 +30,6 @@
             if (data) {
                 data.split(/\r\n|\r|\n/g).forEach(function (output_string) {
                     if (output_string) {
-                        //extract mocha events and emit mocha event
-                        var mocha_events = output_string.match(/###mocha_event_start###(.*)###mocha_event_end###/gm);
-                        if (mocha_events) {
-                            mocha_events.forEach(function (mocha_event) {
-                                output_string = output_string.replace(mocha_event, '');
-                                send_reporter_output(mocha_event.replace('###mocha_event_start###', '').replace('###mocha_event_end###', ''));
-                            });
-                        }
-                        //for the rest emit console event
                         send_console_output(output_string);
                     }
                 });
@@ -49,10 +40,6 @@
             // Support for ansi colors and text decorations
             data = data.replace(/\x1B\[/g, '\\x1B[');
             domain.emitEvent(DOMAIN_NAME, 'console_output', data);
-        }
-
-        function send_reporter_output(data) {
-            domain.emitEvent(DOMAIN_NAME, 'reporter_output', data);
         }
 
         child.stdout.on('data', send);
@@ -109,15 +96,6 @@
             ]
         );
 
-        domainManager.registerEvent(
-            DOMAIN_NAME,
-            'reporter_output', [
-                {
-                    name: 'output',
-                    type: 'string'
-                }
-            ]
-        );
     }
 
     exports.init = init;

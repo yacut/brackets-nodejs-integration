@@ -18,6 +18,7 @@ define(function main(require, exports, module) {
     var ansi = require('./ansi');
     var prefs = require('../preferences');
     var utils = require('../utils');
+    var QueueManager = require('./queue_manager');
 
     exports.create_new_process = function (id, run_configurations, debug_port) {
         return new Process(id, run_configurations, debug_port);
@@ -57,6 +58,103 @@ define(function main(require, exports, module) {
             .on('click', function () {
                 $('#' + id).find('.console-element').show();
             });
+
+        this.process_finished = false;
+        this.process_stopped = false;
+        this.queue = new QueueManager({
+            delay: 0
+        });
+        this.queue.each(function (data) {
+            if (that.process_stopped) {
+                return;
+            }
+            var mocha_events = data.match(/###mocha_event_start###(.*)###mocha_event_end###/gm);
+            if (mocha_events) {
+                mocha_events.forEach(function (mocha_event) {
+                    mocha_event = mocha_event.replace('###mocha_event_start###', '').replace('###mocha_event_end###', '');
+                    var output_json = JSON.parse(mocha_event);
+                    var event_type = output_json[0];
+                    var event_model = output_json[1];
+                    if (!event_model) {
+                        return;
+                    }
+                    if (event_model.fullTitle) {
+                        that.actual_test_title = event_model.fullTitle;
+                    }
+                    switch (event_type) {
+                    case 'start':
+                        clear(that);
+                        that.write(that, that.command + that.cwd);
+                        that.mocha_stats = event_model;
+                        that.total_tests = event_model.tests;
+                        that.mocha_summary.html(get_mocha_summary(that));
+                        break;
+                    case 'start_suite':
+                        if (event_model.title) {
+                            that.add_to_test_list(utils.uuid(), event_model, 'start_suite');
+                        }
+                        break;
+                    case 'start_test':
+                        that.add_to_test_list(utils.uuid(), event_model, 'start_test');
+                        break;
+                    case 'pass_test':
+                        that.finished_tests_count++;
+                        that.mocha_summary.html(get_mocha_summary(that));
+                        that.finalize_test(event_model, 'pass_test');
+                        break;
+                    case 'fail_test':
+                        that.finished_tests_count++;
+                        that.mocha_summary.html(get_mocha_summary(that));
+                        that.finalize_test(event_model, 'fail_test', event_model);
+                        that.write(that, event_model.stack, {
+                            actual: event_model.actual ? JSON.stringify(event_model.actual, null, 2) : null,
+                            expected: event_model.expected ? JSON.stringify(event_model.expected, null, 2) : null
+                        });
+                        break;
+                    case 'pending_test':
+                        that.finished_tests_count++;
+                        that.mocha_summary.html(get_mocha_summary(that));
+                        that.finalize_test(event_model, 'pending_test');
+                        break;
+                    case 'end_suite':
+                        that.finalize_test(event_model, 'end_suite');
+                        break;
+                    case 'end':
+                        that.mocha_stats = event_model;
+                        that.mocha_summary.html(get_mocha_summary(that));
+                        if (!that.mocha_summary.is(':visible')) {
+                            utils.show_popup_message(that.mocha_summary.text());
+                        }
+                        that.finished_tests_count = 0;
+                        break;
+                    default:
+                        console.error('Not suported event model.' + output_json);
+                        break;
+                    }
+                });
+            }
+            else {
+                _.each(data.split(/\r?\n/), function (output_string) {
+                    if (output_string) {
+                        that.write(that, output_string + '\n');
+                    }
+                });
+            }
+
+        });
+        this.queue.complete(function () {
+            console.log('queue.complete', that.process_finished);
+            if (!that.process_finished) {
+                return;
+            }
+
+            _.forEach(that.test_tree, function (item) {
+                if (item.running) {
+                    that.finalize_test(item.event_model, 'pending_test');
+                }
+            });
+            that.set_controls_by_status(false);
+        });
     };
 
     function create_new_domain(that, id, file_path, content) {
@@ -77,76 +175,7 @@ define(function main(require, exports, module) {
             if (that.id !== info.target._domainPath.replace(/^.*[\\\/]/, '')) {
                 return;
             }
-            _.each(data.split(/\r?\n/), function (output_string) {
-                if (output_string) {
-                    that.write(that, output_string + '\n');
-                }
-            });
-        });
-
-        that.process_domain.on('reporter_output', function (info, data) {
-            if (that.id !== info.target._domainPath.replace(/^.*[\\\/]/, '')) {
-                return;
-            }
-            var output_json = JSON.parse(data);
-            var event_type = output_json[0];
-            var event_model = output_json[1];
-            if (!event_model) {
-                return;
-            }
-            if (event_model.fullTitle) {
-                that.actual_test_title = event_model.fullTitle;
-            }
-            switch (event_type) {
-            case 'start':
-                clear(that);
-                that.write(that, that.command + that.cwd);
-                that.mocha_stats = event_model;
-                that.total_tests = event_model.tests;
-                that.mocha_summary.html(get_mocha_summary(that));
-                break;
-            case 'start_suite':
-                if (event_model.title) {
-                    that.add_to_test_list(utils.uuid(), event_model, 'start_suite');
-                }
-                break;
-            case 'start_test':
-                that.add_to_test_list(utils.uuid(), event_model, 'start_test');
-                break;
-            case 'pass_test':
-                that.finished_tests_count++;
-                that.mocha_summary.html(get_mocha_summary(that));
-                that.finalize_test(event_model, 'pass_test');
-                break;
-            case 'fail_test':
-                that.finished_tests_count++;
-                that.mocha_summary.html(get_mocha_summary(that));
-                that.finalize_test(event_model, 'fail_test', event_model);
-                that.write(that, event_model.stack, {
-                    actual: event_model.actual ? JSON.stringify(event_model.actual, null, 2) : null,
-                    expected: event_model.expected ? JSON.stringify(event_model.expected, null, 2) : null
-                });
-                break;
-            case 'pending_test':
-                that.finished_tests_count++;
-                that.mocha_summary.html(get_mocha_summary(that));
-                that.finalize_test(event_model, 'pending_test');
-                break;
-            case 'end_suite':
-                that.finalize_test(event_model, 'end_suite');
-                break;
-            case 'end':
-                that.mocha_stats = event_model;
-                that.mocha_summary.html(get_mocha_summary(that));
-                if (!that.mocha_summary.is(':visible')) {
-                    utils.show_popup_message(that.mocha_summary.text());
-                }
-                that.finished_tests_count = 0;
-                break;
-            default:
-                console.error('Not suported event model.' + output_json);
-                break;
-            }
+            that.queue.add(data);
         });
     }
 
@@ -163,25 +192,20 @@ define(function main(require, exports, module) {
         if (cwd) {
             that.cwd = '<strong>Working directory: ' + cwd + '</strong>\n';
         }
-        write(that, that.command + that.cwd);
-        write(that, '\n');
+        that.queue.add(that.command + that.cwd);
+        that.queue.add('\n');
+
         that.process_domain.exec('start_process', command, working_directory)
             .done(function (error) {
-                that.set_controls_by_status(false);
                 if (error && error.code && error.stderr) {
-                    that.write(that, error.stderr);
+                    that.queue.add(error.stderr);
                 }
-                that.write(that, '\nProgram exited with code ' + (error ? error.code : '0'));
-                _.forEach(that.test_tree, function (item) {
-                    if (item.running) {
-                        that.finalize_test(item.event_model, 'pending_test');
-                    }
-                });
+                that.queue.add('\nProgram exited with code ' + (error ? error.code : '0'));
+                that.process_finished = true;
             })
             .fail(function (err) {
-                that.set_controls_by_status(false);
-
-                that.write(that, '\nError occured: \n' + err);
+                that.queue.add('\nError occured: \n' + err);
+                that.process_finished = true;
             });
         that.last_command = command;
         that.last_cwd = working_directory;
@@ -204,11 +228,14 @@ define(function main(require, exports, module) {
         var script = this.get_selected_script_name();
         this.set_indicators(run_configuration);
         this.set_controls_by_status(true);
+        this.process_finished = false;
+        this.process_stopped = false;
         try {
             execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, null, run_configuration.flags, script);
         }
         catch (err) {
             this.set_controls_by_status(false);
+            this.process_finished = true;
             throw err;
         }
     };
@@ -222,7 +249,16 @@ define(function main(require, exports, module) {
         var script = this.get_selected_script_name();
         this.set_indicators(run_configuration);
         this.set_controls_by_status(true);
-        execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, this.debug_port, run_configuration.flags, script);
+        this.process_finished = false;
+        this.process_stopped = false;
+        try {
+            execute_command(this, run_configuration.type, run_configuration.target, run_configuration.cwd, this.debug_port, run_configuration.flags, script);
+        }
+        catch (err) {
+            this.set_controls_by_status(false);
+            this.process_finished = true;
+            throw err;
+        }
     };
 
     Process.prototype.exit = function () {
@@ -241,6 +277,10 @@ define(function main(require, exports, module) {
     };
 
     function stop(that) {
+        that.process_finished = true;
+        that.process_stopped = true;
+        that.queue.clear();
+        that.set_controls_by_status(false);
         that.process_domain.exec('stop_process');
     }
 
