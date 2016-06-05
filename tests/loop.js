@@ -6,7 +6,7 @@ var interval_id = setInterval(function () {
     console.log('Brackets is a free open-source editor written in HTML, CSS, and JavaScript with a primary focus on Web Development. \n' +
         'It was created by Adobe Systems, licensed under the MIT License, and is currently maintained on GitHub. \n' +
         'Brackets is available for cross-platform download on Mac, Windows, and Linux.');
-}, 1);
+}, 10);
 
 setTimeout(function () {
     clearInterval(interval_id);

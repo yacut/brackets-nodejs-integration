@@ -143,7 +143,6 @@ define(function main(require, exports, module) {
 
         });
         this.queue.complete(function () {
-            console.log('queue.complete', that.process_finished);
             if (!that.process_finished) {
                 return;
             }

@@ -63,3 +63,11 @@
 ### 1.5.3
 
 - fixed icon size if runner name is long
+
+### 1.6.0
+
+- added 'start current nodejs file' and 'start current mocha file' features
+- added queue_manager to resolve "console log spam" issue
+- cleanup scrollbars for better view under Windows and Linux
+- fixed icon size if runner name is long
+- fixed scripts selector view

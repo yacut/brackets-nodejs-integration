@@ -26,7 +26,7 @@ define(function main(require, exports, module) {
     var runner = require('./runner');
     var runner_panel_template = require('text!../templates/runner_panel.html');
     var settings_dialog = require('./settings_dialog');
-    var projects_menu_template = require('text!../templates/runner_menu.html');
+    var runner_menu_template = require('text!../templates/runner_menu.html');
     var utils = require('../utils');
 
     var $dropdown = null;
@@ -124,16 +124,17 @@ define(function main(require, exports, module) {
         var path_to_file = link_properties[0];
         path_to_file = file_utils.convertWindowsPathToUnixPath(path_to_file);
         if (!file_system.isAbsolutePath(path_to_file)) {
-            var active_runner = get_runner($runner_panel.find('.nodejs-integration-tab-pane.active').attr('id'));
-            var working_directory = active_runner ? active_runner.get_last_cwd() : '';
-            if (!working_directory) {
-                var project_root = project_manager.getProjectRoot();
-                working_directory = project_root ? project_root.fullPath : '';
-            }
-            if (!_.endsWith(working_directory, '/')) {
-                working_directory = working_directory + '/';
-            }
-            path_to_file = working_directory + path_to_file;
+            get_runner($runner_panel.find('.nodejs-integration-tab-pane.active').attr('id')).done(function (active_runner) {
+                var working_directory = active_runner ? active_runner.get_last_cwd() : '';
+                if (!working_directory) {
+                    var project_root = project_manager.getProjectRoot();
+                    working_directory = project_root ? project_root.fullPath : '';
+                }
+                if (!_.endsWith(working_directory, '/')) {
+                    working_directory = working_directory + '/';
+                }
+                path_to_file = working_directory + path_to_file;
+            });
         }
         var file_line = link_properties[1];
         var file_column = link_properties[2];
@@ -182,19 +183,25 @@ define(function main(require, exports, module) {
     });
     $runner_panel.on('click', '.stop_btn', function () {
         var id = $(this).parent().parent().parent().attr('id');
-        get_runner(id).stop();
-        get_debugger(id).stop();
+        get_runner(id).done(function (runner) {
+            runner.stop();
+            get_debugger(id).stop();
+        });
     });
     $runner_panel.on('click', '.run_btn', function () {
         var id = $(this).parent().parent().parent().attr('id');
-        get_runner(id).run();
+        get_runner(id).done(function (runner) {
+            runner.run();
+        });
     });
     $runner_panel.on('click', '.debug_btn', function () {
         var id = $(this).parent().parent().parent().attr('id');
-        get_runner(id).debug();
-        get_debugger(id).init();
-        $runner_panel.find('.brackets-nodejs-integration-debugger').show();
-        $runner_panel.find('.brackets-nodejs-integration-debugger-toggle').show();
+        get_runner(id).done(function (runner) {
+            runner.debug();
+            get_debugger(id).init();
+            $runner_panel.find('.brackets-nodejs-integration-debugger').show();
+            $runner_panel.find('.brackets-nodejs-integration-debugger-toggle').show();
+        });
     });
     $runner_panel.on('click', '.collapse_btn', function () {
         $(this).parent().parent().find('.test-list').find('input').prop('checked', false);
@@ -203,23 +210,27 @@ define(function main(require, exports, module) {
         $(this).parent().parent().find('.test-list').find('input').prop('checked', true);
     });
     $runner_panel.on('click', '.nodejs-integration-tab-close', function () {
-        get_runner($(this).parent().data('target').replace('#', '')).exit();
-        get_debugger($(this).parent().data('target').replace('#', '')).exit();
-        $($(this).parent().data('target')).remove();
-        $(this).parent().remove();
+        var that = this;
+        get_runner($(this).parent().data('target').replace('#', '')).done(function (runner) {
+            runner.exit();
+            get_debugger($(that).parent().data('target').replace('#', '')).exit();
+            $($(that).parent().data('target')).remove();
+            $(that).parent().remove();
 
-        //move to another tab
-        var $tabs = $runner_panel.find('.nodejs-integration-tab');
-        var $new_tab = $tabs.last();
-        var $new_tab_pane = $new_tab.data('target');
-        $new_tab.add($new_tab_pane).addClass('active');
+            //move to another tab
+            var $tabs = $runner_panel.find('.nodejs-integration-tab');
+            var $new_tab = $tabs.last();
+            var $new_tab_pane = $new_tab.data('target');
+            $new_tab.add($new_tab_pane).addClass('active');
+        });
     });
     $runner_panel.on('click', '.nodejs-integration-tab-new', function () {
         var $tabs = $runner_panel.find('.nodejs-integration-tab');
         if ($tabs.length >= 5) {
             return utils.show_popup_message('Limitations: You can start only 5 runners.');
         }
-        return create_new_tab();
+        create_new_tab();
+        change_run_configuration(null, run_configurations[0]);
     });
     $runner_panel.on('click', '.nodejs-integration-tab-settings', function () {
         settings_dialog.show();
@@ -264,7 +275,6 @@ define(function main(require, exports, module) {
             process: new_runner,
             debugger: new_debugger
         });
-        change_run_configuration(null, run_configurations[0]);
     }
 
     //tab view
@@ -329,11 +339,22 @@ define(function main(require, exports, module) {
         });
     }
 
-    function get_runner(panel_id) {
+    function get_runner(panel_id, deferred) {
+        if (!deferred) {
+            deferred = new $.Deferred();
+        }
         var selected_runner_tab = _.findLast(runners, function (runner_tab) {
             return runner_tab.id === panel_id;
         });
-        return selected_runner_tab ? selected_runner_tab.process : null;
+        if (!selected_runner_tab || !selected_runner_tab.process || !selected_runner_tab.process.process_domain) {
+            setTimeout(function () {
+                get_runner(panel_id, deferred);
+            }, 250);
+        }
+        else {
+            deferred.resolve(selected_runner_tab.process);
+        }
+        return deferred.promise();
     }
 
     function get_debugger(panel_id) {
@@ -408,9 +429,10 @@ define(function main(require, exports, module) {
             $debug_btn.prop('disabled', false);
         }
         var id = selected_run_configuration.parent().parent().attr('id');
-        var selected_runner = get_runner(id);
-        selected_runner.clear();
-        selected_runner.set_indicators(run_configuration);
+        get_runner(id).done(function (selected_runner) {
+            selected_runner.clear();
+            selected_runner.set_indicators(run_configuration);
+        });
     }
 
     function closeDropdown() {
@@ -448,7 +470,7 @@ define(function main(require, exports, module) {
             run_configurations: prefs.get('configurations')
         };
 
-        return Mustache.render(projects_menu_template, templateVars);
+        return Mustache.render(runner_menu_template, templateVars);
     }
 
     function attachCloseEvents() {
@@ -488,10 +510,9 @@ define(function main(require, exports, module) {
             }
             _.each(files, function (file) {
                 if (!_.endsWith(file._path, '.js')) {
-                    var found_runner = get_runner(file._name);
-                    if (found_runner) {
+                    get_runner(file._name).done(function (found_runner) {
                         found_runner.stop();
-                    }
+                    });
                     file.unlink(function () {});
                 }
             });
@@ -504,13 +525,14 @@ define(function main(require, exports, module) {
             }
             _.each(files, function (file) {
                 if (!_.endsWith(file._path, '.js')) {
-                    var found_runner = get_runner(file._name);
-                    if (found_runner) {
+                    get_runner(file._name).done(function (found_runner) {
                         found_runner.stop();
-                    }
+                    });
                     file.unlink(function () {});
                 }
             });
         });
     };
+    exports.change_run_configuration = change_run_configuration;
+    exports.create_new_tab = create_new_tab;
 });

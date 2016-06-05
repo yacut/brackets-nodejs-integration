@@ -5,6 +5,7 @@ define(function (require, exports, module) {
 
     var _ = brackets.getModule('thirdparty/lodash');
     var command_manager = brackets.getModule('command/CommandManager');
+    var document_manager = brackets.getModule('document/DocumentManager');
     var extension_utils = brackets.getModule('utils/ExtensionUtils');
     var menus = brackets.getModule('command/Menus');
     var project_manager = brackets.getModule('project/ProjectManager');
@@ -20,6 +21,8 @@ define(function (require, exports, module) {
     var RUNNER_CMD_ID = 'brackets-nodejs-integration.runner';
     var SETTINGS_CMD_ID = 'brackets-nodejs-integration.settings';
     var START_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.start-runner';
+    var START_CURRENT_FILE_RUNNER_ID = 'brackets-nodejs-integration.start-current-file';
+    var START_CURRENT_TEST_RUNNER_ID = 'brackets-nodejs-integration.start-current-test';
     var STEP_OVER_RUNNER_ID = 'brackets-nodejs-integration.debug-step-over';
     var STOP_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.stop-runner';
 
@@ -62,6 +65,7 @@ define(function (require, exports, module) {
         runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .run_btn').trigger('click');
     });
     main_menu.addMenuItem(START_ACTIVE_RUNNER_ID, 'F6', menus.LAST);
+
     command_manager.register('Debug (active runner)', DEBUG_ACTIVE_RUNNER_ID, function () {
         runner_panel.panel.show();
         runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .debug_btn').trigger('click');
@@ -73,6 +77,46 @@ define(function (require, exports, module) {
         runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .stop_btn').trigger('click');
     });
     main_menu.addMenuItem(STOP_ACTIVE_RUNNER_ID, 'Shift-F6', menus.LAST);
+
+    command_manager.register('Start (current NodeJS file)', START_CURRENT_FILE_RUNNER_ID, function () {
+        create_and_run_configuration('node');
+    });
+    main_menu.addMenuItem(START_CURRENT_FILE_RUNNER_ID, 'Ctrl-Shift-N', menus.LAST);
+
+    command_manager.register('Start (current Mocha file)', START_CURRENT_TEST_RUNNER_ID, function () {
+        create_and_run_configuration('mocha');
+    });
+    main_menu.addMenuItem(START_CURRENT_TEST_RUNNER_ID, 'Ctrl-Shift-T', menus.LAST);
+
+    function create_and_run_configuration(type) {
+        var current_document = document_manager.getCurrentDocument();
+        if (!current_document) {
+            return;
+        }
+
+        runner_panel.panel.show();
+        var active_tab = runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active');
+        if (active_tab.length === 0) {
+            runner_panel.create_new_tab();
+            active_tab = runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active');
+        }
+        var process_running = runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .run_btn').prop('disabled');
+        if (process_running) {
+            runner_panel.create_new_tab();
+            active_tab = runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active');
+        }
+
+        var path = current_document.file.fullPath;
+        var filename = path.replace(/^.*[\\\/]/, '');
+        runner_panel.change_run_configuration(null, {
+            'name': filename,
+            'type': type,
+            'cwd': '',
+            'target': path,
+            'debug': false
+        });
+        active_tab.find('.run_btn').trigger('click');
+    }
 
     command_manager.register('Debugger - step over (active runner)', STEP_OVER_RUNNER_ID, function () {
         runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .step_over_btn').trigger('click');
