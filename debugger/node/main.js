@@ -1,4 +1,5 @@
 /*global require*/
+// https://github.com/v8/v8/wiki/Debugging-Protocol
 'use strict';
 
 var DebugConnector = require('./debug.js').DebugConnector;

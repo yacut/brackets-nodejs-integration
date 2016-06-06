@@ -16,6 +16,7 @@ define(function main(require, exports, module) {
             .replace(/\\x1B\[27m/gi, '</span>');
         // Color
         var colors = {
+            '#696969': /\\x1B\[2m/gi,
             'black': /\\x1B\[30m/gi,
             'red': /\\x1B\[31m/gi,
             'green': /\\x1B\[32m/gi,
