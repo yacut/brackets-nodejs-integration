@@ -469,29 +469,30 @@ define(function main(require, exports, module) {
             if (code === 13) {
                 var visible_configurations = $dropdown.find('li:visible');
                 if (visible_configurations.length > 0) {
-                    var first_configuration = $dropdown.find('.highlight') || visible_configurations.first();
+                    console.log($dropdown.find('.highlight'), visible_configurations.first());
+                    var first_configuration = $dropdown.find('.highlight').first().length ? $dropdown.find('.highlight').first() : visible_configurations.first();
                     first_configuration.find('div').trigger('click');
                     return;
                 }
             }
             else if (code === 38 || code === 40) {
                 var $current;
-                var $selected = $dropdown.find('.highlight') || $dropdown.find('li').first();
+                var $selected = $dropdown.find('.highlight') || $dropdown.find('li:visible').first();
                 $selected.removeClass('highlight');
                 if (code === 38) {
-                    if (!$selected.length || $selected.is(':first-child')) {
-                        $current = $dropdown.find('li').last();
+                    if (!$selected.length || $selected.is(':visible:first-child')) {
+                        $current = $dropdown.find('li:visible').last();
                     }
                     else {
-                        $current = $selected.prev();
+                        $current = $selected.prev(':visible');
                     }
                 }
                 if (code === 40) {
-                    if (!$selected.length || $selected.is(':last-child')) {
-                        $current = $dropdown.find('li').eq(0);
+                    if (!$selected.length || $selected.is(':visible:last-child')) {
+                        $current = $dropdown.find('li:visible').first();
                     }
                     else {
-                        $current = $selected.next();
+                        $current = $selected.next(':visible');
                     }
                 }
                 $current.addClass('highlight');
