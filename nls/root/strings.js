@@ -42,6 +42,7 @@ define({
     RUN: 'Run',
     RUNNER_SETTINGS: 'Runner settings',
     SAVE: 'Save',
+    SEARCH: 'Search',
     SETTINGS: 'Settings...',
     SHOW_OR_HIDE_RUNNER: 'Show/Hide runner',
     START_ACTIVE_RUNNER: 'Start (active runner)',

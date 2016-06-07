@@ -466,24 +466,47 @@ define(function main(require, exports, module) {
         });
         $dropdown.find('.live-search-box').on('keyup', function (event) {
             var code = event.which;
-            console.log('key_code', code);
             if (code === 13) {
                 var visible_configurations = $dropdown.find('li:visible');
                 if (visible_configurations.length > 0) {
-                    var first_configuration = $dropdown.find('li:visible')[0];
+                    var first_configuration = $dropdown.find('.highlight') || visible_configurations.first();
                     first_configuration.find('div').trigger('click');
                     return;
                 }
             }
-            var searchTerm = $(this).val().toLowerCase();
-            $dropdown.find('li').each(function () {
-                if ($(this).filter('[data-search-term *= ' + searchTerm + ']').length > 0 || searchTerm.length < 1) {
-                    $(this).show();
+            else if (code === 38 || code === 40) {
+                var $current;
+                var $selected = $dropdown.find('.highlight') || $dropdown.find('li').first();
+                $selected.removeClass('highlight');
+                if (code === 38) {
+                    if (!$selected.length || $selected.is(':first-child')) {
+                        $current = $dropdown.find('li').last();
+                    }
+                    else {
+                        $current = $selected.prev();
+                    }
                 }
-                else {
-                    $(this).hide();
+                if (code === 40) {
+                    if (!$selected.length || $selected.is(':last-child')) {
+                        $current = $dropdown.find('li').eq(0);
+                    }
+                    else {
+                        $current = $selected.next();
+                    }
                 }
-            });
+                $current.addClass('highlight');
+            }
+            else {
+                var searchTerm = $(this).val().toLowerCase();
+                $dropdown.find('li').each(function () {
+                    if ($(this).filter('[data-search-term *= ' + searchTerm + ']').length > 0 || searchTerm.length < 1) {
+                        $(this).show();
+                    }
+                    else {
+                        $(this).hide();
+                    }
+                });
+            }
         });
         pop_up_manager.addPopUp($dropdown, detachCloseEvents, true);
         attachCloseEvents();

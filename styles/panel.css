@@ -480,11 +480,13 @@ button.nodejs-integration-tab-close {
     outline: 0;
 }
 
+#run-configurations-dropdown li.highlight,
 #run-configurations-dropdown li:hover {
     color: @bc-menu-text;
     background-color: #e0f0fa;
 }
 
+.dark #run-configurations-dropdown li.highlight,
 .dark #run-configurations-dropdown li:hover {
     color: @dark-bc-menu-text;
     background-color: #284160;

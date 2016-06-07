@@ -42,6 +42,7 @@ define({
     RUN: 'Старт',
     RUNNER_SETTINGS: 'Настройки',
     SAVE: 'Сохранить',
+    SEARCH: 'Поиск',
     SETTINGS: 'Настройки...',
     SHOW_OR_HIDE_RUNNER: 'Показать/Спрятать runner',
     START_ACTIVE_RUNNER: 'Старт (активный runner)',
