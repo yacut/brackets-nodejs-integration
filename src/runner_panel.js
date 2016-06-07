@@ -26,6 +26,7 @@ define(function main(require, exports, module) {
     var runner = require('./runner');
     var runner_panel_template = require('text!../templates/runner_panel.html');
     var settings_dialog = require('./settings_dialog');
+    var strings = require('strings');
     var runner_menu_template = require('text!../templates/runner_menu.html');
     var utils = require('../utils');
 
@@ -81,7 +82,8 @@ define(function main(require, exports, module) {
         y: 0
     };
 
-    runner_panel = workspace_manager.createBottomPanel(panel.id, $(panel_template));
+    var panel_template_html = Mustache.render(panel_template, strings);
+    runner_panel = workspace_manager.createBottomPanel(panel.id, $(panel_template_html));
     $runner_panel = runner_panel.$panel;
 
     panel.html_object = $('#' + panel.id);
@@ -227,7 +229,7 @@ define(function main(require, exports, module) {
     $runner_panel.on('click', '.nodejs-integration-tab-new', function () {
         var $tabs = $runner_panel.find('.nodejs-integration-tab');
         if ($tabs.length >= 5) {
-            return utils.show_popup_message('Limitations: You can start only 5 runners.');
+            return utils.show_popup_message(strings.RINNERS_LIMITATION);
         }
         create_new_tab();
         change_run_configuration(null, run_configurations[0]);
@@ -243,7 +245,7 @@ define(function main(require, exports, module) {
         $runner_panel.find('.nodejs-integration-tab.active').removeClass('active');
         $runner_panel.find('.nodejs-integration-tab-pane.active').removeClass('active');
         var new_tab_id = utils.uuid();
-        var new_tab_name = run_configurations[0] ? run_configurations[0].name : 'New Tab';
+        var new_tab_name = run_configurations[0] ? run_configurations[0].name : strings.NEW_TAB;
         $tabs.append($(document.createElement('li'))
             .addClass('nodejs-integration-tab active')
             .attr('data-target', '#' + new_tab_id)
@@ -257,11 +259,12 @@ define(function main(require, exports, module) {
         );
         $('.nodejs-integration-tabs').each(process_tab_behavior);
 
+        var runner_panel_template_html = Mustache.render(runner_panel_template, strings);
         var $tabs_content = $runner_panel.find('.nodejs-integration-tab-content');
         $tabs_content.append($(document.createElement('div'))
             .addClass('nodejs-integration-tab-pane active')
             .attr('id', new_tab_id)
-            .html(runner_panel_template)
+            .html(runner_panel_template_html)
         );
 
         var max_port = 49152;

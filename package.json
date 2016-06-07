@@ -9,17 +9,18 @@
         "brackets": ">=0.44.0"
     },
     "keywords": [
-    "node",
-    "node.js",
-    "execute",
-    "command",
-    "runner",
-    "mocha",
-    "debug",
-    "debugger",
-    "npm",
-    "gulp"
-  ],
+        "node",
+        "node.js",
+        "execute",
+        "command",
+        "runner",
+        "mocha",
+        "debug",
+        "debugger",
+        "npm",
+        "gulp"
+    ],
+    "i18n": ["en", "de", "ru"],
     "dependencies": {
         "mocha": "2.4.5",
         "treekill": "1.0.0"

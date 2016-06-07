@@ -1,29 +1,29 @@
 <div class="toolbar simple-toolbar-layout" style="position: relative; height: 24px;">
     <div class="btn-group">
-        <button class="run_btn btn btn-mini" title="Run"><i class="fa fa-play" aria-hidden="true"></i>
+        <button class="run_btn btn btn-mini" title="{{RUN}}"><i class="fa fa-play" aria-hidden="true"></i>
         </button>
-        <button class="debug_btn btn btn-mini" title="Debug"><i class="fa fa-bug" aria-hidden="true"></i>
+        <button class="debug_btn btn btn-mini" title="{{DEBUG}}"><i class="fa fa-bug" aria-hidden="true"></i>
         </button>
-        <button class="stop_btn btn btn-mini" disabled="true" title="Stop"><i class="fa fa-stop" aria-hidden="true"></i>
+        <button class="stop_btn btn btn-mini" disabled="true" title="{{STOP}}"><i class="fa fa-stop" aria-hidden="true"></i>
         </button>
     </div>
-    <div class="run-configuration-dropdown-toggle btn-alt-quiet" title="Click to change runner">
+    <div class="run-configuration-dropdown-toggle btn-alt-quiet" title="{{CLICK_TO_CHANGE_RUNNER}}">
         <i class="type" style=""></i>
         <span class="name"></span>
         <span class="dropdown-arrow"></span>
     </div>
-    <select class="script-selector btn-alt-quiet" title="Click to change script"></select>
+    <select class="script-selector btn-alt-quiet" title="{{CLICK_TO_CHANGE_SCRIPT}}"></select>
     <div class="mocha-summary" style="right: 10px;position: absolute;height: 1.5em;top: 50%;margin-top: -10px;"></div>
 </div>
 <section class="split-panel">
-    <div class="mocha-treeview-toggle btn-alt-quiet" style="width: 8px; position: relative; display:none;" title="Toggle mocha view"><i class="fa fa-angle-double-left" aria-hidden="true" style="top: 50%; position: absolute;"></i></div>
+    <div class="mocha-treeview-toggle btn-alt-quiet" style="width: 8px; position: relative; display:none;" title="{{TOGGLE_MOCHA}}"><i class="fa fa-angle-double-left" aria-hidden="true" style="top: 50%; position: absolute;"></i></div>
     <div class="mocha-treeview resizable-content horz-resizable right-resizer" style="display: none;height: -webkit-calc(100% - 34px);">
         <ul>
             <li>
                 <input type="checkbox" id="all_tests_results" class="all-tests-results" checked/>
-                <label id="all_tests_results_label" for="all_tests_results">Tests
-                    <span class="collapse_btn btn-alt-quiet" title="Collapse All"><i class="fa fa-compress"></i></span>
-                    <span class="expand_btn btn-alt-quiet" title="Expand All"><i class="fa fa-expand"></i></span>
+                <label id="all_tests_results_label" for="all_tests_results">{{TESTS}}
+                    <span class="collapse_btn btn-alt-quiet" title="{{COLLAPSE_ALL}}"><i class="fa fa-compress"></i></span>
+                    <span class="expand_btn btn-alt-quiet" title="{{EXPAND_ALL}}"><i class="fa fa-expand"></i></span>
                 </label>
                 <ul class="test-list">
                 </ul>
@@ -36,5 +36,5 @@
     <div class="cw-hover-sidebar"></div>
     <div class="brackets-nodejs-integration-debugger">
     </div>
-    <div class="brackets-nodejs-integration-debugger-toggle btn-alt-quiet" style="width: 6px; position: relative; display:none;" title="Toggle debugger"><i class="fa fa-angle-double-right" aria-hidden="true" style="top: 50%; position: absolute;"></i></div>
+    <div class="brackets-nodejs-integration-debugger-toggle btn-alt-quiet" style="width: 6px; position: relative; display:none;" title="{{TOGGLE_DEBUGGER}}"><i class="fa fa-angle-double-right" aria-hidden="true" style="top: 50%; position: absolute;"></i></div>
 </section>

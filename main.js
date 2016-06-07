@@ -31,6 +31,7 @@ define(function (require, exports, module) {
     var prefs = require('./preferences');
     var runner_panel = require('src/runner_panel');
     var settings_dialog = require('src/settings_dialog');
+    var strings = require('strings');
     var run_configurations = prefs.get('configurations');
 
     improved_require.init();
@@ -50,40 +51,40 @@ define(function (require, exports, module) {
     $('#main-toolbar .buttons').append($node_runner_indicator);
 
 
-    command_manager.register('Show/Hide runner', RUNNER_CMD_ID, function () {
+    command_manager.register(strings.SHOW_OR_HIDE_RUNNER, RUNNER_CMD_ID, function () {
         runner_panel.panel.show_or_hide();
     });
     main_menu.addMenuItem(RUNNER_CMD_ID, 'F4');
 
-    command_manager.register('Settings...', SETTINGS_CMD_ID, function () {
+    command_manager.register(strings.SETTINGS, SETTINGS_CMD_ID, function () {
         settings_dialog.show();
     });
     main_menu.addMenuItem(SETTINGS_CMD_ID, '');
 
-    command_manager.register('Start (active runner)', START_ACTIVE_RUNNER_ID, function () {
+    command_manager.register(strings.START_ACTIVE_RUNNER, START_ACTIVE_RUNNER_ID, function () {
         runner_panel.panel.show();
         runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .run_btn').trigger('click');
     });
     main_menu.addMenuItem(START_ACTIVE_RUNNER_ID, 'F6', menus.LAST);
 
-    command_manager.register('Debug (active runner)', DEBUG_ACTIVE_RUNNER_ID, function () {
+    command_manager.register(strings.DEBUG_ACTIVE_RUNNER, DEBUG_ACTIVE_RUNNER_ID, function () {
         runner_panel.panel.show();
         runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .debug_btn').trigger('click');
     });
     main_menu.addMenuItem(DEBUG_ACTIVE_RUNNER_ID, 'F7', menus.LAST);
 
-    command_manager.register('Stop (active runner)', STOP_ACTIVE_RUNNER_ID, function () {
+    command_manager.register(strings.STOP_ACTIVE_RUNNER, STOP_ACTIVE_RUNNER_ID, function () {
         runner_panel.panel.show();
         runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .stop_btn').trigger('click');
     });
     main_menu.addMenuItem(STOP_ACTIVE_RUNNER_ID, 'Shift-F6', menus.LAST);
 
-    command_manager.register('Start (current NodeJS file)', START_CURRENT_FILE_RUNNER_ID, function () {
+    command_manager.register(strings.START_CURRENT_NODEJS_FILE, START_CURRENT_FILE_RUNNER_ID, function () {
         create_and_run_configuration('node');
     });
     main_menu.addMenuItem(START_CURRENT_FILE_RUNNER_ID, 'Ctrl-Shift-N', menus.LAST);
 
-    command_manager.register('Start (current Mocha file)', START_CURRENT_TEST_RUNNER_ID, function () {
+    command_manager.register(strings.START_CURRENT_MOCHA_FILE, START_CURRENT_TEST_RUNNER_ID, function () {
         create_and_run_configuration('mocha');
     });
     main_menu.addMenuItem(START_CURRENT_TEST_RUNNER_ID, 'Ctrl-Shift-T', menus.LAST);
@@ -118,12 +119,12 @@ define(function (require, exports, module) {
         active_tab.find('.run_btn').trigger('click');
     }
 
-    command_manager.register('Debugger - step over (active runner)', STEP_OVER_RUNNER_ID, function () {
+    command_manager.register(strings.DEBUGGER_STEP_OVER_ACTIVE_RUNNER, STEP_OVER_RUNNER_ID, function () {
         runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .step_over_btn').trigger('click');
     });
     main_menu.addMenuItem(STEP_OVER_RUNNER_ID, 'Shift-F11', menus.LAST);
 
-    command_manager.register('Debugger - continue (active runner)', CONTINUE_RUNNER_ID, function () {
+    command_manager.register(strings.DEBUGGER_CONTINUE_ACTIVE_RUNNER, CONTINUE_RUNNER_ID, function () {
         runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .continue_btn').trigger('click');
     });
     main_menu.addMenuItem(CONTINUE_RUNNER_ID, 'F11', menus.LAST);
@@ -137,7 +138,7 @@ define(function (require, exports, module) {
 
     var context_menu = menus.getContextMenu(menus.ContextMenuIds.PROJECT_MENU);
     context_menu.addMenuDivider();
-    command_manager.register('Add to Node.js runner', ADD_NODE_TO_RUNNER_MENU_ID, function () {
+    command_manager.register(strings.ADD_TO_NODEJS_RUNNER, ADD_NODE_TO_RUNNER_MENU_ID, function () {
         var path = project_manager.getSelectedItem().fullPath;
         var cwd = project_manager.getSelectedItem().parentPath;
         if (!_.endsWith(path, '.js')) {
@@ -147,7 +148,7 @@ define(function (require, exports, module) {
         runner_panel.panel.show();
     });
     context_menu.addMenuItem(ADD_NODE_TO_RUNNER_MENU_ID, '', menus.LAST);
-    command_manager.register('Add to Mocha runner', ADD_MOCHA_TO_RUNNER_MENU_ID, function () {
+    command_manager.register(strings.ADD_TO_MOCHA_RUNNER, ADD_MOCHA_TO_RUNNER_MENU_ID, function () {
         var path = project_manager.getSelectedItem().fullPath;
         var cwd = project_manager.getSelectedItem().parentPath;
         if (!_.endsWith(path, '.js')) {
@@ -158,7 +159,7 @@ define(function (require, exports, module) {
         runner_panel.panel.show();
     });
     context_menu.addMenuItem(ADD_MOCHA_TO_RUNNER_MENU_ID, '', menus.LAST);
-    command_manager.register('Add to NPM runner', ADD_NPM_TO_RUNNER_MENU_ID, function () {
+    command_manager.register(strings.ADD_TO_NPM_RUNNER, ADD_NPM_TO_RUNNER_MENU_ID, function () {
         var path = project_manager.getSelectedItem().fullPath;
         var cwd = project_manager.getSelectedItem().parentPath;
         if (!_.endsWith(path, 'package.json')) {
@@ -168,7 +169,7 @@ define(function (require, exports, module) {
         runner_panel.panel.show();
     });
     context_menu.addMenuItem(ADD_NPM_TO_RUNNER_MENU_ID, '', menus.LAST);
-    command_manager.register('Add to gulp runner', ADD_GULP_TO_RUNNER_MENU_ID, function () {
+    command_manager.register(strings.ADD_TO_GULP_RUNNER, ADD_GULP_TO_RUNNER_MENU_ID, function () {
         var path = project_manager.getSelectedItem().fullPath;
         var cwd = project_manager.getSelectedItem().parentPath;
         if (!_.endsWith(path, 'gulpfile.js')) {

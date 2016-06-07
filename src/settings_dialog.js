@@ -1,4 +1,4 @@
-/*global brackets,$*/
+/*global brackets,$,Mustache*/
 
 'use strict';
 define(function main(require, exports) {
@@ -11,20 +11,23 @@ define(function main(require, exports) {
     var prefs = require('../preferences');
     var run_configurations = prefs.get('configurations');
     var runner_panel = require('./runner_panel');
+    var strings = require('strings');
 
     exports.show = function () {
+        var modal_settings = require('text!templates/modal_settings.html');
+        var modal_settings_html = Mustache.render(modal_settings, strings);
         dialogs.showModalDialog(
             SETTINGS_DIALOG_ID,
-            'Runner settings',
-            require('text!templates/modal_settings.html'), [
+            strings.RUNNER_SETTINGS,
+            modal_settings_html, [
                 {
                     className: dialogs.DIALOG_BTN_CLASS_PRIMARY,
                     id: dialogs.DIALOG_BTN_OK,
-                    text: 'Save'
+                    text: strings.SAVE
                         }, {
                     className: dialogs.DIALOG_BTN_CLASS_NORMAL,
                     id: dialogs.DIALOG_BTN_CANCEL,
-                    text: 'Cancel'
+                    text: strings.CANCEL
                         }
                     ]
         ).done(function (id) {
@@ -185,7 +188,7 @@ define(function main(require, exports) {
             if (_.endsWith(init_folder, '.js')) {
                 init_folder = init_folder.substring(0, init_folder.lastIndexOf('/')).substring(0, init_folder.lastIndexOf('\\'));
             }
-            file_system.showOpenDialog(false, selected_runner.attr('runner_type') === 'mocha', 'Choose target...', init_folder, [], function (error, target_list) {
+            file_system.showOpenDialog(false, selected_runner.attr('runner_type') === 'mocha', strings.CHOOSE_TARGET, init_folder, [], function (error, target_list) {
                 if (error) {
                     console.error(error);
                 }
@@ -204,7 +207,7 @@ define(function main(require, exports) {
         $('#brackets-nodejs-integration-runner-cwd-open-btn').on('click', function () {
             var selected_runner = runner_list.find('option:selected');
             var init_folder = selected_runner.attr('runner_cwd').replace(/([ ])/g, '\\$1');
-            file_system.showOpenDialog(false, true, 'Choose working directory...', init_folder, null, function (error, target_list) {
+            file_system.showOpenDialog(false, true, strings.CHOOSE_WORKINGS_DIRECTORY, init_folder, null, function (error, target_list) {
                 if (error) {
                     console.error(error);
                 }

@@ -12,11 +12,13 @@ define(function main(require, exports) {
     var menus = brackets.getModule('command/Menus');
     var project_manager = brackets.getModule('project/ProjectManager');
 
+    var strings = require('strings');
+
     var JUMP_TO_REQUIRE_COMMAND_ID = 'brackets-nodejs-integration.go-to-require';
 
     var editor_context_menu = menus.getContextMenu(menus.ContextMenuIds.EDITOR_MENU);
     exports.init = function () {
-        command_manager.register('Jump to Require', JUMP_TO_REQUIRE_COMMAND_ID, function () {
+        command_manager.register(strings.JUMP_TO_REQUIRE, JUMP_TO_REQUIRE_COMMAND_ID, function () {
             function go_to_require(current_editor, current_line, search_name) {
                 var matched_require_strings = current_line.match(/require[\s+]?\(['"].*['"]\)/g);
                 if (matched_require_strings && matched_require_strings.length > 0) {
