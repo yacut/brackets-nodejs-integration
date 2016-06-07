@@ -461,11 +461,36 @@ define(function main(require, exports, module) {
                 top: buttonOffset.top + buttonHeight
             })
             .appendTo($('body'));
+        $dropdown.find('li').each(function () {
+            $(this).attr('data-search-term', $(this).text().toLowerCase());
+        });
+        $dropdown.find('.live-search-box').on('keyup', function (event) {
+            var code = event.which;
+            console.log('key_code', code);
+            if (code === 13) {
+                var visible_configurations = $dropdown.find('li:visible');
+                if (visible_configurations.length > 0) {
+                    var first_configuration = $dropdown.find('li:visible')[0];
+                    first_configuration.find('div').trigger('click');
+                    return;
+                }
+            }
+            var searchTerm = $(this).val().toLowerCase();
+            $dropdown.find('li').each(function () {
+                if ($(this).filter('[data-search-term *= ' + searchTerm + ']').length > 0 || searchTerm.length < 1) {
+                    $(this).show();
+                }
+                else {
+                    $(this).hide();
+                }
+            });
+        });
         pop_up_manager.addPopUp($dropdown, detachCloseEvents, true);
         attachCloseEvents();
         $dropdown.find('div').on('click', change_run_configuration);
 
         $dropdown.show();
+        $dropdown.find('.live-search-box').focus();
     }
 
     function renderList() {
