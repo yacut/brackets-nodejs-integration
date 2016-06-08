@@ -52,15 +52,23 @@ define(function main(require, exports, module) {
         get: function (qs) {
             return this.html_object.querySelector(qs);
         },
-        show: function () {
+        show: function (disallow_create_new_tab) {
             this.html_object.show();
             $node_runner_indicator.addClass('active');
             workspace_manager.recomputeLayout();
+            if (!disallow_create_new_tab) {
+                var new_tab_created = create_new_tab_if_config_is_set_and_panel_empty();
+                change_runner_if_config_set_and_new_tab_created(new_tab_created);
+            }
         },
         show_or_hide: function () {
             this.html_object.toggle();
             $node_runner_indicator.toggleClass('inactive');
             workspace_manager.recomputeLayout();
+            if (this.html_object.is(':visible')) {
+                var new_tab_created = create_new_tab_if_config_is_set_and_panel_empty();
+                change_runner_if_config_set_and_new_tab_created(new_tab_created);
+            }
         },
         hide: function () {
             this.html_object.hide();
@@ -238,7 +246,7 @@ define(function main(require, exports, module) {
         settings_dialog.show();
     });
 
-    $runner_panel.on('click', '.run-configuration-dropdown-toggle', showDropdown);
+    $runner_panel.on('click', '.run-configuration-dropdown-toggle', show_dropdown_runner_selector);
 
     function create_new_tab() {
         var $tabs = $runner_panel.find('.nodejs-integration-tabs');
@@ -438,22 +446,24 @@ define(function main(require, exports, module) {
         });
     }
 
-    function closeDropdown() {
+    function close_dropdown_runner_selector() {
+        console.log('close selector');
         if ($dropdown) {
             pop_up_manager.removePopUp($dropdown);
         }
         detachCloseEvents();
     }
 
-    function showDropdown(e) {
+    function show_dropdown_runner_selector(e) {
         if ($dropdown) {
             return;
         }
         e.stopPropagation();
         menus.closeAll();
         $dropdown = $(renderList());
-        var buttonOffset = $(this).offset();
-        var buttonHeight = $(this).outerHeight();
+        var active_runner_selector = $runner_panel.find('.nodejs-integration-tab-pane.active .run-configuration-dropdown-toggle');
+        var buttonOffset = active_runner_selector.offset();
+        var buttonHeight = active_runner_selector.outerHeight();
 
         $dropdown
             .css({
@@ -477,23 +487,13 @@ define(function main(require, exports, module) {
             }
             else if (code === 38 || code === 40) {
                 var $current;
-                var $selected = $dropdown.find('.highlight') || $dropdown.find('li:visible').first();
+                var $selected = $dropdown.find('.highlight');
                 $selected.removeClass('highlight');
                 if (code === 38) {
-                    if (!$selected.length || $selected.is(':visible:first-child')) {
-                        $current = $dropdown.find('li:visible').last();
-                    }
-                    else {
-                        $current = $selected.prev(':visible');
-                    }
+                    $current = $selected.prevAll('li:visible:first').length ? $selected.prevAll('li:visible:first') : $dropdown.find('li:visible:last');
                 }
                 if (code === 40) {
-                    if (!$selected.length || $selected.is(':visible:last-child')) {
-                        $current = $dropdown.find('li:visible').first();
-                    }
-                    else {
-                        $current = $selected.next(':visible');
-                    }
+                    $current = $selected.nextAll('li:visible:first').length ? $selected.nextAll('li:visible:first') : $dropdown.find('li:visible:first');
                 }
                 $current.addClass('highlight');
             }
@@ -526,27 +526,43 @@ define(function main(require, exports, module) {
     }
 
     function attachCloseEvents() {
-        $('html').on('click', closeDropdown);
-        $('#project-files-container').on('scroll', closeDropdown);
-        $('#titlebar .nav').on('click', closeDropdown);
+        $('html').on('click', close_dropdown_runner_selector);
+        $('#project-files-container').on('scroll', close_dropdown_runner_selector);
+        $('#titlebar .nav').on('click', close_dropdown_runner_selector);
 
         var currentEditor = editor_manager.getCurrentFullEditor();
         if (currentEditor) {
-            currentEditor._codeMirror.on('focus', closeDropdown);
+            currentEditor._codeMirror.on('focus', close_dropdown_runner_selector);
         }
     }
 
     function detachCloseEvents() {
-        $('html').off('click', closeDropdown);
-        $('#project-files-container').off('scroll', closeDropdown);
-        $('#titlebar .nav').off('click', closeDropdown);
+        $('html').off('click', close_dropdown_runner_selector);
+        $('#project-files-container').off('scroll', close_dropdown_runner_selector);
+        $('#titlebar .nav').off('click', close_dropdown_runner_selector);
 
         var currentEditor = editor_manager.getCurrentFullEditor();
         if (currentEditor) {
-            currentEditor._codeMirror.off('focus', closeDropdown);
+            currentEditor._codeMirror.off('focus', close_dropdown_runner_selector);
         }
         $dropdown = null;
         main_view_manager.focusActivePane();
+    }
+
+    function create_new_tab_if_config_is_set_and_panel_empty() {
+        var $tabs = $runner_panel.find('.nodejs-integration-tab');
+        if ($tabs.length === 0 && prefs.get('create_new_tab_when_panel_opened_and_empty')) {
+            $runner_panel.find('.nodejs-integration-tab-new').trigger('click');
+            return true;
+        }
+        return false;
+    }
+
+    function change_runner_if_config_set_and_new_tab_created(new_tab_created) {
+        if (new_tab_created && prefs.get('change_runner_when_new_tab_opened')) {
+            var active_runner_selector = $runner_panel.find('.nodejs-integration-tab-pane.active .run-configuration-dropdown-toggle');
+            active_runner_selector.trigger('click');
+        }
     }
 
     exports.$runner_panel = $runner_panel;
@@ -586,5 +602,8 @@ define(function main(require, exports, module) {
         });
     };
     exports.change_run_configuration = change_run_configuration;
-    exports.create_new_tab = create_new_tab;
+    exports.create_new_tab = function () {
+        $runner_panel.find('.nodejs-integration-tab-new').trigger('click');
+        change_runner_if_config_set_and_new_tab_created(true);
+    };
 });

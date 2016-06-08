@@ -14,6 +14,7 @@ define({
     CLICK_TO_CHANGE_RUNNER: 'Нажмите, чтобы изменить runner',
     CLICK_TO_CHANGE_SCRIPT: 'Нажмите, чтобы изменить script',
     CLOSE: 'Закрыть',
+    CLOSE_CURRENT_TAB: 'Закрыть текущую вкладку',
     COLLAPSE_ALL: 'Свернуть все',
     CREATE_NEW_TAB: 'Создать новую вкладку',
     CWD: 'CWD',

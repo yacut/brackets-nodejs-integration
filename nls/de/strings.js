@@ -14,6 +14,7 @@ define({
     CLICK_TO_CHANGE_RUNNER: 'Runner auswählen',
     CLICK_TO_CHANGE_SCRIPT: 'Script auswählen',
     CLOSE: 'Schließen',
+    CLOSE_CURRENT_TAB: 'Aktive runner schließen',
     COLLAPSE_ALL: 'Alle ausblenden',
     CREATE_NEW_TAB: 'Neue pannel erstellen',
     CWD: 'CWD',

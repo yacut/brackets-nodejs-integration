@@ -19,6 +19,8 @@ define(function (require, exports, module) {
     var JUMP_TO_REQUIRE_COMMAND_ID = 'brackets-nodejs-integration.go-to-require';
     var MAIN_MENU_ID = 'brackets-nodejs-integration-main-menu';
     var RUNNER_CMD_ID = 'brackets-nodejs-integration.runner';
+    var CREATE_NEW_TAB_CMD_ID = 'brackets-nodejs-integration.create-new-tab';
+    var CLOSE_CURRENT_TAB_CMD_ID = 'brackets-nodejs-integration.close-current-tab';
     var SETTINGS_CMD_ID = 'brackets-nodejs-integration.settings';
     var START_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.start-runner';
     var START_CURRENT_FILE_RUNNER_ID = 'brackets-nodejs-integration.start-current-file';
@@ -50,11 +52,24 @@ define(function (require, exports, module) {
         });
     $('#main-toolbar .buttons').append($node_runner_indicator);
 
-
     command_manager.register(strings.SHOW_OR_HIDE_RUNNER, RUNNER_CMD_ID, function () {
         runner_panel.panel.show_or_hide();
     });
     main_menu.addMenuItem(RUNNER_CMD_ID, 'F4');
+
+    command_manager.register(strings.CREATE_NEW_TAB, CREATE_NEW_TAB_CMD_ID, function () {
+        runner_panel.panel.show(true);
+        runner_panel.create_new_tab();
+    });
+    main_menu.addMenuItem(CREATE_NEW_TAB_CMD_ID, 'Shift-F4');
+
+    command_manager.register(strings.CLOSE_CURRENT_TAB, CLOSE_CURRENT_TAB_CMD_ID, function () {
+        var close_btn = runner_panel.panel.html_object.find('.nodejs-integration-tab.active .nodejs-integration-tab-close');
+        if (close_btn.length !== 0) {
+            close_btn.trigger('click');
+        }
+    });
+    main_menu.addMenuItem(CLOSE_CURRENT_TAB_CMD_ID, 'Ctrl-F4');
 
     command_manager.register(strings.SETTINGS, SETTINGS_CMD_ID, function () {
         settings_dialog.show();
@@ -62,20 +77,29 @@ define(function (require, exports, module) {
     main_menu.addMenuItem(SETTINGS_CMD_ID, '');
 
     command_manager.register(strings.START_ACTIVE_RUNNER, START_ACTIVE_RUNNER_ID, function () {
-        runner_panel.panel.show();
-        runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .run_btn').trigger('click');
+        var run_btn = runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .run_btn');
+        if (run_btn.length !== 0) {
+            runner_panel.panel.show();
+            run_btn.trigger('click');
+        }
     });
     main_menu.addMenuItem(START_ACTIVE_RUNNER_ID, 'F6', menus.LAST);
 
     command_manager.register(strings.DEBUG_ACTIVE_RUNNER, DEBUG_ACTIVE_RUNNER_ID, function () {
-        runner_panel.panel.show();
-        runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .debug_btn').trigger('click');
+        var debug_btn = runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .debug_btn');
+        if (debug_btn.length !== 0) {
+            runner_panel.panel.show();
+            debug_btn.trigger('click');
+        }
     });
     main_menu.addMenuItem(DEBUG_ACTIVE_RUNNER_ID, 'F7', menus.LAST);
 
     command_manager.register(strings.STOP_ACTIVE_RUNNER, STOP_ACTIVE_RUNNER_ID, function () {
-        runner_panel.panel.show();
-        runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .stop_btn').trigger('click');
+        var stop_btn = runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active .stop_btn');
+        if (stop_btn.length !== 0) {
+            runner_panel.panel.show();
+            stop_btn.trigger('click');
+        }
     });
     main_menu.addMenuItem(STOP_ACTIVE_RUNNER_ID, 'Shift-F6', menus.LAST);
 

@@ -14,6 +14,7 @@ define({
     CLICK_TO_CHANGE_RUNNER: 'Click to change runner',
     CLICK_TO_CHANGE_SCRIPT: 'Click to change script',
     CLOSE: 'Close',
+    CLOSE_CURRENT_TAB: 'Close current tab',
     COLLAPSE_ALL: 'Collapse All',
     CREATE_NEW_TAB: 'Create new tab',
     CWD: 'CWD',
