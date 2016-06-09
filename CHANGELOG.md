@@ -71,3 +71,12 @@
 - cleanup scrollbars for better view under Windows and Linux
 - fixed icon size if runner name is long
 - fixed scripts selector view
+
+### 1.7.0
+
+- removed local mocha package (global installation is required)
+- added de and ru localization
+- added live search for runner selector
+- added keyboard more shortcuts (open new tab, close tab...)
+- added debugger_break_on_start option (default true)
+- added 'create_new_tab_when_panel_opened_and_empty' and 'change_runner_when_new_tab_opened' options (default true)

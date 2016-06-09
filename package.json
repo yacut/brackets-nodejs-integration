@@ -3,7 +3,7 @@
     "title": "NodeJS integration",
     "description": "NodeJS integration is Nodejs, mocha, npm and gulp runner with interactive debugger and RequireJS improvements.",
     "homepage": "https://github.com/yacut/brackets-nodejs-integration",
-    "version": "1.6.0",
+    "version": "1.7.0",
     "license": "MIT",
     "engines": {
         "brackets": ">=0.44.0"
