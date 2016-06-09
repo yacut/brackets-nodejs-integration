@@ -31,12 +31,11 @@ define(function (require, exports) {
         //Set all breakpoints again on connect
         this._nodeDebuggerDomain.on('connect', function () {
             that.bpGutter.setAllBreakpoints();
-            /*var breakpoints = prefs.get('breakpoints');
-            if (breakpoints.length > 0) {
+            if (!prefs.get('debugger_break_on_start')) {
                 setTimeout(function () {
                     that._nodeDebuggerDomain.exec('continue');
                 }, 500);
-            }*/
+            }
         });
 
         //Set a new breakpoint

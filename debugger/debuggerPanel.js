@@ -6,17 +6,14 @@ define(function (require, exports) {
     var command_manager = brackets.getModule('command/CommandManager');
     var commands = brackets.getModule('command/Commands');
     var file_utils = brackets.getModule('file/FileUtils');
-    var panel_manager = brackets.getModule('view/PanelManager');
     var preferences_manager = brackets.getModule('preferences/PreferencesManager');
     var prefs = preferences_manager.getExtensionPrefs('brackets-nodejs-integration');
-    var menus = brackets.getModule('command/Menus');
-
-    var LOCALS_CONTEXT_MENU_ID = 'brackets-nodejs-integration-locals-context-menu';
 
     var _maxDepth = 3;
     var history = [];
     var historyCurrent = 0;
     var logContainerHTML = require('text!./assets/debuggerLog.html');
+    var strings = require('strings');
 
     exports.create_new = function () {
         return new DebuggerPanel();
@@ -119,11 +116,11 @@ define(function (require, exports) {
         //Add help button
         var $help = $('<a>').html('<i class="fa fa-question-circle" aria-hidden="true"></i>')
             .attr('href', 'https://github.com/yacut/brackets-nodejs-integration#how-to-use-debugger')
-            .attr('title', 'Help!');
+            .attr('title', strings.DEBUGGER_HELP);
         this.addControlElement($help, false, function () {});
 
         //Add clear console button
-        var $clear = $('<a>').attr('href', '#').attr('title', 'Clear console').html('<i class="fa fa-trash" aria-hidden="true"></i>');
+        var $clear = $('<a>').attr('href', '#').attr('title', strings.DEBUGGER_CLEAR_CONSOLE).html('<i class="fa fa-trash" aria-hidden="true"></i>');
 
         this.addControlElement($clear, false, function () {
             that.$debuggerContent.html($('.brackets-nodejs-integration-debugger-input-wrapper'));
@@ -136,7 +133,7 @@ define(function (require, exports) {
         this._nodeDebuggerDomain.on('afterCompile', function (e, body) {
             if (body && body.script && body.script.name) {
                 var $callback_file = $('<li>').text(body.script.name)
-                    .attr('title', 'Click to open')
+                    .attr('title', strings.CLICK_TO_OPEN)
                     .on('click', function () {
                         var path_to_file = $(this).text();
                         path_to_file = file_utils.convertWindowsPathToUnixPath(path_to_file);
@@ -149,7 +146,7 @@ define(function (require, exports) {
         });
 
         //add show console button
-        var $show_console = $('<a>').attr('href', '#').attr('title', 'Console').html('<i class="fa fa-terminal"></i>');
+        var $show_console = $('<a>').attr('href', '#').attr('title', strings.DEBUGGER_CONSOLE).html('<i class="fa fa-terminal"></i>');
         this.addControlElement($show_console, false, function () {
             var $domain = $('#' + domain_id);
             var $callback_stack = $domain.find('.brackets-nodejs-integration-debugger-callback-stack');
@@ -172,7 +169,7 @@ define(function (require, exports) {
         });
 
         //add show callback stack button
-        var $callback_stack_link = $('<a>').attr('href', '#').attr('title', 'Scripts').html('<i class="fa fa-indent"></i>');
+        var $callback_stack_link = $('<a>').attr('href', '#').attr('title', strings.DEBUGGER_SCRIPTS).html('<i class="fa fa-indent"></i>');
         this.addControlElement($callback_stack_link, false, function () {
             var $domain = $('#' + domain_id);
             var $callback_stack = $domain.find('.brackets-nodejs-integration-debugger-callback-stack');
@@ -243,10 +240,10 @@ define(function (require, exports) {
         var value_color = 'grey';
         //Exception for Date Object
         if (body.type === 'object' && body.properties.length > 0 && (body.className !== 'Date')) {
-            var o = {};
+            var eval_object = {};
             body.properties.forEach(function (p) {
                 if (lookup[p.ref]) {
-                    o[p.name] = lookup[p.ref].text;
+                    eval_object[p.name] = lookup[p.ref].text;
                     lookup[p.ref].varName = p.name;
                     if (depth <= maxDepth) { // Don't go too deep
                         that.createEvalHTML(lookup[p.ref], depth, lookup, maxDepth).addClass('var hidden').appendTo($html);
@@ -261,7 +258,7 @@ define(function (require, exports) {
                 type_icon = '<i class="fa fa-bars" aria-hidden="true"></i>';
             }
             $inside.text(body.text).on('click', evalHTMLonClick);
-            object_value = JSON.stringify(o, null, 2);
+            object_value = JSON.stringify(eval_object, null, 2);
         }
         else if (body.type === 'function') {
             var function_head = body.text.split('{')[0] || 'function()';
@@ -303,7 +300,7 @@ define(function (require, exports) {
         }
         var $type = $('<span>').addClass(type_classes)
             .html(type_icon)
-            .attr('href', '#').attr('title', 'Click to copy value')
+            .attr('href', '#').attr('title', strings.CLICK_TO_COPY_VALUE)
             .attr('object_value', object_value)
             .on('click', function () {
                 copy_to_clipboard($(this).attr('object_value'));

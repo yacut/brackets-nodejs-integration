@@ -24,7 +24,7 @@
     word-break: normal;
     white-space: pre;
     word-wrap: break-word;
-    overflow: hidden;
+    overflow: scroll;
 }
 
 .console-element {

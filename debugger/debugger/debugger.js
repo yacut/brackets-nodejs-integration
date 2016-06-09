@@ -4,12 +4,12 @@
 define(function (require, exports) {
 
     var PreferencesManager = brackets.getModule('preferences/PreferencesManager');
-    var DocumentManager = brackets.getModule('document/DocumentManager');
     var CommandManager = brackets.getModule('command/CommandManager');
     var Commands = brackets.getModule('command/Commands');
     var Editor = brackets.getModule('editor/EditorManager');
     var prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
 
+    var strings = require('strings');
     var utils = require('../../utils');
 
     var Debug = function () {
@@ -71,13 +71,13 @@ define(function (require, exports) {
         debuggerDomainEvents(this);
         var that = this;
         //Add all the standard control elements
-        var $activate = $('<a>').addClass('icon activate').attr('title', 'Connect status').html('<i class="fa fa-times-circle" aria-hidden="true"></i>');
-        var $next = $('<a>').addClass('icon inactive step_over_btn').attr('href', '#').attr('title', 'Step over to next function').html('<i class="fa fa-share" aria-hidden="true"></i>');
-        var $in = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Step in').html('<i class="fa fa-level-down" aria-hidden="true"></i>');
-        var $out = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Step out').html('<i class="fa fa-level-up" aria-hidden="true"></i>');
-        var $continue = $('<a>').addClass('icon inactive continue_btn').attr('href', '#').attr('title', 'Continue').html('<i class="fa fa-forward" aria-hidden="true"></i>');
+        var $activate = $('<a>').addClass('icon activate').attr('title', strings.DEBUGGER_CONNECT_STATUS).html('<i class="fa fa-times-circle" aria-hidden="true"></i>');
+        var $next = $('<a>').addClass('icon inactive step_over_btn').attr('href', '#').attr('title', strings.DEBUGGER_STEP_OVER_TO_NEXT_FUNCTION).html('<i class="fa fa-share" aria-hidden="true"></i>');
+        var $in = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', strings.DEBUGGER_STEP_IN).html('<i class="fa fa-level-down" aria-hidden="true"></i>');
+        var $out = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', strings.DEBUGGER_STEP_OUT).html('<i class="fa fa-level-up" aria-hidden="true"></i>');
+        var $continue = $('<a>').addClass('icon inactive continue_btn').attr('href', '#').attr('title', strings.DEBUGGER_CONTINUE).html('<i class="fa fa-forward" aria-hidden="true"></i>');
 
-        var $jumpToBreak = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', 'Jump to break').html('<i class="fa fa-eye" aria-hidden="true"></i>');
+        var $jumpToBreak = $('<a>').addClass('icon inactive').attr('href', '#').attr('title', strings.DEBUGGER_JUMP_TO_BREAK).html('<i class="fa fa-eye" aria-hidden="true"></i>');
 
         nodeDebuggerPanel.addControlElement($continue, true, function () {
             continueClickHandler(nodeDebuggerDomain);
@@ -142,7 +142,12 @@ define(function (require, exports) {
         that._nodeDebuggerDomain.on('connect', function (e, body) {
             that.nodeDebuggerPanel.$debuggerSideBar.find('.brackets-nodejs-integration-debugger-log').remove();
             that.nodeDebuggerPanel.$logPanel.find('.activate').html('<i class="fa fa-check-circle" aria-hidden="true"></i>');
-            utils.show_popup_message('Debugger: connected. Please set breakpoint and click "Continue" button on runner panel.');
+            if (prefs.get('debugger_break_on_start')) {
+                utils.show_popup_message(strings.DEBUGGER_FIRST_BREAK);
+            }
+            else {
+                utils.show_popup_message(strings.DEBUGGER_CONNECTED);
+            }
 
             if (body.running) {
                 that.nodeDebuggerPanel.$logPanel.find('a.active').addClass('inactive').removeClass('active');

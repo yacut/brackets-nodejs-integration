@@ -14,6 +14,7 @@ define(function main(require, exports, module) {
     prefs.definePreference('autoscroll', 'boolean', true);
     prefs.definePreference('create_new_tab_when_panel_opened_and_empty', 'boolean', true);
     prefs.definePreference('change_runner_when_new_tab_opened', 'boolean', true);
+    prefs.definePreference('debugger_break_on_start', 'boolean', true);
     prefs.definePreference('v8-flags', 'string', '');
     prefs.definePreference('additional-flags', 'string', '');
     prefs.definePreference('configurations', 'array', [
