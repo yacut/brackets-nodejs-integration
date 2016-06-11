@@ -194,7 +194,6 @@ define(function (require, exports, module) {
             return;
         }
         add_run_configuration('mocha', path, cwd);
-        //TODO select config before show panel
         runner_panel.panel.show();
     });
     context_menu.addMenuItem(ADD_MOCHA_TO_RUNNER_MENU_ID, '', menus.LAST);
@@ -220,7 +219,6 @@ define(function (require, exports, module) {
     context_menu.addMenuItem(ADD_GULP_TO_RUNNER_MENU_ID, '', menus.LAST);
 
     function add_run_configuration(type, path, cwd) {
-        //TODO check if config exist
         var filename = path.replace(/^.*[\\\/]/, '');
         var project_root = project_manager.getProjectRoot();
         var working_directory = cwd ? cwd : project_root ? project_root.fullPath : '';
