@@ -7,7 +7,6 @@ define(function (require, exports, module) {
     var command_manager = brackets.getModule('command/CommandManager');
     var document_manager = brackets.getModule('document/DocumentManager');
     var extension_utils = brackets.getModule('utils/ExtensionUtils');
-    var file_system = brackets.getModule('filesystem/FileSystem');
     var menus = brackets.getModule('command/Menus');
     var project_manager = brackets.getModule('project/ProjectManager');
 
@@ -106,31 +105,11 @@ define(function (require, exports, module) {
     main_menu.addMenuItem(STOP_ACTIVE_RUNNER_ID, 'Shift-F6', menus.LAST);
 
     command_manager.register(strings.START_CURRENT_NODEJS_PROJECT, START_CURRENT_PROJECT_RUNNER_ID, function () {
-        var current_document = document_manager.getCurrentDocument();
-        if (!current_document) {
+        var project_root = project_manager.getProjectRoot();
+        if (!project_root) {
             return;
         }
-        var project_root = project_manager.getProjectRoot();
-        var path_to_npm_file = project_root.fullPath + 'package.json';
-        file_system.resolve(path_to_npm_file, function (error, full_path_to_npm_file) {
-            if (error) {
-                return;
-            }
-            $.getJSON(full_path_to_npm_file.fullPath, function (npm_file) {
-                if (!npm_file.main) {
-                    return;
-                }
-
-                var path_to_main_file = project_root.fullPath + npm_file.main;
-                file_system.resolve(path_to_main_file, function (error, full_path_to_main_file) {
-                    if (error) {
-                        return;
-                    }
-                    create_and_run_configuration(full_path_to_main_file.fullPath, 'node');
-                });
-            });
-        });
-
+        create_and_run_configuration('.', 'node', project_root.fullPath);
     });
     main_menu.addMenuItem(START_CURRENT_PROJECT_RUNNER_ID, 'Ctrl-Shift-P', menus.LAST);
 
@@ -152,7 +131,7 @@ define(function (require, exports, module) {
     });
     main_menu.addMenuItem(START_CURRENT_TEST_RUNNER_ID, 'Ctrl-Shift-T', menus.LAST);
 
-    function create_and_run_configuration(path, type) {
+    function create_and_run_configuration(path, type, cwd) {
         runner_panel.panel.show();
         var active_tab = runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active');
         if (active_tab.length === 0) {
@@ -166,10 +145,13 @@ define(function (require, exports, module) {
         }
 
         var filename = path.replace(/^.*[\\\/]/, '');
+        if (path === '.') {
+            filename = project_manager.getProjectRoot()._name;
+        }
         runner_panel.change_run_configuration(null, {
             'name': filename,
             'type': type,
-            'cwd': '',
+            'cwd': cwd || '',
             'target': path,
             'debug': false
         });
