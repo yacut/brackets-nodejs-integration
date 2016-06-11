@@ -13,9 +13,11 @@ define(function main(require, exports, module) {
     var file_system = brackets.getModule('filesystem/FileSystem');
     var file_utils = brackets.getModule('file/FileUtils');
     var find_in_files = brackets.getModule('search/FindInFiles');
+    var preferences_manager = brackets.getModule('preferences/PreferencesManager');
     var project_manager = brackets.getModule('project/ProjectManager');
 
     var ansi = require('./ansi');
+    var global_prefs = preferences_manager.getExtensionPrefs('fonts');
     var prefs = require('../preferences');
     var utils = require('../utils');
     var QueueManager = require('./queue_manager');
@@ -432,7 +434,9 @@ define(function main(require, exports, module) {
         that.console_output.append($(document.createElement('div'))
             .addClass('console-element')
             .attr('test_title', that.actual_test_title)
-            .html(ansi(output_string)));
+            .html(ansi(output_string))
+            .css('font-size', global_prefs.get('fontSize'))
+            .css('font-family', global_prefs.get('fontFamily')));
 
         if (diff && diff.actual && diff.expected) {
             that.console_output.append($(document.createElement('a'))

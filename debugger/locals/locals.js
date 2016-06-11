@@ -3,8 +3,9 @@
 'use strict';
 define(function (require, exports) {
 
-    var PreferencesManager = brackets.getModule('preferences/PreferencesManager');
-    var prefs = PreferencesManager.getExtensionPrefs('brackets-nodejs-integration');
+    var preferences_manager = brackets.getModule('preferences/PreferencesManager');
+    var prefs = preferences_manager.getExtensionPrefs('brackets-nodejs-integration');
+    var global_prefs = preferences_manager.getExtensionPrefs('fonts');
 
     exports.create_new = function () {
         return new Locals();
@@ -24,7 +25,8 @@ define(function (require, exports) {
             //$('<div>').text(l + ': ' + locals[l]).appendTo($wrapper);
             //Check if we actually got all Information
             if (that.locals[l]) {
-                var $a = $('<div>').addClass('brackets-nodejs-integration-debugger-log');
+                var $a = $('<div>').addClass('brackets-nodejs-integration-debugger-log')
+                    .css('font-size', global_prefs.get('fontSize'));
                 //Add the varName again
                 that.locals[l].varName = l;
                 that.nodeDebuggerPanel.createEvalHTML(that.locals[l], 0, that.lookup, prefs.get('lookupDepth')).appendTo($a);

@@ -230,4 +230,17 @@ define(function (require, exports, module) {
         run_configurations_without_ids = null;
     }
 
+    var preferences_manager = brackets.getModule('preferences/PreferencesManager');
+    var global_prefs = preferences_manager.getExtensionPrefs('fonts');
+    global_prefs.on('change', 'fontSize', applyFontChanges);
+    global_prefs.on('change', 'fontFamily', applyFontChanges);
+
+    function applyFontChanges() {
+        $('.console-element')
+            .css('font-size', global_prefs.get('fontSize'))
+            .css('font-family', global_prefs.get('fontFamily'));
+
+        $('.brackets-nodejs-integration-debugger-log')
+            .css('font-size', global_prefs.get('fontSize'));
+    }
 });
