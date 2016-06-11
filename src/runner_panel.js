@@ -1,4 +1,4 @@
-/*global brackets,$,Mustache*/
+/*global brackets,$*/
 
 'use strict';
 define(function main(require, exports, module) {
@@ -13,6 +13,7 @@ define(function main(require, exports, module) {
     var file_utils = brackets.getModule('file/FileUtils');
     var main_view_manager = brackets.getModule('view/MainViewManager');
     var menus = brackets.getModule('command/Menus');
+    var mustache = brackets.getModule('thirdparty/mustache/mustache');
     var pop_up_manager = brackets.getModule('widgets/PopUpManager');
     var project_manager = brackets.getModule('project/ProjectManager');
     var workspace_manager = brackets.getModule('view/WorkspaceManager');
@@ -90,7 +91,7 @@ define(function main(require, exports, module) {
         y: 0
     };
 
-    var panel_template_html = Mustache.render(panel_template, strings);
+    var panel_template_html = mustache.render(panel_template, strings);
     runner_panel = workspace_manager.createBottomPanel(panel.id, $(panel_template_html));
     $runner_panel = runner_panel.$panel;
 
@@ -267,7 +268,7 @@ define(function main(require, exports, module) {
         );
         $('.nodejs-integration-tabs').each(process_tab_behavior);
 
-        var runner_panel_template_html = Mustache.render(runner_panel_template, strings);
+        var runner_panel_template_html = mustache.render(runner_panel_template, strings);
         var $tabs_content = $runner_panel.find('.nodejs-integration-tab-content');
         $tabs_content.append($(document.createElement('div'))
             .addClass('nodejs-integration-tab-pane active')
@@ -399,7 +400,7 @@ define(function main(require, exports, module) {
         selected_run_configuration.attr('cwd', run_configuration.cwd);
         selected_run_configuration.attr('target', run_configuration.target);
         selected_run_configuration.attr('flags', run_configuration.flags);
-        var $script_selector = $runner_panel.find('.script-selector');
+        var $script_selector = $runner_panel.find('.nodejs-integration-tab-pane.active .script-selector');
         var $debug_btn = $runner_panel.find('.debug_btn');
         if (run_configuration.type === 'npm') {
             $script_selector.show();
@@ -522,7 +523,7 @@ define(function main(require, exports, module) {
             run_configurations: prefs.get('configurations')
         };
 
-        return Mustache.render(runner_menu_template, templateVars);
+        return mustache.render(runner_menu_template, templateVars);
     }
 
     function attachCloseEvents() {

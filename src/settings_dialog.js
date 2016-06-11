@@ -1,10 +1,11 @@
-/*global brackets,$,Mustache*/
+/*global brackets,$*/
 
 'use strict';
 define(function main(require, exports) {
     var _ = brackets.getModule('thirdparty/lodash');
     var dialogs = brackets.getModule('widgets/Dialogs');
     var file_system = brackets.getModule('filesystem/FileSystem');
+    var mustache = brackets.getModule('thirdparty/mustache/mustache');
 
     var SETTINGS_DIALOG_ID = 'brackets-nodejs-integration-settings-dialog';
 
@@ -15,7 +16,7 @@ define(function main(require, exports) {
 
     exports.show = function () {
         var modal_settings = require('text!templates/modal_settings.html');
-        var modal_settings_html = Mustache.render(modal_settings, strings);
+        var modal_settings_html = mustache.render(modal_settings, strings);
         dialogs.showModalDialog(
             SETTINGS_DIALOG_ID,
             strings.RUNNER_SETTINGS,
