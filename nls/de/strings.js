@@ -63,6 +63,7 @@ define({
     START_ACTIVE_RUNNER: 'Start (aktive runner)',
     START_CURRENT_MOCHA_FILE: 'Start (aktuelle Mocha Datei)',
     START_CURRENT_NODEJS_FILE: 'Start (aktuelle NodeJS Datei)',
+    START_CURRENT_NODEJS_PROJECT: 'Start (aktuelle NodeJS Projekt)',
     STOP: 'Stop',
     STOP_ACTIVE_RUNNER: 'Stop (aktueller runner)',
     TARGET: 'Ziel',

@@ -7,6 +7,7 @@ define(function (require, exports, module) {
     var command_manager = brackets.getModule('command/CommandManager');
     var document_manager = brackets.getModule('document/DocumentManager');
     var extension_utils = brackets.getModule('utils/ExtensionUtils');
+    var file_system = brackets.getModule('filesystem/FileSystem');
     var menus = brackets.getModule('command/Menus');
     var project_manager = brackets.getModule('project/ProjectManager');
 
@@ -24,6 +25,7 @@ define(function (require, exports, module) {
     var SETTINGS_CMD_ID = 'brackets-nodejs-integration.settings';
     var START_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.start-runner';
     var START_CURRENT_FILE_RUNNER_ID = 'brackets-nodejs-integration.start-current-file';
+    var START_CURRENT_PROJECT_RUNNER_ID = 'brackets-nodejs-integration.start-current-project';
     var START_CURRENT_TEST_RUNNER_ID = 'brackets-nodejs-integration.start-current-test';
     var STEP_OVER_RUNNER_ID = 'brackets-nodejs-integration.debug-step-over';
     var STOP_ACTIVE_RUNNER_ID = 'brackets-nodejs-integration.stop-runner';
@@ -103,22 +105,54 @@ define(function (require, exports, module) {
     });
     main_menu.addMenuItem(STOP_ACTIVE_RUNNER_ID, 'Shift-F6', menus.LAST);
 
-    command_manager.register(strings.START_CURRENT_NODEJS_FILE, START_CURRENT_FILE_RUNNER_ID, function () {
-        create_and_run_configuration('node');
-    });
-    main_menu.addMenuItem(START_CURRENT_FILE_RUNNER_ID, 'Ctrl-Shift-N', menus.LAST);
-
-    command_manager.register(strings.START_CURRENT_MOCHA_FILE, START_CURRENT_TEST_RUNNER_ID, function () {
-        create_and_run_configuration('mocha');
-    });
-    main_menu.addMenuItem(START_CURRENT_TEST_RUNNER_ID, 'Ctrl-Shift-T', menus.LAST);
-
-    function create_and_run_configuration(type) {
+    command_manager.register(strings.START_CURRENT_NODEJS_PROJECT, START_CURRENT_PROJECT_RUNNER_ID, function () {
         var current_document = document_manager.getCurrentDocument();
         if (!current_document) {
             return;
         }
+        var project_root = project_manager.getProjectRoot();
+        var path_to_npm_file = project_root.fullPath + 'package.json';
+        file_system.resolve(path_to_npm_file, function (error, full_path_to_npm_file) {
+            if (error) {
+                return;
+            }
+            $.getJSON(full_path_to_npm_file.fullPath, function (npm_file) {
+                if (!npm_file.main) {
+                    return;
+                }
 
+                var path_to_main_file = project_root.fullPath + npm_file.main;
+                file_system.resolve(path_to_main_file, function (error, full_path_to_main_file) {
+                    if (error) {
+                        return;
+                    }
+                    create_and_run_configuration(full_path_to_main_file.fullPath, 'node');
+                });
+            });
+        });
+
+    });
+    main_menu.addMenuItem(START_CURRENT_PROJECT_RUNNER_ID, 'Ctrl-Shift-P', menus.LAST);
+
+    command_manager.register(strings.START_CURRENT_NODEJS_FILE, START_CURRENT_FILE_RUNNER_ID, function () {
+        var current_document = document_manager.getCurrentDocument();
+        if (!current_document) {
+            return;
+        }
+        create_and_run_configuration(current_document.file.fullPath, 'node');
+    });
+    main_menu.addMenuItem(START_CURRENT_FILE_RUNNER_ID, 'Ctrl-Shift-N', menus.LAST);
+
+    command_manager.register(strings.START_CURRENT_MOCHA_FILE, START_CURRENT_TEST_RUNNER_ID, function () {
+        var current_document = document_manager.getCurrentDocument();
+        if (!current_document) {
+            return;
+        }
+        create_and_run_configuration(current_document.file.fullPath, 'mocha');
+    });
+    main_menu.addMenuItem(START_CURRENT_TEST_RUNNER_ID, 'Ctrl-Shift-T', menus.LAST);
+
+    function create_and_run_configuration(path, type) {
         runner_panel.panel.show();
         var active_tab = runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active');
         if (active_tab.length === 0) {
@@ -131,7 +165,6 @@ define(function (require, exports, module) {
             active_tab = runner_panel.panel.html_object.find('.nodejs-integration-tab-pane.active');
         }
 
-        var path = current_document.file.fullPath;
         var filename = path.replace(/^.*[\\\/]/, '');
         runner_panel.change_run_configuration(null, {
             'name': filename,
