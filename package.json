@@ -8,10 +8,6 @@
     "engines": {
         "brackets": ">=1.7.0"
     },
-    "repository": {
-          "type": "git",
-          "url": "https://github.com/yacut/brackets-nodejs-integration.git"
-    },
     "keywords": [
         "node",
         "node.js",
