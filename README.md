@@ -16,6 +16,13 @@ To make **Brackets - NodeJS integration** work you'll need nodejs, npm and mocha
    npm install mocha -g
    ```
 
+##### Optional:
+- **Gulp for all systems**:
+   ```
+   npm install gulp -g
+   ```
+
+
 #### Extension installation:
 To install latest release of **Brackets - NodeJS integration** use the built-in Brackets Extension Manager which downloads the extension from the [extension registry](https://brackets-registry.aboutweb.com/).
 
@@ -27,9 +34,15 @@ Extension can be configured by opening the `NodeJS integration` Panel and clicki
 Currently **Brackets - NodeJS integration** supports these features (this list may be incomplete as we add new features regularly):
 
 - Run multiple nodejs processes inside editor with console output (actual limit is only 5 processes, because brackets connections limitation)
+- Run current NodeJS file (Ctrl-Shift-N)
+- Run current NodeJS project (Ctrl-Shift-P)
+- Run current Mocha test (Ctrl-Shift-T)
+- Run npm scripts
+- Run gulp scripts
 - Run mocha test inside editor with tree view results
 - Open file via mouse click from error stack
 - Show Actual/Expected difference for mocha test
+- Double click on mocha test case to open file with it
 - *Jump to require* command uses "Jump to declaration" and opens required file (Ctrl-Shift-J or Cmd-Shift-J)
 - NodeJS and Mocha debugger integration (based on [TheBenji](https://github.com/TheBenji/brackets-node-debugger) work)
 
@@ -58,27 +71,12 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 - Click on a line number to set/remove a Breakpoint and use the console to get an variable for the current scope.
 - Use the arrow keys to browse through the history.
 
-## Recomended Brackets extensions for NodeJS developer
-
-- [https://github.com/MiguelCastillo/Brackets-Ternific](https://github.com/MiguelCastillo/Brackets-Ternific)
-
 ## In this project used
 
 - [http://fontawesome.io/](http://fontawesome.io/)
 - [https://github.com/caolan/async](https://github.com/caolan/async)
 - [https://github.com/cemerick/jsdifflib](https://github.com/cemerick/jsdifflib)
 
-## TODO:
+## TODO
 
-- Refactoring :)
-- ~~Integrate debugger~~
-- ~~Support for npm scripts~~
-- ~~Support for gulp scripts~~
-- Support for jasmine
-- ~~Localization~~
-- ~~Better support for require.js and goto definition~~
-
-
-## Known issues
-- ~~Mocha debugger do not shows the local variables~~
-- Brackets throws error at connection limit
+- Update screenshots
