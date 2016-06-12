@@ -80,3 +80,9 @@
 - added keyboard more shortcuts (open new tab, close tab...)
 - added debugger_break_on_start option (default true)
 - added 'create_new_tab_when_panel_opened_and_empty' and 'change_runner_when_new_tab_opened' options (default true)
+
+### 1.7.1
+
+- fixed font size for console (now font size is related to brackets global settings)
+- added 'start nodejs project' feature
+- fixed Mustache require for Brackets 1.7.0
