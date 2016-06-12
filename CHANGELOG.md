@@ -86,3 +86,7 @@
 - fixed font size for console (now font size is related to brackets global settings)
 - added 'start nodejs project' feature
 - fixed Mustache require for Brackets 1.7.0
+
+### 1.7.2
+
+- added side-by-side difference view for mocha

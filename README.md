@@ -66,7 +66,7 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 
 - [http://fontawesome.io/](http://fontawesome.io/)
 - [https://github.com/caolan/async](https://github.com/caolan/async)
-- [https://github.com/NV/objectDiff.js](https://github.com/NV/objectDiff.js)
+- [https://github.com/cemerick/jsdifflib](https://github.com/cemerick/jsdifflib)
 
 ## TODO:
 
@@ -75,8 +75,8 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 - ~~Support for npm scripts~~
 - ~~Support for gulp scripts~~
 - Support for jasmine
-- Localization
-- Better support for require.js and goto definition
+- ~~Localization~~
+- ~~Better support for require.js and goto definition~~
 
 
 ## Known issues
