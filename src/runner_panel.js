@@ -20,7 +20,8 @@ define(function main(require, exports, module) {
 
     var DIFF_DIALOG_ID = 'brackets-nodejs-integration-diff-dialog';
 
-    var object_diff = require('../thirdparty/objectDiff/objectDiff');
+    var difflib = require('../thirdparty/difflib');
+    var diffview = require('../thirdparty/diffview');
     var panel_template = require('text!../templates/panel.html');
     var prefs = require('../preferences');
     var run_configurations = prefs.get('configurations');
@@ -165,26 +166,33 @@ define(function main(require, exports, module) {
         document.addEventListener('mouseup', panel.mouseup);
     });
     $runner_panel.on('click', '.link_to_diff', function () {
-        var actual = JSON.parse($(this).attr('actual'));
-        var expected = JSON.parse($(this).attr('expected'));
-        if (typeof actual !== 'object') {
-            actual = [actual.toString()];
-        }
-        if (typeof expected !== 'object') {
-            expected = [expected.toString()];
-        }
-        var diff = object_diff.diffOwnProperties(actual, expected);
-        var diff_html = object_diff.convertToXMLString(diff);
+        var actual = $(this).attr('actual');
+        var expected = $(this).attr('expected');
+        var actual_lines = difflib.stringAsLines(actual);
+        var expected_lines = difflib.stringAsLines(expected);
+        var sequence_matcher = new difflib.SequenceMatcher(actual_lines, expected_lines);
+        var opcodes = sequence_matcher.get_opcodes();
+
+        var diff_html = diffview.buildView({
+            baseTextLines: actual_lines,
+            newTextLines: expected_lines,
+            opcodes: opcodes,
+            baseTextName: strings.DIFF_ACTUAL,
+            newTextName: strings.DIFF_EXPECTED,
+            contextSize: null,
+            viewType: 0
+        });
+
         dialogs.showModalDialog(
             DIFF_DIALOG_ID,
-            'Actual/Expected difference',
-            diff_html, [
+            strings.DIFF_TITLE,
+            diff_html.outerHTML, [
                 {
                     className: dialogs.DIALOG_BTN_CLASS_PRIMARY,
                     id: dialogs.DIALOG_BTN_OK,
                     text: 'OK'
-                        }
-                    ]
+                }
+            ]
         ).done(function () {
             return;
         });
@@ -448,7 +456,6 @@ define(function main(require, exports, module) {
     }
 
     function close_dropdown_runner_selector() {
-        console.log('close selector');
         if ($dropdown) {
             pop_up_manager.removePopUp($dropdown);
         }
@@ -480,7 +487,6 @@ define(function main(require, exports, module) {
             if (code === 13) {
                 var visible_configurations = $dropdown.find('li:visible');
                 if (visible_configurations.length > 0) {
-                    console.log($dropdown.find('.highlight'), visible_configurations.first());
                     var first_configuration = $dropdown.find('.highlight').first().length ? $dropdown.find('.highlight').first() : visible_configurations.first();
                     first_configuration.find('div').trigger('click');
                     return;

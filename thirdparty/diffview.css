@@ -1,0 +1,63 @@
+table.diff {
+    border: 1px solid darkgray;
+    white-space: pre;
+    max-width: inherit;
+}
+
+.dark table.diff {
+    border: 1px solid black;
+}
+
+table.diff tbody th {
+    font-weight: normal;
+    border-right: 1px solid #BBC;
+    color: #886;
+    padding: .3em .5em .1em 2em;
+    text-align: right;
+    vertical-align: top
+}
+
+.dark table.diff tbody th {
+    border-right: 1px solid black;
+}
+
+table.diff thead {
+    border-bottom: 1px solid #BBC;
+}
+
+table.diff thead th.texttitle {
+    text-align: left
+}
+
+table.diff tbody td {
+    padding: 0px .4em;
+    padding-top: .4em;
+    vertical-align: top;
+    -webkit-user-select: text;
+}
+
+table.diff .replace {
+    background-color: #fdf2d0 !important;
+}
+
+.dark table.diff .replace {
+    background-color:rgba(253, 242, 208, 0.3) !important
+}
+
+table.diff .delete {
+    background-color: rgba(130, 2, 0, 0.5) !important;
+}
+
+.dark table.diff .delete {
+    background-color: rgba(255, 127, 80, 0.5) !important;
+}
+
+table.diff .skip {
+    background-color: #EFEFEF;
+    border: 1px solid #AAA;
+    border-right: 1px solid #BBC;
+}
+
+table.diff .insert {
+    background-color: rgba(151, 242, 149, 0.5) !important;
+}
