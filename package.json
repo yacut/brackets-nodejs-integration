@@ -3,7 +3,8 @@
     "title": "NodeJS integration",
     "description": "NodeJS integration is Nodejs, mocha, npm and gulp runner with interactive debugger and RequireJS improvements.",
     "homepage": "https://github.com/yacut/brackets-nodejs-integration",
-    "version": "1.7.2",
+    "author": "yacut <yacut@protonmail.com> (https://github.com/yacut)",
+    "version": "1.7.3",
     "license": "MIT",
     "engines": {
         "brackets": ">=1.7.0"
@@ -21,6 +22,14 @@
         "gulp"
     ],
     "i18n": ["en", "de", "ru"],
+    "package-i18n": {
+        "de": {
+            "description": "NodeJS integration ist Nodejs, mocha, npm und gulp runner mit interaktiven Debugger und RequireJS Verbesserungen."
+        },
+        "ru": {
+            "description": "NodeJS integration - это запуск Nodejs, mocha, npm и gulp скриптов с интерактивным дебаггером и RequireJS улучшениями."
+        }
+    },
     "dependencies": {
         "treekill": "1.0.0"
     }
