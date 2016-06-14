@@ -540,3 +540,8 @@ button.nodejs-integration-tab-close {
     padding: 0px 0px;
     margin-bottom: 0px;
 }
+
+.require-hint {
+    color: #9E9E9E;
+    margin-left: 10px;
+}

@@ -6,11 +6,14 @@ define(function main(require, exports) {
     var _ = brackets.getModule('thirdparty/lodash');
     var command_manager = brackets.getModule('command/CommandManager');
     var commands = brackets.getModule('command/Commands');
+    var code_hint_manager = brackets.getModule('editor/CodeHintManager');
     var editor_manager = brackets.getModule('editor/EditorManager');
     var file_system = brackets.getModule('filesystem/FileSystem');
     var file_utils = brackets.getModule('file/FileUtils');
     var menus = brackets.getModule('command/Menus');
     var project_manager = brackets.getModule('project/ProjectManager');
+
+    var Require_hint_provider = require('src/require_hint_provider');
 
     var strings = require('strings');
 
@@ -18,6 +21,8 @@ define(function main(require, exports) {
 
     var editor_context_menu = menus.getContextMenu(menus.ContextMenuIds.EDITOR_MENU);
     exports.init = function () {
+        code_hint_manager.registerHintProvider(new Require_hint_provider(), ['javascript'], 1);
+
         command_manager.register(strings.JUMP_TO_REQUIRE, JUMP_TO_REQUIRE_COMMAND_ID, function () {
             function go_to_require(current_editor, current_line, search_name) {
                 var matched_require_strings = current_line.match(/require[\s+]?\(['"].*['"]\)/g);
