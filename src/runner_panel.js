@@ -502,6 +502,7 @@ define(function main(require, exports, module) {
                 if (code === 40) {
                     $current = $selected.nextAll('li:visible:first').length ? $selected.nextAll('li:visible:first') : $dropdown.find('li:visible:first');
                 }
+                $dropdown.scrollTop($current.offset().top - $dropdown.offset().top + $dropdown.scrollTop());
                 $current.addClass('highlight');
             }
             else {
