@@ -90,3 +90,9 @@
 ### 1.7.2
 
 - added side-by-side difference view for mocha
+
+
+### 1.8.0
+
+- added code hint for require feature
+- fixed side by side modal view
