@@ -84,54 +84,54 @@ define(function main(require, exports, module) {
                         that.actual_test_title = event_model.fullTitle;
                     }
                     switch (event_type) {
-                    case 'start':
-                        clear(that);
-                        that.write(that, that.command + that.cwd);
-                        that.mocha_stats = event_model;
-                        that.total_tests = event_model.tests;
-                        that.mocha_summary.html(get_mocha_summary(that));
-                        break;
-                    case 'start_suite':
-                        if (event_model.title) {
-                            that.add_to_test_list(utils.uuid(), event_model, 'start_suite');
-                        }
-                        break;
-                    case 'start_test':
-                        that.add_to_test_list(utils.uuid(), event_model, 'start_test');
-                        break;
-                    case 'pass_test':
-                        that.finished_tests_count++;
-                        that.mocha_summary.html(get_mocha_summary(that));
-                        that.finalize_test(event_model, 'pass_test');
-                        break;
-                    case 'fail_test':
-                        that.finished_tests_count++;
-                        that.mocha_summary.html(get_mocha_summary(that));
-                        that.finalize_test(event_model, 'fail_test', event_model);
-                        that.write(that, event_model.stack, {
-                            actual: event_model.actual ? JSON.stringify(event_model.actual, null, 2) : null,
-                            expected: event_model.expected ? JSON.stringify(event_model.expected, null, 2) : null
-                        });
-                        break;
-                    case 'pending_test':
-                        that.finished_tests_count++;
-                        that.mocha_summary.html(get_mocha_summary(that));
-                        that.finalize_test(event_model, 'pending_test');
-                        break;
-                    case 'end_suite':
-                        that.finalize_test(event_model, 'end_suite');
-                        break;
-                    case 'end':
-                        that.mocha_stats = event_model;
-                        that.mocha_summary.html(get_mocha_summary(that));
-                        if (!that.mocha_summary.is(':visible')) {
-                            utils.show_popup_message(that.mocha_summary.text());
-                        }
-                        that.finished_tests_count = 0;
-                        break;
-                    default:
-                        console.error('Not suported event model.' + output_json);
-                        break;
+                        case 'start':
+                            clear(that);
+                            that.write(that, that.command + that.cwd);
+                            that.mocha_stats = event_model;
+                            that.total_tests = event_model.tests;
+                            that.mocha_summary.html(get_mocha_summary(that));
+                            break;
+                        case 'start_suite':
+                            if (event_model.title) {
+                                that.add_to_test_list(utils.uuid(), event_model, 'start_suite');
+                            }
+                            break;
+                        case 'start_test':
+                            that.add_to_test_list(utils.uuid(), event_model, 'start_test');
+                            break;
+                        case 'pass_test':
+                            that.finished_tests_count++;
+                            that.mocha_summary.html(get_mocha_summary(that));
+                            that.finalize_test(event_model, 'pass_test');
+                            break;
+                        case 'fail_test':
+                            that.finished_tests_count++;
+                            that.mocha_summary.html(get_mocha_summary(that));
+                            that.finalize_test(event_model, 'fail_test', event_model);
+                            that.write(that, event_model.stack, {
+                                actual: event_model.actual ? JSON.stringify(event_model.actual, null, 2) : null,
+                                expected: event_model.expected ? JSON.stringify(event_model.expected, null, 2) : null
+                            });
+                            break;
+                        case 'pending_test':
+                            that.finished_tests_count++;
+                            that.mocha_summary.html(get_mocha_summary(that));
+                            that.finalize_test(event_model, 'pending_test');
+                            break;
+                        case 'end_suite':
+                            that.finalize_test(event_model, 'end_suite');
+                            break;
+                        case 'end':
+                            that.mocha_stats = event_model;
+                            that.mocha_summary.html(get_mocha_summary(that));
+                            if (!that.mocha_summary.is(':visible')) {
+                                utils.show_popup_message(that.mocha_summary.text());
+                            }
+                            that.finished_tests_count = 0;
+                            break;
+                        default:
+                            console.error('Not suported event model.' + output_json);
+                            break;
                     }
                 });
             }
@@ -301,29 +301,29 @@ define(function main(require, exports, module) {
             v8flags += ' --debug-brk=' + debug_port + ' ';
         }
         switch (command_type) {
-        case 'node':
-            command = node_bin + ' ' + v8flags + ' ' + additional_flags;
-            break;
-        case 'mocha':
-            command = mocha_bin === 'mocha' ?
-                mocha_bin + mocha_default_flags + ' ' + additional_flags + ' ' + v8flags :
-                node_bin + ' ' + v8flags + ' ' + mocha_bin + mocha_default_flags + ' ' + additional_flags;
-            break;
-        case 'npm':
-            if (script) {
-                if (['install', 'start', 'stop', 'restart', 'test'].indexOf(script) === -1) {
-                    script = 'run "' + script + '"';
+            case 'node':
+                command = node_bin + ' ' + v8flags + ' ' + additional_flags;
+                break;
+            case 'mocha':
+                command = mocha_bin === 'mocha' ?
+                    mocha_bin + mocha_default_flags + ' ' + additional_flags + ' ' + v8flags :
+                    node_bin + ' ' + v8flags + ' ' + mocha_bin + mocha_default_flags + ' ' + additional_flags;
+                break;
+            case 'npm':
+                if (script) {
+                    if (['install', 'start', 'stop', 'restart', 'test'].indexOf(script) === -1) {
+                        script = 'run "' + script + '"';
+                    }
                 }
-            }
-            command = npm_bin + ' ' + script + ' ' + v8flags + ' ' + additional_flags;
-            command_target = '';
-            break;
-        case 'gulp':
-            command = gulp_bin + ' ' + script + ' --color ' + v8flags + ' ' + additional_flags;
-            command_target = '';
-            break;
-        default:
-            return;
+                command = npm_bin + ' ' + script + ' ' + v8flags + ' ' + additional_flags;
+                command_target = '';
+                break;
+            case 'gulp':
+                command = gulp_bin + ' ' + script + ' --color ' + v8flags + ' ' + additional_flags;
+                command_target = '';
+                break;
+            default:
+                return;
         }
         new_connection(that, command + command_target, command_cwd);
     }
@@ -446,7 +446,9 @@ define(function main(require, exports, module) {
                     'expected': diff.expected
                 })
                 .attr('test_title', that.actual_test_title)
-                .html('>>> See difference <<<<br><br>'));
+                .html('>>> See difference <<<<br><br>')
+                .css('font-size', global_prefs.get('fontSize'))
+                .css('font-family', global_prefs.get('fontFamily')));
         }
         if (that.scroll_enabled) {
             that.console_output.parent().scrollTop(that.console_output.parent().prop('scrollHeight'));

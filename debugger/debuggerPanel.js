@@ -258,7 +258,7 @@ define(function (require, exports) {
                 type_icon = '<i class="fa fa-bars" aria-hidden="true"></i>';
             }
             $inside.text(body.text).on('click', evalHTMLonClick);
-            object_value = JSON.stringify(eval_object, null, 2);
+            object_value = JSON.stringify(eval_object, null, 4);
         }
         else if (body.type === 'function') {
             var function_head = body.text.split('{')[0] || 'function()';
