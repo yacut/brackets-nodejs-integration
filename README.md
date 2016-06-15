@@ -44,6 +44,7 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 - Show Actual/Expected difference for mocha test
 - Double click on mocha test case to open file with it
 - *Jump to require* command uses "Jump to declaration" and opens required file (Ctrl-Shift-J or Cmd-Shift-J)
+- Code hints for require: actual directory content and project packages from package.json
 - NodeJS and Mocha debugger integration (based on [TheBenji](https://github.com/TheBenji/brackets-node-debugger) work)
 
 ## Some screenshots:

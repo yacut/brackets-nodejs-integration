@@ -2,8 +2,11 @@
 
 'use strict';
 define(function (require, exports, module) {
+
+    var _ = brackets.getModule('thirdparty/lodash');
     var file_system = brackets.getModule('filesystem/FileSystem');
     var file_utils = brackets.getModule('file/FileUtils');
+    var project_manager = brackets.getModule('project/ProjectManager');
 
     var strings = require('strings');
 
@@ -14,13 +17,35 @@ define(function (require, exports, module) {
     RequireHintProvider.prototype.hasHints = function (editor) {
         var that = this;
         that.editor = editor;
+        that.hints = [];
+        that.match = '';
+        var cursor_position = that.editor.getCursorPos();
+        var current_document = that.editor.document;
+        if (!current_document || !cursor_position) {
+            return false;
+        }
+        var current_line_position = cursor_position.line;
+        var current_line = that.editor._codeMirror.doc.getLine(current_line_position).slice(0, cursor_position.ch);
+        var matched_require_strings = current_line.match(/require[\s+]?\(['"].*/g);
+
+        var project_root = project_manager.getProjectRoot();
+        if (project_root) {
+            var npm_file_path = project_root.fullPath + 'package.json';
+            $.getJSON(npm_file_path, function (npm_json) {
+                that.dependencies = npm_json.dependencies;
+                that.packages_names = _.keys(npm_json.dependencies);
+            });
+        }
+        if (!matched_require_strings || matched_require_strings.length === 0) {
+            return false;
+        }
         return true;
     };
 
     RequireHintProvider.prototype.insertHint = function (completion) {
-        // TODO fix case when match
         var cursor = this.editor.getCursorPos();
         var hint_value = completion.find('.require-hint-value').text();
+        hint_value = hint_value.replace(this.match, '');
         this.editor.document.replaceRange(hint_value, cursor);
         return false;
     };
@@ -103,42 +128,33 @@ define(function (require, exports, module) {
                             handleWideResults: false
                         });
                     }
-                    if (that.match === '') {
-                        var $this_directory = $(document.createElement('span'));
-                        $this_directory.addClass('directory');
-                        $this_directory.append($(document.createElement('span')).text('./').addClass('require-hint-value'));
-                        $this_directory.append($(document.createElement('i')).text(strings.DIRECTORY).addClass('require-hint'));
-                        that.hints.push($this_directory);
 
-                        var $parent_directory = $(document.createElement('span'));
-                        $parent_directory.addClass('directory');
-                        $parent_directory.append($(document.createElement('span')).text('../').addClass('require-hint-value'));
-                        $parent_directory.append($(document.createElement('i')).text(strings.DIRECTORY).addClass('require-hint'));
-                        that.hints.push($parent_directory);
+                    if (that.match === '') {
+                        that.hints.push(create_hint('./', that.match, strings.DIRECTORY, strings.DIRECTORY, strings.CURRENT_DIRECTORY));
+                        that.hints.push(create_hint('../', that.match, strings.DIRECTORY, strings.DIRECTORY, strings.PARENT_DIRECTORY));
                     }
 
-                    contents.forEach(function (content) {
+                    _.each(contents, function (content) {
                         if (that.match === '' || content.name.startsWith(that.match)) {
-                            var $hint = $(document.createElement('span'));
                             if (content.isDirectory) {
-                                $hint.addClass('directory');
-                                $hint.append($(document.createElement('span')).text(content.name + '/').addClass('require-hint-value'));
-                                $hint.append($(document.createElement('i')).text(strings.DIRECTORY).addClass('require-hint'));
+                                that.hints.push(create_hint(content.name + '/', that.match, strings.DIRECTORY, strings.DIRECTORY, '', ''));
                             }
                             else if (content.name.endsWith('.js')) {
-                                $hint.addClass('file');
-                                $hint.append($(document.createElement('span')).text(content.name.substr(0, content.name.lastIndexOf('.')) || content.name).addClass('require-hint-value'));
-                                $hint.append($(document.createElement('i')).text(strings.FILE).addClass('require-hint'));
+                                that.hints.push(create_hint(content.name.substr(0, content.name.lastIndexOf('.')) || content.name, that.match, strings.FILE, strings.FILE, content.name));
                             }
                             else if (content.name.endsWith('.json')) {
-                                $hint.addClass('file');
-                                $hint.append($(document.createElement('span')).text(content.name).addClass('require-hint-value'));
-                                $hint.append($(document.createElement('i')).text(strings.FILE).addClass('require-hint'));
+                                that.hints.push(create_hint(content.name, that.match, strings.FILE, strings.FILE, content.name));
                             }
-
-                            that.hints.push($hint);
                         }
                     });
+
+                    _.each(that.packages_names, function (package_name) {
+                        if (that.match === '' || package_name.startsWith(that.match)) {
+                            var link_to_registry = 'https://www.npmjs.com/package/' + package_name;
+                            that.hints.push(create_hint(package_name, that.match, strings.PACKAGE, strings.PACKAGE, that.dependencies[package_name], link_to_registry));
+                        }
+                    });
+
                     self.resolve({
                         hints: that.hints,
                         match: null,
@@ -149,6 +165,38 @@ define(function (require, exports, module) {
             });
         });
     };
+
+    /**
+     * Create code hint link with details
+     * @param {string} value
+     * @param {string} match
+     * @param {string} type
+     * @param {string} title
+     * @param {string} link
+     */
+    function create_hint(value, match, type, title, description, link) {
+        var $hint = $(document.createElement('span'));
+        $hint.addClass('brackets-js-hints brackets-js-hints-with-type-details');
+        $hint.attr('title', title);
+        if (match) {
+            value = value.replace(match, '');
+            $hint.append($(document.createElement('span')).text(match).addClass('matched-hint'));
+            $hint.append($(document.createElement('span')).text(value).addClass('require-hint-value'));
+        }
+        else {
+            $hint.append($(document.createElement('span')).text(value).addClass('require-hint-value'));
+        }
+        if (link) {
+            $hint.append($(document.createElement('a')).addClass('jshint-link').attr('href', link));
+        }
+        $hint.append($(document.createElement('span')).text(type).addClass('brackets-js-hints-type-details'));
+        $hint.append($(document.createElement('span')).text(type).addClass('jshint-description'));
+        if (description) {
+            $hint.append($(document.createElement('span')).text(description).addClass('jshint-jsdoc'));
+        }
+
+        return $hint;
+    }
 
     module.exports = RequireHintProvider;
 });
