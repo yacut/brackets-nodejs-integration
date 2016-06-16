@@ -96,3 +96,10 @@
 
 - added code hint for require feature
 - fixed side by side modal view
+
+### 1.8.1
+
+- fixed font size and family in debugger
+- fixed require hints match
+- fixed runner selector list scrolling
+- fixed font for diff links in console output

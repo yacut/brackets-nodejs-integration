@@ -9,6 +9,7 @@ define(function (require, exports) {
     var preferences_manager = brackets.getModule('preferences/PreferencesManager');
     var prefs = preferences_manager.getExtensionPrefs('brackets-nodejs-integration');
 
+    var global_prefs = preferences_manager.getExtensionPrefs('fonts');
     var _maxDepth = 3;
     var history = [];
     var historyCurrent = 0;
@@ -239,6 +240,11 @@ define(function (require, exports) {
         var type_classes = 'type action_btn';
         var value_color = 'grey';
         //Exception for Date Object
+        var $var_value = $(document.createElement('span'))
+            .addClass('var-value')
+            .css('font-size', global_prefs.get('fontSize'))
+            .css('font-family', global_prefs.get('fontFamily'));
+
         if (body.type === 'object' && body.properties.length > 0 && (body.className !== 'Date')) {
             var eval_object = {};
             body.properties.forEach(function (p) {
@@ -257,25 +263,25 @@ define(function (require, exports) {
             else {
                 type_icon = '<i class="fa fa-bars" aria-hidden="true"></i>';
             }
-            $inside.text(body.text).on('click', evalHTMLonClick);
-            object_value = JSON.stringify(eval_object, null, 2);
+            $inside.append($var_value.text(body.text)).on('click', evalHTMLonClick);
+            object_value = JSON.stringify(eval_object, null, 4);
         }
         else if (body.type === 'function') {
             var function_head = body.text.split('{')[0] || 'function()';
-            $inside.text(function_head + '{');
+            $inside.append($var_value.text(function_head + '{'));
             object_value = body.text;
             type_classes += ' simple_var';
             type_icon = '<i class="fa fa-bars" aria-hidden="true"></i>';
         }
         else if (body.type === 'string') {
-            $inside.text('"' + body.text + '"');
+            $inside.append($var_value.text('"' + body.text + '"'));
             object_value = body.text;
             type_classes += ' simple_var';
             value_color = '#0083e8';
             type_icon = '<span class="fa-stack fa-1x" style="width: 1em;height: 1em;line-height: 1em;"><i class="fa fa-stop fa-stack-2x" style="font-size: 1em;"></i><strong class="fa-stack-1x text-primary" style="color: white;font-size: 70%;">ab</strong></span>';
         }
         else if (body.type === 'number') {
-            $inside.text(body.text);
+            $inside.append($var_value.text(body.text));
             object_value = body.text;
             type_classes += ' simple_var';
             value_color = 'green';
@@ -286,7 +292,7 @@ define(function (require, exports) {
                 value_color = '#0083e8';
                 $html.css('font-weight', 'bold');
             }
-            $inside.text(body.text);
+            $inside.append($var_value.text(body.text));
             object_value = body.text;
             type_classes += ' simple_var';
             type_icon = '<i class="fa fa-bars" aria-hidden="true"></i>';

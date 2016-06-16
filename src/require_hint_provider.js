@@ -26,7 +26,16 @@ define(function (require, exports, module) {
         }
         var current_line_position = cursor_position.line;
         var current_line = that.editor._codeMirror.doc.getLine(current_line_position).slice(0, cursor_position.ch);
-        var matched_require_strings = current_line.match(/require[\s+]?\(['"].*/g);
+        current_line = current_line.replace(/ /g, '');
+        var matched_require_strings = current_line.match(/require\(['"].*/g);
+        var end_of_require_strings = current_line.match(/require\(['"].*['"]/g);
+
+        if (!matched_require_strings || matched_require_strings.length === 0) {
+            return false;
+        }
+        if (end_of_require_strings && end_of_require_strings.length > 0) {
+            return false;
+        }
 
         var project_root = project_manager.getProjectRoot();
         if (project_root) {
@@ -36,16 +45,13 @@ define(function (require, exports, module) {
                 that.packages_names = _.keys(npm_json.dependencies);
             });
         }
-        if (!matched_require_strings || matched_require_strings.length === 0) {
-            return false;
-        }
+
         return true;
     };
 
     RequireHintProvider.prototype.insertHint = function (completion) {
         var cursor = this.editor.getCursorPos();
         var hint_value = completion.find('.require-hint-value').text();
-        hint_value = hint_value.replace(this.match, '');
         this.editor.document.replaceRange(hint_value, cursor);
         return false;
     };
@@ -70,8 +76,17 @@ define(function (require, exports, module) {
 
             var current_line_position = cursor_position.line;
             var current_line = that.editor._codeMirror.doc.getLine(current_line_position).slice(0, cursor_position.ch);
-
-            var matched_require_strings = current_line.match(/require[\s+]?\(['"].*/g);
+            current_line = current_line.replace(/ /g, '');
+            var end_of_require_strings = current_line.match(/require\(['"].*['"]/g);
+            if (end_of_require_strings && end_of_require_strings.length > 0) {
+                return self.resolve({
+                    hints: that.hints,
+                    match: null,
+                    selectInitial: true,
+                    handleWideResults: false
+                });
+            }
+            var matched_require_strings = current_line.match(/require\(['"].*/g);
             if (!matched_require_strings || matched_require_strings.length === 0) {
                 return self.resolve({
                     hints: that.hints,
@@ -129,8 +144,10 @@ define(function (require, exports, module) {
                         });
                     }
 
-                    if (that.match === '') {
+                    if (that.match === '' || that.match === '.') {
                         that.hints.push(create_hint('./', that.match, strings.DIRECTORY, strings.DIRECTORY, strings.CURRENT_DIRECTORY));
+                    }
+                    if (that.match === '' || that.match === '.' || that.match === '..') {
                         that.hints.push(create_hint('../', that.match, strings.DIRECTORY, strings.DIRECTORY, strings.PARENT_DIRECTORY));
                     }
 
