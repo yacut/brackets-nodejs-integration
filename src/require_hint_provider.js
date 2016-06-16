@@ -45,7 +45,6 @@ define(function (require, exports, module) {
     RequireHintProvider.prototype.insertHint = function (completion) {
         var cursor = this.editor.getCursorPos();
         var hint_value = completion.find('.require-hint-value').text();
-        hint_value = hint_value.replace(this.match, '');
         this.editor.document.replaceRange(hint_value, cursor);
         return false;
     };
