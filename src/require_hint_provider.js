@@ -10,6 +10,13 @@ define(function (require, exports, module) {
 
     var strings = require('strings');
 
+    var node_builtin_libs = ['assert', 'buffer', 'child_process', 'cluster',
+                             'crypto', 'dgram', 'dns', 'domain', 'events',
+                             'fs', 'http', 'https', 'net', 'os', 'path',
+                             'punycode', 'querystring', 'readline', 'repl',
+                             'stream', 'string_decoder', 'tls', 'tty', 'url',
+                             'util', 'v8', 'vm', 'zlib'];
+
     function RequireHintProvider() {
         this.hints = [];
     }
@@ -169,6 +176,13 @@ define(function (require, exports, module) {
                         if (that.match === '' || package_name.startsWith(that.match)) {
                             var link_to_registry = 'https://www.npmjs.com/package/' + package_name;
                             that.hints.push(create_hint(package_name, that.match, strings.PACKAGE, strings.PACKAGE, that.dependencies[package_name], link_to_registry));
+                        }
+                    });
+
+                    _.each(node_builtin_libs, function (builtin_lib_name) {
+                        if (that.match === '' || builtin_lib_name.startsWith(that.match)) {
+                            var link_to_descrition = 'https://nodejs.org/api/' + builtin_lib_name + '.html';
+                            that.hints.push(create_hint(builtin_lib_name, that.match, strings.BUILT_IN_LIB, strings.BUILT_IN_LIB, '', link_to_descrition));
                         }
                     });
 
