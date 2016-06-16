@@ -253,7 +253,8 @@ define(function (require, exports, module) {
             .css('font-size', global_prefs.get('fontSize'))
             .css('font-family', global_prefs.get('fontFamily'));
 
-        $('.brackets-nodejs-integration-debugger-log')
-            .css('font-size', global_prefs.get('fontSize'));
+        $('.brackets-nodejs-integration-debugger-log, .brackets-nodejs-integration-debugger-log span.var-name, .brackets-nodejs-integration-debugger-log span.var-value')
+            .css('font-size', global_prefs.get('fontSize'))
+            .css('font-family', global_prefs.get('fontFamily'));
     }
 });
