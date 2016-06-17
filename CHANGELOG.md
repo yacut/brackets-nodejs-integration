@@ -103,3 +103,8 @@
 - fixed require hints match
 - fixed runner selector list scrolling
 - fixed font for diff links in console output
+
+### 1.8.2
+
+- show packages hints only if no relative path specified
+- added nodejs built-in libs ti require hints

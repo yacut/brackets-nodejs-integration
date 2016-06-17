@@ -8,6 +8,7 @@ define({
     ADD_TO_NODEJS_RUNNER: 'Добавить Node.js runner',
     ADD_TO_NPM_RUNNER: 'Добавить NPM runner',
     AUTOSCROLL_IN_TERMINAL: 'Автопрокрутка в терминале',
+    BUILT_IN_LIB: 'Встроенная Node.js библиотека',
     CANCEL: 'Отменить',
     CHOOSE_TARGET: 'Выбрать цель...',
     CHOOSE_WORKINGS_DIRECTORY: 'Выбрать рабочий каталог...',

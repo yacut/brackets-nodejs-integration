@@ -8,6 +8,7 @@ define({
     ADD_TO_NODEJS_RUNNER: 'Hinzufügen Node.js runner',
     ADD_TO_NPM_RUNNER: 'Hinzufügen NPM runner',
     AUTOSCROLL_IN_TERMINAL: 'Autoscroll im terminal',
+    BUILT_IN_LIB: 'Built-in Node.js Bibliothek',
     CANCEL: 'Abbrechen',
     CHOOSE_TARGET: 'Das Ziel auswählen...',
     CHOOSE_WORKINGS_DIRECTORY: 'Arbeitsverzeichnis auswählen...',
