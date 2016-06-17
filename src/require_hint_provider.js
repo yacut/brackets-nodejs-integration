@@ -172,19 +172,21 @@ define(function (require, exports, module) {
                         }
                     });
 
-                    _.each(that.packages_names, function (package_name) {
-                        if (that.match === '' || package_name.startsWith(that.match)) {
-                            var link_to_registry = 'https://www.npmjs.com/package/' + package_name;
-                            that.hints.push(create_hint(package_name, that.match, strings.PACKAGE, strings.PACKAGE, that.dependencies[package_name], link_to_registry));
-                        }
-                    });
+                    if (relative_path === '') {
+                        _.each(that.packages_names, function (package_name) {
+                            if (that.match === '' || package_name.startsWith(that.match)) {
+                                var link_to_registry = 'https://www.npmjs.com/package/' + package_name;
+                                that.hints.push(create_hint(package_name, that.match, strings.PACKAGE, strings.PACKAGE, that.dependencies[package_name], link_to_registry));
+                            }
+                        });
 
-                    _.each(node_builtin_libs, function (builtin_lib_name) {
-                        if (that.match === '' || builtin_lib_name.startsWith(that.match)) {
-                            var link_to_descrition = 'https://nodejs.org/api/' + builtin_lib_name + '.html';
-                            that.hints.push(create_hint(builtin_lib_name, that.match, strings.BUILT_IN_LIB, strings.BUILT_IN_LIB, '', link_to_descrition));
-                        }
-                    });
+                        _.each(node_builtin_libs, function (builtin_lib_name) {
+                            if (that.match === '' || builtin_lib_name.startsWith(that.match)) {
+                                var link_to_descrition = 'https://nodejs.org/api/' + builtin_lib_name + '.html';
+                                that.hints.push(create_hint(builtin_lib_name, that.match, strings.BUILT_IN_LIB, strings.BUILT_IN_LIB, '', link_to_descrition));
+                            }
+                        });
+                    }
 
                     self.resolve({
                         hints: that.hints,
