@@ -1,6 +1,7 @@
 'use strict';
 
 define({
+    ACTUAL_EXPECTED: 'Актуальное (слева) - Ожидаемое (справа)',
     ADDITIONAL_FLAGS: 'Дополнительные Флаги',
     ADDITIONAL_FLAGS_PLACEHOLDER: 'например --bail для mocha, --require для node',
     ADD_TO_GULP_RUNNER: 'Добавить gulp runner',
@@ -49,6 +50,7 @@ define({
     FLAGS_FOR_V8_PLACEHOLDER: 'например: --use_strict --harmony',
     GLOBAL_ADDITIONAL_FLAGS: 'Дополнительные глобальные флаги',
     GLOBAL_ADDITIONAL_FLAGS_PLACEHOLDER: 'например --bail для mocha, --require для node',
+    HIDE_DIFFERENCE: 'Скрыть разницу',
     JUMP_TO_REQUIRE: 'Перейти к Require',
     NAME: 'Имя',
     NEW_TAB: 'Новая вкладка',
@@ -69,6 +71,7 @@ define({
     SEARCH: 'Поиск',
     SETTINGS: 'Настройки...',
     SHOW_OR_HIDE_RUNNER: 'Показать/Спрятать runner',
+    SHOW_DIFFERENCE: 'Показать разницу',
     START_ACTIVE_RUNNER: 'Старт (активный runner)',
     START_CURRENT_MOCHA_FILE: 'Старт (текущий Mocha файл)',
     START_CURRENT_NODEJS_FILE: 'Старт (текущий NodeJS файл)',

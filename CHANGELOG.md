@@ -108,3 +108,7 @@
 
 - show packages hints only if no relative path specified
 - added nodejs built-in libs ti require hints
+
+### 1.8.3
+
+- use CodeMirror as diff tool for mocha expectations

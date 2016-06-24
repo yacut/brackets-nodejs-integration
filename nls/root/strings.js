@@ -1,6 +1,7 @@
 'use strict';
 
 define({
+    ACTUAL_EXPECTED: 'Actual (left) - Expected (right)',
     ADDITIONAL_FLAGS: 'Additional Flags',
     ADDITIONAL_FLAGS_PLACEHOLDER: 'e.g. --bail for mocha, --require for node',
     ADD_TO_GULP_RUNNER: 'Add to gulp runner',
@@ -49,6 +50,7 @@ define({
     FLAGS_FOR_V8_PLACEHOLDER: 'example: --use_strict --harmony',
     GLOBAL_ADDITIONAL_FLAGS: 'Global Additional Flags',
     GLOBAL_ADDITIONAL_FLAGS_PLACEHOLDER: 'e.g. --bail for mocha, --require for node',
+    HIDE_DIFFERENCE: 'Hide difference',
     JUMP_TO_REQUIRE: 'Jump to Require',
     NAME: 'Name',
     NEW_TAB: 'New Tab',
@@ -69,6 +71,7 @@ define({
     SEARCH: 'Search',
     SETTINGS: 'Settings...',
     SHOW_OR_HIDE_RUNNER: 'Show/Hide runner',
+    SHOW_DIFFERENCE: 'Show difference',
     START_ACTIVE_RUNNER: 'Start (active runner)',
     START_CURRENT_MOCHA_FILE: 'Start (current Mocha file)',
     START_CURRENT_NODEJS_FILE: 'Start (current NodeJS file)',
