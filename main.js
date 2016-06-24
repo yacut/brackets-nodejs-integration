@@ -41,7 +41,6 @@ define(function (require, exports, module) {
 
     extension_utils.loadStyleSheet(module, 'debugger/assets/style.css');
     extension_utils.loadStyleSheet(module, 'styles/panel.css');
-    extension_utils.loadStyleSheet(module, 'thirdparty/diffview.css');
     extension_utils.loadStyleSheet(module, 'styles/font-awesome.min.css');
 
     project_manager.on('beforeAppClose', runner_panel.cleanup);
