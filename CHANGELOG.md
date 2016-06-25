@@ -112,3 +112,7 @@
 ### 1.8.3
 
 - use CodeMirror as diff tool for mocha expectations
+
+### 1.8.4
+
+- use thirdparty CodeMirror libs

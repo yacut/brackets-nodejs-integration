@@ -545,23 +545,3 @@ button.nodejs-integration-tab-close {
     color: #9E9E9E;
     margin-left: 10px;
 }
-
-.dark .nodejs-integration-tab-pane .CodeMirror {
-    background-color: rgb(29, 31, 33) !important;
-}
-
-.dark .nodejs-integration-tab-pane .CodeMirror-gutters {
-    background-color: rgb(29, 31, 33) !important;
-}
-
-.dark .nodejs-integration-tab-pane .CodeMirror-line {
-    background-color: rgb(29, 31, 33) !important;
-}
-
-.dark .nodejs-integration-tab-pane .CodeMirror-merge-gap {
-    background-color: rgb(29, 31, 33) !important;
-}
-
-.dark .nodejs-integration-tab-pane .CodeMirror-scroll {
-    background-color: rgb(29, 31, 33) !important;
-}

@@ -15,8 +15,13 @@ define(function main(require, exports, module) {
     var mustache = brackets.getModule('thirdparty/mustache/mustache');
     var pop_up_manager = brackets.getModule('widgets/PopUpManager');
     var project_manager = brackets.getModule('project/ProjectManager');
+    var preferences_manager = brackets.getModule('preferences/PreferencesManager');
+    var theme_manager = brackets.getModule('view/ThemeManager');
     var workspace_manager = brackets.getModule('view/WorkspaceManager');
 
+    var code_mirror = require('../thirdparty/codemirror');
+    require('../thirdparty/merge');
+    var global_prefs = preferences_manager.getExtensionPrefs('fonts');
     var panel_template = require('text!../templates/panel.html');
     var prefs = require('../preferences');
     var run_configurations = prefs.get('configurations');
@@ -160,6 +165,7 @@ define(function main(require, exports, module) {
         document.addEventListener('mousemove', panel.mousemove);
         document.addEventListener('mouseup', panel.mouseup);
     });
+
     $runner_panel.on('click', '.link_to_diff', function () {
         var actual = $(this).attr('actual');
         var expected = $(this).attr('expected');
@@ -182,20 +188,19 @@ define(function main(require, exports, module) {
                 readOnly: true,
                 revertButtons: false
             };
-            var preferences_manager = brackets.getModule('preferences/PreferencesManager');
-            var global_prefs = preferences_manager.getExtensionPrefs('fonts');
-            brackets.getModule(['thirdparty/CodeMirror2/lib/codemirror'], function (code_mirror) {
-                if (target && target[0]) {
-                    var mergeView = code_mirror.MergeView(target[0], merge_view_options);
-                    target.prepend($(document.createElement('div'))
-                        .html(strings.ACTUAL_EXPECTED)
-                        .addClass('console-element')
-                        .css('font-size', global_prefs.get('fontSize'))
-                        .css('font-family', global_prefs.get('fontFamily')));
-                    target.show();
-                    resize(mergeView);
-                }
-            });
+            if (!theme_manager.getCurrentTheme().name.includes('light')) {
+                merge_view_options.theme = 'monokai';
+            }
+
+            var mergeView = code_mirror.MergeView(target[0], merge_view_options);
+            target.prepend($(document.createElement('div'))
+                .html(strings.ACTUAL_EXPECTED)
+                .addClass('console-element')
+                .css('font-size', global_prefs.get('fontSize'))
+                .css('font-family', global_prefs.get('fontFamily')));
+
+            target.show();
+            resize(mergeView);
 
             function merge_view_height(merge_view) {
                 function editorHeight(editor) {
