@@ -39,15 +39,15 @@
         );
         domainManager.registerEvent(
             DOMAIN_NAME,
-            'installComplete', [{
-                    name: 'code',
-                    type: 'number',
-                    description: 'Exit Code'
+            'installation_completed', [{
+                name: 'code',
+                type: 'number',
+                description: 'Exit Code'
             },
-                {
-                    name: 'out',
-                    type: 'string',
-                    description: 'Out data from process'
+            {
+                name: 'out',
+                type: 'string',
+                description: 'Out data from process'
             }]
         );
     }
