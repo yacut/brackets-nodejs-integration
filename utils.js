@@ -50,7 +50,7 @@ define(function (require, exports) {
         return promise;
     };
 
-    exports.show_popup_message = function (message) {
+    exports.show_popup_message = function (message, disable_auto_hide) {
         var _$indicator = $('#brackets-nodejs-integration-runner-indicator');
         _$indicator.twipsy('hide').removeData('twipsy');
         var options = {
@@ -62,11 +62,13 @@ define(function (require, exports) {
             }
         };
         _$indicator.twipsy(options).twipsy('show');
-        setTimeout(function () {
-            if (_$indicator.data('twipsy')) {
-                _$indicator.twipsy('hide').removeData('twipsy');
-            }
-        }, 5000);
+        if (!disable_auto_hide) {
+            setTimeout(function () {
+                if (_$indicator.data('twipsy')) {
+                    _$indicator.twipsy('hide').removeData('twipsy');
+                }
+            }, 5000);
+        }
     };
 
     exports.uuid = function () {

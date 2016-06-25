@@ -51,6 +51,8 @@ define({
     GLOBAL_ADDITIONAL_FLAGS: 'Global Additional Flags',
     GLOBAL_ADDITIONAL_FLAGS_PLACEHOLDER: 'e.g. --bail for mocha, --require for node',
     HIDE_DIFFERENCE: 'Hide difference',
+    INSTALL_DEPENDENCIES: 'Install dependencies...',
+    INSTALLATION_FINISHED: 'Installation finished',
     JUMP_TO_REQUIRE: 'Jump to Require',
     NAME: 'Name',
     NEW_TAB: 'New Tab',
