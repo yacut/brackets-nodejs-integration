@@ -51,6 +51,8 @@ define({
     GLOBAL_ADDITIONAL_FLAGS: 'Globale Weitere Flags',
     GLOBAL_ADDITIONAL_FLAGS_PLACEHOLDER: 'z.B. --bail für mocha, --require für node',
     HIDE_DIFFERENCE: 'Differenz ausblenden',
+    INSTALL_DEPENDENCIES: 'Abhängigkeiten installieren...',
+    INSTALLATION_FINISHED: 'Installation ist abgeschlossen',
     JUMP_TO_REQUIRE: 'Springen zu Require',
     NAME: 'Name',
     NEW_TAB: 'Neue pannel',
