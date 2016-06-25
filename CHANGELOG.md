@@ -116,3 +116,8 @@
 ### 1.8.4
 
 - use thirdparty CodeMirror libs
+
+### 1.8.5
+
+- added node_modules installer
+- replaced treekill package to tree-kill
