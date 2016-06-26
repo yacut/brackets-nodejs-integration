@@ -6,10 +6,16 @@
     var _domainManager;
     var child;
 
-    function install() {
+    function install(npm_bin, cwd) {
+        if (!npm_bin) {
+            npm_bin = 'npm';
+        }
+        if (!cwd) {
+            cwd = __dirname;
+        }
         var out = '';
-        child = exec('npm install', {
-            cwd: __dirname
+        child = exec(npm_bin + ' install', {
+            cwd: cwd
         });
         child.stdout.on('data', function (data) {
             out += data;
@@ -35,19 +41,28 @@
             'install',
             install,
             false,
-            'Calls npm install'
+            'Calls npm install', [
+                {
+                    name: 'npm_bin',
+                    type: 'string'
+                },
+                {
+                    name: 'cwd',
+                    type: 'string'
+                }
+            ]
         );
         domainManager.registerEvent(
             DOMAIN_NAME,
             'installation_completed', [{
-                name: 'code',
-                type: 'number',
-                description: 'Exit Code'
+                    name: 'code',
+                    type: 'number',
+                    description: 'Exit Code'
             },
-            {
-                name: 'out',
-                type: 'string',
-                description: 'Out data from process'
+                {
+                    name: 'out',
+                    type: 'string',
+                    description: 'Out data from process'
             }]
         );
     }
