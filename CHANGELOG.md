@@ -121,3 +121,7 @@
 
 - added node_modules installer
 - replaced treekill package to tree-kill
+
+### 1.8.6
+
+- use global npm binary setting for installer

@@ -267,7 +267,7 @@ define(function (require, exports, module) {
         if (!error && !exists) {
             var installer = new NodeDomain('brackets-nodejs-integration-installer', extension_utils.getModulePath(module, 'src/domains/installer'));
             utils.show_popup_message(strings.INSTALL_DEPENDENCIES, true);
-            installer.exec('install');
+            installer.exec('install', prefs.get('npm-bin'));
             installer.on('installation_completed', function (event, code, out) {
                 if (code === 0) {
                     utils.show_popup_message(strings.INSTALLATION_FINISHED);
