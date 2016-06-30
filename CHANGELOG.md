@@ -125,3 +125,9 @@
 ### 1.8.6
 
 - use global npm binary setting for installer
+
+### 1.8.7
+
+- fixed debugger locals font and view
+- fixed locals duplicates in debugger
+- fixed strict function declaration at extension load

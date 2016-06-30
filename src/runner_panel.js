@@ -192,7 +192,7 @@ define(function main(require, exports, module) {
                 merge_view_options.theme = 'monokai';
             }
 
-            var mergeView = code_mirror.MergeView(target[0], merge_view_options);
+            var merge_view = code_mirror.MergeView(target[0], merge_view_options);
             target.prepend($(document.createElement('div'))
                 .html(strings.ACTUAL_EXPECTED)
                 .addClass('console-element')
@@ -200,41 +200,7 @@ define(function main(require, exports, module) {
                 .css('font-family', global_prefs.get('fontFamily')));
 
             target.show();
-            resize(mergeView);
-
-            function merge_view_height(merge_view) {
-                function editorHeight(editor) {
-                    if (!editor) {
-                        return 0;
-                    }
-                    return editor.getScrollInfo().height;
-                }
-                return Math.max(editorHeight(merge_view.leftOriginal()),
-                    editorHeight(merge_view.editor()),
-                    editorHeight(merge_view.rightOriginal()));
-            }
-
-            function resize(merge_view) {
-                var height = merge_view_height(merge_view);
-                for (;;) {
-                    if (merge_view.leftOriginal()) {
-                        merge_view.leftOriginal().setSize(null, height);
-                    }
-                    merge_view.editor().setSize(null, height);
-                    if (merge_view.rightOriginal()) {
-                        merge_view.rightOriginal().setSize(null, height);
-                    }
-
-                    var new_height = merge_view_height(merge_view);
-                    if (new_height >= height) {
-                        break;
-                    }
-                    else {
-                        height = new_height;
-                    }
-                }
-                merge_view.wrap.style.height = height + 'px';
-            }
+            utils.resize_merge_view(merge_view);
         }
     });
     $runner_panel.on('click', '.action-close', function () {

@@ -57,16 +57,20 @@ define(function (require, exports) {
             //Get all arguments
             if (body.arguments && body.arguments.length > 0) {
                 body.arguments.forEach(function (a) {
-                    that._allLocals.push(a.name);
-                    //and get the value
-                    that.locals[a.name] = that.lookup[a.value.ref];
+                    if (that._allLocals.indexOf(a.name) === -1) {
+                        that._allLocals.push(a.name);
+                        //and get the value
+                        that.locals[a.name] = that.lookup[a.value.ref];
+                    }
                 });
             }
             //Get all locals
             if (body.locals && body.locals.length > 0) {
                 body.locals.forEach(function (l) {
-                    that._allLocals.push(l.name);
-                    that.locals[l.name] = that.lookup[l.value.ref];
+                    if (that._allLocals.indexOf(l.name) === -1) {
+                        that._allLocals.push(l.name);
+                        that.locals[l.name] = that.lookup[l.value.ref];
+                    }
                 });
             }
 
