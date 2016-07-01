@@ -425,7 +425,7 @@ define(function main(require, exports, module) {
 
     function write(that, output_string, diff) {
         //get links to files
-        var links = output_string.match(/\((.*?)([^/\\]*?)(\.[^/\\.]*)?:[0-9]+:[0-9]+\)/gi);
+        var links = output_string.match(/(\/.*?\/|[a-zA-Z]:\\)((?:[^\/]|\\\/)+?):[0-9]+:[0-9]+/gi);
         if (links) {
             links.forEach(function (link) {
                 link = link.replace(/[()]/g, '');
