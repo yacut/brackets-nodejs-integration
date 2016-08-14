@@ -3,7 +3,7 @@ logs
 *.log
 npm-debug.log*
 
-# Modified data
+# Changed data
 pids
 *.pid
 *.seed
