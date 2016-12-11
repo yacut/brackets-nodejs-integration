@@ -320,6 +320,9 @@ define(function main(require, exports, module) {
                 command_target = '';
                 break;
             case 'gulp':
+                if (!script) {
+                    return;
+                }
                 command = gulp_bin + ' ' + script + ' --color ' + v8flags + ' ' + additional_flags;
                 command_target = '';
                 break;
