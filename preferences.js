@@ -19,6 +19,24 @@ define(function main(require, exports, module) {
     prefs.definePreference('additional-flags', 'string', '');
     prefs.definePreference('configurations', 'array', [
         {
+            'name': 'npm run',
+            'cwd': '',
+            'flags': '',
+            'type': 'npm',
+            'target': '{project_root}/package.json',
+            'debug': false
+        },
+
+        {
+            'name': 'gulp task',
+            'cwd': '',
+            'flags': '',
+            'type': 'gulp',
+            'target': '{project_root}/gulpfile.js',
+            'debug': false
+        },
+
+        {
             'name': 'nodejs process sample',
             'cwd': '',
             'flags': '',
@@ -26,6 +44,7 @@ define(function main(require, exports, module) {
             'target': extension_utils.getModulePath(module, 'tests/hello.js'),
             'debug': false
         },
+
         {
             'name': 'http server sample',
             'cwd': '',

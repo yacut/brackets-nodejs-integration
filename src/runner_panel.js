@@ -32,6 +32,8 @@ define(function main(require, exports, module) {
     var runner_menu_template = require('text!../templates/runner_menu.html');
     var utils = require('../utils');
 
+    var keywords_parser = require('./keywords_parser');
+
     var $dropdown = null;
     var $runner_panel = $(null);
     var panel = null;
@@ -400,6 +402,11 @@ define(function main(require, exports, module) {
                 flags: $(this).attr('flags')
             };
         }
+
+        // parse keywords
+        run_configuration.target = keywords_parser.parse(run_configuration.target);
+        run_configuration.cwd = keywords_parser.parse(run_configuration.cwd);
+
         var selected_run_configuration = $runner_panel.find('.nodejs-integration-tab-pane.active .run-configuration-dropdown-toggle');
         selected_run_configuration.find('.type')
             .removeClass('node')
