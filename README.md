@@ -58,11 +58,11 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 ![goto_error](screenshots/goto_error.png)  
 *Main panel of NodeJS integration - quick open error file*
 
-![asert_diff](screenshots/asert_diff.png)  
-*Mocha test result - Show asert difference*
-
 ![require_hints](screenshots/require_hints.png)  
 *RequireJS - Show hints while `require`*
+
+![asert_diff](screenshots/asert_diff.png)  
+*Mocha test result - Show asert difference*
 
 ![settings](screenshots/settings.png)  
 *Settings dialog*
@@ -79,4 +79,3 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 
 - [http://fontawesome.io/](http://fontawesome.io/)
 - [https://github.com/caolan/async](https://github.com/caolan/async)
-- [https://github.com/cemerick/jsdifflib](https://github.com/cemerick/jsdifflib)

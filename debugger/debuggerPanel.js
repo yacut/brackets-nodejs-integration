@@ -301,7 +301,12 @@ define(function (require, exports) {
 
         $html.css('color', value_color);
         if (body.varName) {
-            $('<span>').addClass('var-name').text(body.varName + ' = ').prependTo($inside);
+            $('<span>')
+                .addClass('var-name')
+                .css('font-size', global_prefs.get('fontSize'))
+                .css('font-family', global_prefs.get('fontFamily'))
+                .text(body.varName + ' = ')
+                .prependTo($inside);
             object_name = body.varName;
         }
         var $type = $('<span>').addClass(type_classes)

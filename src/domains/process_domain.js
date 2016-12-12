@@ -1,17 +1,16 @@
 'use strict';
 (function () {
 
-    var treekill = require('treekill');
+    var tree_kill = require('tree-kill');
     var child_process = require('child_process');
     var domain = null;
     var child = null;
     var path = require('path');
     var DOMAIN_NAME = path.basename(__filename);
-    //var DOMAIN_NAME = 'brackets-nodejs-integration';
 
     function cmd_start_process(command, cwd, callback) {
         if (child !== null) {
-            treekill(child.pid);
+            tree_kill(child.pid);
         }
 
         child = child_process.exec(command, {
@@ -48,7 +47,7 @@
 
     function cmd_stop_process() {
         if (child !== null) {
-            treekill(child.pid);
+            tree_kill(child.pid);
         }
     }
 

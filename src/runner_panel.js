@@ -6,7 +6,6 @@ define(function main(require, exports, module) {
     var _ = brackets.getModule('thirdparty/lodash');
     var command_manager = brackets.getModule('command/CommandManager');
     var commands = brackets.getModule('command/Commands');
-    var dialogs = brackets.getModule('widgets/Dialogs');
     var editor_manager = brackets.getModule('editor/EditorManager');
     var extension_utils = brackets.getModule('utils/ExtensionUtils');
     var file_system = brackets.getModule('filesystem/FileSystem');
@@ -16,12 +15,13 @@ define(function main(require, exports, module) {
     var mustache = brackets.getModule('thirdparty/mustache/mustache');
     var pop_up_manager = brackets.getModule('widgets/PopUpManager');
     var project_manager = brackets.getModule('project/ProjectManager');
+    var preferences_manager = brackets.getModule('preferences/PreferencesManager');
+    var theme_manager = brackets.getModule('view/ThemeManager');
     var workspace_manager = brackets.getModule('view/WorkspaceManager');
 
-    var DIFF_DIALOG_ID = 'brackets-nodejs-integration-diff-dialog';
-
-    var difflib = require('../thirdparty/difflib');
-    var diffview = require('../thirdparty/diffview');
+    var code_mirror = require('../thirdparty/codemirror');
+    require('../thirdparty/merge');
+    var global_prefs = preferences_manager.getExtensionPrefs('fonts');
     var panel_template = require('text!../templates/panel.html');
     var prefs = require('../preferences');
     var run_configurations = prefs.get('configurations');
@@ -31,6 +31,8 @@ define(function main(require, exports, module) {
     var strings = require('strings');
     var runner_menu_template = require('text!../templates/runner_menu.html');
     var utils = require('../utils');
+
+    var keywords_parser = require('./keywords_parser');
 
     var $dropdown = null;
     var $runner_panel = $(null);
@@ -165,37 +167,43 @@ define(function main(require, exports, module) {
         document.addEventListener('mousemove', panel.mousemove);
         document.addEventListener('mouseup', panel.mouseup);
     });
+
     $runner_panel.on('click', '.link_to_diff', function () {
         var actual = $(this).attr('actual');
         var expected = $(this).attr('expected');
-        var actual_lines = difflib.stringAsLines(actual);
-        var expected_lines = difflib.stringAsLines(expected);
-        var sequence_matcher = new difflib.SequenceMatcher(actual_lines, expected_lines);
-        var opcodes = sequence_matcher.get_opcodes();
+        var target = $(this).parent().find('.diff_view');
+        if (target.length > 0) {
+            target.remove();
+            $(this).parent().find(':contains(">>> ' + strings.HIDE_DIFFERENCE + ' <<<")').text('>>> ' + strings.SHOW_DIFFERENCE + ' <<<');
+        }
+        else {
+            $(this).text('>>> ' + strings.HIDE_DIFFERENCE + ' <<<');
+            target = $(document.createElement('view'));
+            target.addClass('diff_view');
+            $(this).after(target);
+            var merge_view_options = {
+                value: actual,
+                orig: expected,
+                hightlightDifferences: true,
+                lineNumbers: true,
+                mode: 'javascript',
+                readOnly: true,
+                revertButtons: false
+            };
+            if (!theme_manager.getCurrentTheme().name.includes('light')) {
+                merge_view_options.theme = 'monokai';
+            }
 
-        var diff_html = diffview.buildView({
-            baseTextLines: actual_lines,
-            newTextLines: expected_lines,
-            opcodes: opcodes,
-            baseTextName: strings.DIFF_ACTUAL,
-            newTextName: strings.DIFF_EXPECTED,
-            contextSize: null,
-            viewType: 0
-        });
+            var merge_view = code_mirror.MergeView(target[0], merge_view_options);
+            target.prepend($(document.createElement('div'))
+                .html(strings.ACTUAL_EXPECTED)
+                .addClass('console-element')
+                .css('font-size', global_prefs.get('fontSize'))
+                .css('font-family', global_prefs.get('fontFamily')));
 
-        dialogs.showModalDialog(
-            DIFF_DIALOG_ID,
-            strings.DIFF_TITLE,
-            diff_html.outerHTML, [
-                {
-                    className: dialogs.DIALOG_BTN_CLASS_PRIMARY,
-                    id: dialogs.DIALOG_BTN_OK,
-                    text: 'OK'
-                }
-            ]
-        ).done(function () {
-            return;
-        });
+            target.show();
+            utils.resize_merge_view(merge_view);
+        }
     });
     $runner_panel.on('click', '.action-close', function () {
         panel.hide();
@@ -394,6 +402,11 @@ define(function main(require, exports, module) {
                 flags: $(this).attr('flags')
             };
         }
+
+        // parse keywords
+        run_configuration.target = keywords_parser.parse(run_configuration.target);
+        run_configuration.cwd = keywords_parser.parse(run_configuration.cwd);
+
         var selected_run_configuration = $runner_panel.find('.nodejs-integration-tab-pane.active .run-configuration-dropdown-toggle');
         selected_run_configuration.find('.type')
             .removeClass('node')

@@ -180,5 +180,5 @@
 
 .brackets-nodejs-integration-debugger-log span.object ~ .var {
     display: block;
-    padding-left: 24px;
+    padding: 4px 4px 4px 24px;
 }

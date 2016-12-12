@@ -19,6 +19,7 @@ define(function main(require, exports, module) {
     var ansi = require('./ansi');
     var global_prefs = preferences_manager.getExtensionPrefs('fonts');
     var prefs = require('../preferences');
+    var strings = require('strings');
     var utils = require('../utils');
     var QueueManager = require('./queue_manager');
 
@@ -319,6 +320,9 @@ define(function main(require, exports, module) {
                 command_target = '';
                 break;
             case 'gulp':
+                if (!script) {
+                    return;
+                }
                 command = gulp_bin + ' ' + script + ' --color ' + v8flags + ' ' + additional_flags;
                 command_target = '';
                 break;
@@ -446,7 +450,7 @@ define(function main(require, exports, module) {
                     'expected': diff.expected
                 })
                 .attr('test_title', that.actual_test_title)
-                .html('>>> See difference <<<<br><br>')
+                .html('>>> ' + strings.SHOW_DIFFERENCE + ' <<<<br><br>')
                 .css('font-size', global_prefs.get('fontSize'))
                 .css('font-family', global_prefs.get('fontFamily')));
         }

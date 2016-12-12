@@ -108,3 +108,33 @@
 
 - show packages hints only if no relative path specified
 - added nodejs built-in libs ti require hints
+
+### 1.8.3
+
+- use CodeMirror as diff tool for mocha expectations
+
+### 1.8.4
+
+- use thirdparty CodeMirror libs
+
+### 1.8.5
+
+- added node_modules installer
+- replaced treekill package to tree-kill
+
+### 1.8.6
+
+- use global npm binary setting for installer
+
+### 1.8.7
+
+- fixed debugger locals font and view
+- fixed locals duplicates in debugger
+- fixed strict function declaration at extension load
+
+### 1.8.8
+
+- merged "settings supports keyword" pull request by guofei0723
+- updated mocha to 3.2.0
+- fixed: Cannot find module 'tree-kill' #12
+- fixed: Error running Gulp: "gulp null --color " -> Task 'null' is not in your gulpfile #20
