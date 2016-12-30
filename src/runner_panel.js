@@ -134,8 +134,10 @@ define(function main(require, exports, module) {
 
     $runner_panel.on('click', '.link_to_source', function (e) {
         var link = e.target.innerHTML;
-        var link_properties = link.split(/:[^\\/]/);
-        var path_to_file = link_properties[0];
+        var link_properties = link.split(/:/);
+        var file_column = link_properties.pop();
+        var file_line = link_properties.pop();
+        var path_to_file = link_properties.join(':');
         path_to_file = file_utils.convertWindowsPathToUnixPath(path_to_file);
         if (!file_system.isAbsolutePath(path_to_file)) {
             get_runner($runner_panel.find('.nodejs-integration-tab-pane.active').attr('id')).done(function (active_runner) {
@@ -150,8 +152,6 @@ define(function main(require, exports, module) {
                 path_to_file = working_directory + path_to_file;
             });
         }
-        var file_line = link_properties[1];
-        var file_column = link_properties[2];
         command_manager.execute(commands.FILE_OPEN, {
                 fullPath: path_to_file
             })
