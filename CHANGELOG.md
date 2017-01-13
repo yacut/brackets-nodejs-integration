@@ -138,3 +138,8 @@
 - updated mocha to 3.2.0
 - fixed: Cannot find module 'tree-kill' #12
 - fixed: Error running Gulp: "gulp null --color " -> Task 'null' is not in your gulpfile #20
+
+### 1.8.9
+
+- remove tree-kill from dependencies
+- add error message if initial npm instal failed
