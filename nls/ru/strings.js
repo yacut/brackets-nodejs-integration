@@ -52,6 +52,8 @@ define({
     GLOBAL_ADDITIONAL_FLAGS_PLACEHOLDER: 'например --bail для mocha, --require для node',
     HIDE_DIFFERENCE: 'Скрыть разницу',
     INSTALL_DEPENDENCIES: 'Установка зависимостей...',
+    INSTALLATION_FAILED: 'Уставновка прервана',
+    INSTALLATION_FAILED_MESSAGE: 'Установка не заверщена. Пожалуйста проследуйте в папку аддона и выполните "npm install" команду.',
     INSTALLATION_FINISHED: 'Установка завершена',
     JUMP_TO_REQUIRE: 'Перейти к Require',
     NAME: 'Имя',

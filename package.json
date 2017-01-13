@@ -31,7 +31,6 @@
         }
     },
     "dependencies": {
-        "mocha": "3.2.0",
-        "tree-kill": "1.1.0"
+        "mocha": "3.2.0"
     }
 }

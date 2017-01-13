@@ -52,6 +52,8 @@ define({
     GLOBAL_ADDITIONAL_FLAGS_PLACEHOLDER: 'e.g. --bail for mocha, --require for node',
     HIDE_DIFFERENCE: 'Hide difference',
     INSTALL_DEPENDENCIES: 'Install dependencies...',
+    INSTALLATION_FAILED: 'Installation failed',
+    INSTALLATION_FAILED_MESSAGE: 'The installation is not finished. Please go to the extension folder in your terminal and run "npm install" command.',
     INSTALLATION_FINISHED: 'Installation finished',
     JUMP_TO_REQUIRE: 'Jump to Require',
     NAME: 'Name',

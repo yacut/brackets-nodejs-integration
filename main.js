@@ -5,6 +5,7 @@ define(function (require, exports, module) {
 
     var _ = brackets.getModule('thirdparty/lodash');
     var command_manager = brackets.getModule('command/CommandManager');
+    var dialogs = brackets.getModule('widgets/Dialogs');
     var document_manager = brackets.getModule('document/DocumentManager');
     var extension_utils = brackets.getModule('utils/ExtensionUtils');
     var file_system = brackets.getModule('filesystem/FileSystem');
@@ -273,7 +274,7 @@ define(function (require, exports, module) {
                     utils.show_popup_message(strings.INSTALLATION_FINISHED);
                 }
                 else {
-                    utils.show_popup_message('Error:' + out);
+                    dialogs.showModalDialog('brackets-nodejs-integration.error-modal', strings.INSTALLATION_FAILED, strings.INSTALLATION_FAILED_MESSAGE +'\n\nError:' + out);
                 }
             });
         }

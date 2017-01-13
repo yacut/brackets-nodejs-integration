@@ -1,11 +1,7 @@
 {
   "libs": [
-    "{ternific}/libs/tern/defs/reserved",
-    "{ternific}/libs/tern/defs/lodash",
     "browser",
     "chai",
-    "ecma5",
-    "ecma6",
     "browser",
     "jquery"
   ],

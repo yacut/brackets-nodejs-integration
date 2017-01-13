@@ -52,6 +52,8 @@ define({
     GLOBAL_ADDITIONAL_FLAGS_PLACEHOLDER: 'z.B. --bail für mocha, --require für node',
     HIDE_DIFFERENCE: 'Differenz ausblenden',
     INSTALL_DEPENDENCIES: 'Abhängigkeiten installieren...',
+    INSTALLATION_FAILED: 'Installation ist abgebrochen',
+    INSTALLATION_FAILED_MESSAGE: 'Installation ist nicht fertig. Führen Sie bitte "npm install" Befehl in dem Erweiterungsverzeichnis.',
     INSTALLATION_FINISHED: 'Installation ist abgeschlossen',
     JUMP_TO_REQUIRE: 'Springen zu Require',
     NAME: 'Name',
