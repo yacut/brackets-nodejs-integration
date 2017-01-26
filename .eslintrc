@@ -76,7 +76,7 @@
             0,
             10
         ],
-        "new-cap": 1,
+        "new-cap": 0,
         "new-parens": 2,
         "no-alert": 2,
         "no-array-constructor": 2,
@@ -184,7 +184,7 @@
             2,
             "always"
         ],
-        "keyword-spacing": 2,
+        "keyword-spacing": 0,
         "space-before-blocks": 2,
         "space-before-function-paren": [
             2,
