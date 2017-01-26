@@ -1,6 +1,7 @@
 'use strict';
 
 define({
+    ACTION_CANCELED: 'Action is canceled.',
     ACTUAL_EXPECTED: 'Actual (left) - Expected (right)',
     ADDITIONAL_FLAGS: 'Additional Flags',
     ADDITIONAL_FLAGS_PLACEHOLDER: 'e.g. --bail for mocha, --require for node',
@@ -83,6 +84,7 @@ define({
     STOP: 'Stop',
     STOP_ACTIVE_RUNNER: 'Stop (active runner)',
     TARGET: 'Target',
+    TARGET_EMPTY: 'The target in your run configuration is empty.',
     TESTS: 'Tests',
     TOGGLE_DEBUGGER: 'Toggle debugger',
     TOGGLE_MOCHA: 'Toggle mocha view'

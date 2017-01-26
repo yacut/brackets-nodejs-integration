@@ -1,6 +1,7 @@
 'use strict';
 
 define({
+    ACTION_CANCELED: 'Действие прервано.',
     ACTUAL_EXPECTED: 'Актуальное (слева) - Ожидаемое (справа)',
     ADDITIONAL_FLAGS: 'Дополнительные Флаги',
     ADDITIONAL_FLAGS_PLACEHOLDER: 'например --bail для mocha, --require для node',
@@ -83,6 +84,7 @@ define({
     STOP: 'Стоп',
     STOP_ACTIVE_RUNNER: 'Стор (активный runner)',
     TARGET: 'Цель',
+    TARGET_EMPTY: 'Не задана цель в настройке.',
     TESTS: 'Тесты',
     TOGGLE_DEBUGGER: 'Переключить отладчик',
     TOGGLE_MOCHA: 'Переключить mocha панель'

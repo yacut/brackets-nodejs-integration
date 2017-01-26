@@ -402,6 +402,9 @@ define(function main(require, exports, module) {
                 flags: $(this).attr('flags')
             };
         }
+        if (!run_configuration.target) {
+            return utils.show_popup_message(strings.TARGET_EMPTY + '\n' + strings.ACTION_CANCELED);
+        }
 
         // parse keywords
         run_configuration.target = keywords_parser.parse(run_configuration.target);
