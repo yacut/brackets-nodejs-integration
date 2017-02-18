@@ -5,13 +5,10 @@ define(function (require, exports, module) {
 
     var _ = brackets.getModule('thirdparty/lodash');
     var command_manager = brackets.getModule('command/CommandManager');
-    var dialogs = brackets.getModule('widgets/Dialogs');
     var document_manager = brackets.getModule('document/DocumentManager');
     var extension_utils = brackets.getModule('utils/ExtensionUtils');
-    var file_system = brackets.getModule('filesystem/FileSystem');
     var menus = brackets.getModule('command/Menus');
     var project_manager = brackets.getModule('project/ProjectManager');
-    var NodeDomain = brackets.getModule('utils/NodeDomain');
 
     var ADD_MOCHA_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-mocha-to-runner';
     var ADD_NODE_TO_RUNNER_MENU_ID = 'brackets-nodejs-integration.add-node-to-runner';
@@ -39,7 +36,6 @@ define(function (require, exports, module) {
     var settings_dialog = require('src/settings_dialog');
     var strings = require('strings');
     var run_configurations = prefs.get('configurations');
-    var utils = require('./utils');
 
     improved_require.init();
 
@@ -262,21 +258,4 @@ define(function (require, exports, module) {
             .css('font-size', global_prefs.get('fontSize'))
             .css('font-family', global_prefs.get('fontFamily'));
     }
-
-    var node_modules = file_system.getDirectoryForPath(extension_utils.getModulePath(module, 'node_modules/mocha'));
-    node_modules.exists(function (error, exists) {
-        if (!error && !exists) {
-            var installer = new NodeDomain('brackets-nodejs-integration-installer', extension_utils.getModulePath(module, 'src/domains/installer'));
-            utils.show_popup_message(strings.INSTALL_DEPENDENCIES, true);
-            installer.exec('install', prefs.get('npm-bin'));
-            installer.on('installation_completed', function (event, code, out) {
-                if (code === 0) {
-                    utils.show_popup_message(strings.INSTALLATION_FINISHED);
-                }
-                else {
-                    dialogs.showModalDialog('brackets-nodejs-integration.error-modal', strings.INSTALLATION_FAILED, strings.INSTALLATION_FAILED_MESSAGE +'\n\nError:' + out);
-                }
-            });
-        }
-    });
 });
