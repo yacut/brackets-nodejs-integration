@@ -10,7 +10,7 @@ define(function main(require, exports, module) {
     prefs.definePreference('node-bin', 'string', '');
     prefs.definePreference('mocha-bin', 'string', extension_utils.getModulePath(module, 'node_modules/mocha/bin/mocha'));
     prefs.definePreference('npm-bin', 'string', '');
-    prefs.definePreference('gulp-bin', 'string', '');
+    prefs.definePreference('gulp-bin', 'string', extension_utils.getModulePath(module, 'node_modules/gulp/bin/gulp.js'));
     prefs.definePreference('autoscroll', 'boolean', true);
     prefs.definePreference('create_new_tab_when_panel_opened_and_empty', 'boolean', true);
     prefs.definePreference('change_runner_when_new_tab_opened', 'boolean', true);
