@@ -1,8 +1,9 @@
 # Brackets - NodeJS integration
 
-[![GitHub stars](https://img.shields.io/github/stars/yacut/brackets-nodejs-integration.svg?style=flat-square)](https://github.com/yacut/brackets-nodejs-integration/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/yacut/brackets-nodejs-integration.svg?style=flat-square)](https://github.com/yacut/brackets-nodejs-integration/network)
-[![GitHub issues](https://img.shields.io/github/issues/yacut/brackets-nodejs-integration.svg?style=flat-square)](https://github.com/yacut/brackets-nodejs-integration/issues)	
+[![GitHub stars](https://img.shields.io/github/stars/yacut/brackets-nodejs-integration.svg)](https://github.com/yacut/brackets-nodejs-integration/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/yacut/brackets-nodejs-integration.svg)](https://github.com/yacut/brackets-nodejs-integration/network)
+[![GitHub license](https://img.shields.io/npm/l/brackets-nodejs-integration.svg)](https://raw.githubusercontent.com/yacut/brackets-nodejs-integration/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/yacut/brackets-nodejs-integration.svg)](https://github.com/yacut/brackets-nodejs-integration/issues)	
 
 Brackets - NodeJS integration is an extension for [Brackets](http://brackets.io/) editor - it provides Nodejs and Mocha integration for Brackets.
 It's tested and works on any platform supported by Brackets (Windows, Mac OS X, GNU/Linux).
