@@ -1,15 +1,20 @@
 {
-    "name": "brackets-nodejs-integration",
-    "title": "NodeJS integration",
-    "description": "NodeJS integration is Nodejs, mocha, npm and gulp runner with interactive debugger and RequireJS improvements.",
-    "homepage": "https://github.com/yacut/brackets-nodejs-integration",
-    "author": "yacut <yacut@protonmail.com> (https://github.com/yacut)",
-    "version": "1.8.11",
-    "license": "MIT",
-    "engines": {
-        "brackets": ">=1.7.0"
-    },
-    "keywords": [
+  "name": "brackets-nodejs-integration",
+  "title": "NodeJS integration",
+  "description": "NodeJS integration is Nodejs, mocha, npm and gulp runner with interactive debugger and RequireJS improvements.",
+  "homepage": "https://github.com/yacut/brackets-nodejs-integration",
+  "bugs": "https://github.com/yacut/brackets-nodejs-integration/issues",
+  "author": "yacut <yacut@protonmail.com> (https://github.com/yacut)",
+  "version": "1.8.11",
+  "license": "MIT",
+  "author": {
+    "name": "yacut",
+    "url": "https://github.com/yacut"
+  },
+  "engines": {
+    "brackets": ">=1.7.0"
+  },
+  "keywords": [
         "brackets-extension",
         "node",
         "node.js",
@@ -22,21 +27,25 @@
         "npm",
         "gulp"
     ],
-    "i18n": [
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yacut/brackets-nodejs-integration.git"
+  },
+  "i18n": [
         "en",
         "de",
         "ru"
     ],
-    "package-i18n": {
-        "de": {
-            "description": "NodeJS integration ist Nodejs, mocha, npm und gulp runner mit interaktiven Debugger und RequireJS Verbesserungen."
-        },
-        "ru": {
-            "description": "NodeJS integration - это запуск Nodejs, mocha, npm и gulp скриптов с интерактивным дебаггером и RequireJS улучшениями."
-        }
+  "package-i18n": {
+    "de": {
+      "description": "NodeJS integration ist Nodejs, mocha, npm und gulp runner mit interaktiven Debugger und RequireJS Verbesserungen."
     },
-    "dependencies": {
-        "mocha": "3.2.0",
-        "tree-kill": "1.1.0"
+    "ru": {
+      "description": "NodeJS integration - это запуск Nodejs, mocha, npm и gulp скриптов с интерактивным дебаггером и RequireJS улучшениями."
     }
+  },
+  "dependencies": {
+    "mocha": "3.2.0",
+    "tree-kill": "1.1.0"
+  }
 }
