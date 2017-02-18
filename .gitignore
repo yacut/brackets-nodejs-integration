@@ -24,9 +24,7 @@ coverage
 build/Release
 
 # Dependency directory
-!node_modules/
-node_modules/*
-!node_modules/tree-kill/
+node_modules/
 
 # Optional npm cache directory
 .npm
