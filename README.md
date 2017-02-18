@@ -49,22 +49,22 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 
 ## Some screenshots:
 
-![main](screenshots/main.png)  
+![main](https://github.com/yacut/brackets-nodejs-integration/raw/master/screenshots/main.png)  
 *Main panel of NodeJS integration - run nodejs process*
 
-![mocha](screenshots/mocha.png)  
+![mocha](https://github.com/yacut/brackets-nodejs-integration/raw/master/screenshots/mocha.png)  
 *Main panel of NodeJS integration - run mocha test*
 
-![goto_error](screenshots/goto_error.png)  
+![goto_error](https://github.com/yacut/brackets-nodejs-integration/raw/master/screenshots/goto_error.png)  
 *Main panel of NodeJS integration - quick open error file*
 
-![require_hints](screenshots/require_hints.png)  
+![require_hints](https://github.com/yacut/brackets-nodejs-integration/raw/master/screenshots/require_hints.png)  
 *RequireJS - Show hints while `require`*
 
-![asert_diff](screenshots/asert_diff.png)  
+![asert_diff](https://github.com/yacut/brackets-nodejs-integration/raw/master/screenshots/asert_diff.png)  
 *Mocha test result - Show asert difference*
 
-![settings](screenshots/settings.png)  
+![settings](https://github.com/yacut/brackets-nodejs-integration/raw/master/screenshots/settings.png)  
 *Settings dialog*
 
 

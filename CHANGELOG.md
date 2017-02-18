@@ -148,3 +148,7 @@
 
 - Fix issue: Start current NodeJS project with command+shift+P doesn't run. https://github.com/yacut/brackets-nodejs-integration/issues/25
 - Fix issue: Error installing in other langage. https://github.com/yacut/brackets-nodejs-integration/issues/26
+
+### 1.8.11
+
+- Move to NPM registry
