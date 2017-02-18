@@ -11,20 +11,10 @@ To make **Brackets - NodeJS integration** work you'll need nodejs, npm and mocha
 - **Windows**: [Nodejs and NPM for Windows](https://nodejs.org/en/download/)
 - **Mac OS X**: [Nodejs and NPM for Mac](https://nodejs.org/en/download/package-manager/#osx)
 - **GNU/Linux**: [Nodejs and NPM for Debian/Ubuntu](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions)
-- **Mocha for all systems**:
-   ```
-   npm install mocha -g
-   ```
-
-##### Optional:
-- **Gulp for all systems**:
-   ```
-   npm install gulp -g
-   ```
-
 
 #### Extension installation:
-To install latest release of **Brackets - NodeJS integration** use the built-in Brackets Extension Manager which downloads the extension from the [extension registry](https://brackets-registry.aboutweb.com/).
+
+Use [brackets-npm-registry](https://github.com/zaggino/brackets-npm-registry)
 
 #### Configuration:
 Extension can be configured by opening the `NodeJS integration` Panel and clicking the *Open settings* button.
@@ -77,5 +67,6 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 
 ## In this project used
 
+- [extension registry](https://brackets-registry.aboutweb.com/)
 - [http://fontawesome.io/](http://fontawesome.io/)
 - [https://github.com/caolan/async](https://github.com/caolan/async)

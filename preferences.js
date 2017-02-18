@@ -8,7 +8,7 @@ define(function main(require, exports, module) {
 
     // Default settings
     prefs.definePreference('node-bin', 'string', '');
-    prefs.definePreference('mocha-bin', 'string', extension_utils.getModulePath(module, 'node_modules/bin/mocha'));
+    prefs.definePreference('mocha-bin', 'string', extension_utils.getModulePath(module, 'node_modules/mocha/bin/mocha'));
     prefs.definePreference('npm-bin', 'string', '');
     prefs.definePreference('gulp-bin', 'string', '');
     prefs.definePreference('autoscroll', 'boolean', true);

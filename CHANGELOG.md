@@ -152,3 +152,8 @@
 ### 1.8.11
 
 - Move to NPM registry
+
+### 1.8.13
+
+- Fix dependencies
+- Add gulp to dependencies
