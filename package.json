@@ -1,14 +1,14 @@
 {
   "name": "brackets-nodejs-integration",
   "title": "NodeJS integration",
-  "description": "NodeJS integration is Nodejs, mocha, npm and gulp runner with interactive debugger and RequireJS improvements.",
+  "description": "Use 'brackets-npm-registry' to install. NodeJS integration is Nodejs, mocha, npm and gulp runner with interactive debugger and RequireJS improvements.",
   "homepage": "https://github.com/yacut/brackets-nodejs-integration",
   "bugs": "https://github.com/yacut/brackets-nodejs-integration/issues",
   "author": {
     "name": "yacut",
     "url": "https://github.com/yacut"
   },
-  "version": "1.8.13",
+  "version": "1.8.14",
   "license": "MIT",
   "engines": {
     "brackets": ">=1.7.0"
