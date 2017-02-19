@@ -32,7 +32,7 @@ define(function main(require, exports, module) {
             'cwd': '',
             'flags': '',
             'type': 'gulp',
-            'target': '{project_root}/gulpfile.js',
+            'target': extension_utils.getModulePath(module, 'gulpfile.js'),
             'debug': false
         },
 
