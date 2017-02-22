@@ -157,3 +157,8 @@
 
 - Fix dependencies
 - Add gulp to dependencies
+
+
+### 1.8.16
+
+- Fix script paths for windows users
