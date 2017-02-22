@@ -64,6 +64,8 @@ define({
     PARENT_DIRECTORY: 'Parent directory',
     PATH_TO_MOCHA_BINARY: 'Path to Mocha binary',
     PATH_TO_MOCHA_BINARY_PLACEHOLDER: 'leave empty for global mocha command',
+    PATH_TO_GULP_BINARY: 'Path to Gulp binary',
+    PATH_TO_GULP_BINARY_PLACEHOLDER: 'leave empty for global gulp command',
     PATH_TO_NODE_BINARY: 'Path to Node binary',
     PATH_TO_NODE_BINARY_PLACEHOLDER: 'leave empty for global node command',
     PATH_TO_NPM_BINARY: 'Path to npm binary',

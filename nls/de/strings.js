@@ -64,6 +64,8 @@ define({
     PARENT_DIRECTORY: 'Übergeordnetes Verzeichnis',
     PATH_TO_MOCHA_BINARY: 'Pfad zum Mocha binary',
     PATH_TO_MOCHA_BINARY_PLACEHOLDER: 'leer lassen für die globale mocha Befehl',
+    PATH_TO_GULP_BINARY: 'Pfad zum Gulp binary',
+    PATH_TO_GULP_BINARY_PLACEHOLDER: 'leer lassen für die globale gulp Befehl',
     PATH_TO_NODE_BINARY: 'Pfad zum Node binary',
     PATH_TO_NODE_BINARY_PLACEHOLDER: 'leer lassen für die globale node Befehl',
     PATH_TO_NPM_BINARY: 'Pfad zum npm binary',

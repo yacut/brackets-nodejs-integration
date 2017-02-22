@@ -52,6 +52,7 @@ define(function main(require, exports) {
             prefs.set('node-bin', node_bin_input.val().trim());
             prefs.set('mocha-bin', mocha_bin_input.val().trim());
             prefs.set('npm-bin', npm_bin_input.val().trim());
+            prefs.set('gulp-bin', gulp_bin_input.val().trim());
             prefs.set('v8-flags', v8_flags_input.val().trim());
             prefs.set('additional-flags', additional_flags.val().trim());
             prefs.set('lookupDepth', parseInt(lookup_depth.val().trim(), 10));
@@ -102,6 +103,7 @@ define(function main(require, exports) {
         var node_bin_input = $('.brackets-nodejs-integration-runner-node-bin').val(prefs.get('node-bin'));
         var mocha_bin_input = $('.brackets-nodejs-integration-runner-mocha-bin').val(prefs.get('mocha-bin'));
         var npm_bin_input = $('.brackets-nodejs-integration-runner-npm-bin').val(prefs.get('npm-bin'));
+        var gulp_bin_input = $('.brackets-nodejs-integration-runner-gulp-bin').val(prefs.get('gulp-bin'));
         var scroll_input = $('.brackets-nodejs-integration-runner-autoscroll').attr('checked', prefs.get('autoscroll'));
         var v8_flags_input = $('.brackets-nodejs-integration-runner-flags').val(prefs.get('v8-flags'));
         var additional_flags = $('.brackets-nodejs-integration-additional-flags').val(prefs.get('additional-flags'));

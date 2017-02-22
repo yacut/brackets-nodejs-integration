@@ -64,6 +64,8 @@ define({
     PARENT_DIRECTORY: 'Родительский каталог',
     PATH_TO_MOCHA_BINARY: 'Путь к Mocha',
     PATH_TO_MOCHA_BINARY_PLACEHOLDER: 'оставьте пустым для глобальной mocha команды',
+    PATH_TO_GULP_BINARY: 'Путь к Gulp',
+    PATH_TO_GULP_BINARY_PLACEHOLDER: 'оставьте пустым для глобальной gulp команды',
     PATH_TO_NODE_BINARY: 'Путь к Node',
     PATH_TO_NODE_BINARY_PLACEHOLDER: 'оставьте пустым для глобальной node команды',
     PATH_TO_NPM_BINARY: 'Путь к Mocha',

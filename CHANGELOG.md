@@ -162,3 +162,7 @@
 ### 1.8.16
 
 - Fix script paths for windows users
+
+### 1.8.17
+
+- Add gulp binary path to settings
