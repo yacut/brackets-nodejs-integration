@@ -26,16 +26,6 @@ define(function main(require, exports, module) {
             'target': '{project_root}/package.json',
             'debug': false
         },
-
-        {
-            'name': 'gulp task',
-            'cwd': '',
-            'flags': '',
-            'type': 'gulp',
-            'target': extension_utils.getModulePath(module, 'gulpfile.js'),
-            'debug': false
-        },
-
         {
             'name': 'nodejs process sample',
             'cwd': '',
@@ -44,7 +34,6 @@ define(function main(require, exports, module) {
             'target': extension_utils.getModulePath(module, 'tests/hello.js'),
             'debug': false
         },
-
         {
             'name': 'http server sample',
             'cwd': '',
@@ -52,8 +41,7 @@ define(function main(require, exports, module) {
             'type': 'node',
             'target': extension_utils.getModulePath(module, 'tests/server.js'),
             'debug': false
-        }
-        ,
+        },
         {
             'name': 'mocha test sample',
             'cwd': '',
