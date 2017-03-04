@@ -4,7 +4,7 @@ define(function (require, exports, module) {
     module.exports = {
         root: true,
         'de': true,
-        'ru': true
+        'ru': true,
         'pt-br': true
     };
 
