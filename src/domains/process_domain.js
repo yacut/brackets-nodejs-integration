@@ -1,8 +1,8 @@
 'use strict';
 (function () {
 
-    var tree_kill = require('tree-kill');
     var child_process = require('child_process');
+    var tree_kill = require('./tree-kill');
     var domain = null;
     var child = null;
     var path = require('path');

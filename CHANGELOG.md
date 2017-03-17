@@ -166,3 +166,7 @@
 ### 1.8.17
 
 - Add gulp binary path to settings
+
+### 1.8.18
+
+- fix tree-kill issue #34
