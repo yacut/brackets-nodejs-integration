@@ -170,3 +170,7 @@
 ### 1.8.18
 
 - fix tree-kill issue #34
+
+### 1.8.19
+
+- fix version in registry

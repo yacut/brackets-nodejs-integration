@@ -8,7 +8,7 @@
     "name": "yacut",
     "url": "https://github.com/yacut"
   },
-  "version": "1.8.17",
+  "version": "1.8.19",
   "license": "MIT",
   "engines": {
     "brackets": ">=1.7.0"
