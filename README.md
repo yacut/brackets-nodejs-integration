@@ -76,6 +76,6 @@ Currently **Brackets - NodeJS integration** supports these features (this list m
 - [http://fontawesome.io/](http://fontawesome.io/)
 - [https://github.com/caolan/async](https://github.com/caolan/async)
 
-## Support this project
+## Support
 
 [![Beerpay](https://beerpay.io/yacut/brackets-nodejs-integration/badge.svg?style=beer-square)](https://beerpay.io/yacut/brackets-nodejs-integration)  [![Beerpay](https://beerpay.io/yacut/brackets-nodejs-integration/make-wish.svg?style=flat-square)](https://beerpay.io/yacut/brackets-nodejs-integration?focus=wish)
