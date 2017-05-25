@@ -1,4 +1,5 @@
-# Brackets - NodeJS integration
+# [DEPRECATED] Not maintained 
+## Brackets - NodeJS integration
 
 [![GitHub stars](https://img.shields.io/github/stars/yacut/brackets-nodejs-integration.svg)](https://github.com/yacut/brackets-nodejs-integration/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/yacut/brackets-nodejs-integration.svg)](https://github.com/yacut/brackets-nodejs-integration/network)
