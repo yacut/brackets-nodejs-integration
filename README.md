@@ -1,7 +1,7 @@
 # [DEPRECATED] Not maintained 
 ## Brackets - NodeJS integration
 
-[![Donate Bitcoin](https://img.shields.io/badge/donate-$10-orange.svg)](https://blockchain.info/payment_request?address=1Ndg2GN1r4UfyqBtAUgLmVVjv8a9xYokU5&message=I+like+your+GitHub+Project!&amount_local=10&currency=USD&nosavecurrency=true)
+[![Donate Bitcoin](https://img.shields.io/badge/donate-bitcoin-orange.svg)](https://blockchain.info/payment_request?address=1Ndg2GN1r4UfyqBtAUgLmVVjv8a9xYokU5&message=I+like+your+GitHub+Project!)
 [![GitHub stars](https://img.shields.io/github/stars/yacut/brackets-nodejs-integration.svg)](https://github.com/yacut/brackets-nodejs-integration/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/yacut/brackets-nodejs-integration.svg)](https://github.com/yacut/brackets-nodejs-integration/network)
 [![GitHub license](https://img.shields.io/npm/l/brackets-nodejs-integration.svg)](https://raw.githubusercontent.com/yacut/brackets-nodejs-integration/master/LICENSE)
